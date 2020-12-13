@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+{% block content %}
+<p>
+  About you:
+</p>
+
+<p>
+  Your email : {{user.email}}
+</p>
+
+<p>
+  Your name : {{user.name}} {{user.surname}}
+</p>
+
+{% for request in recieved_requests %}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h5 class="card-title">{{request.from_user.login}}</h5>
+    <h5 class="card-title">{{request.from_user.name}} {{request.from_user.surname}} wants too add you to friends</h5>
+    <p class="card-text"></p>
+    <p>
+    <a href="{% url 'account_page' request.from_user.slug %}" class="btn btn-primary">Button</a>
+    <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
+      <input type="hidden" name="request_input" value="{{resident.id}}"/>
+      <button type = "submit">Submit</button>
+    </form>
+    </p>
+  </div>
+</div>
+</p>
+
+{% endfor %}
+{% endblock %}
