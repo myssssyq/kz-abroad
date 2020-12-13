@@ -5,6 +5,7 @@ from .forms import *
 from .models import *
 import cities.views as cityviews
 from accounts import views
+#b
 
 def index(request):
     context=dict()
