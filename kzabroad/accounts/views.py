@@ -42,7 +42,6 @@ def mainpage(request):
     else:
         search_form = SearchForm(request.POST)
     context['search_form'] = search_form
-    #a
     return render(request, 'search.html', context)
 
 def sign_in(request):
