@@ -6,6 +6,29 @@ from .models import *
 import cities.views as cityviews
 from accounts import views
 
+def find_user_by_login(login):
+     try:
+         user = Account.objects.get(login = login)
+         return user
+     except:
+         return None
+
+def find_user_by_id(login):
+     try:
+         user = Account.objects.get(id = id)
+         return user
+     except:
+         return None
+
+def living_city(id):
+    try:
+        user = Account.objects.get(pk = id)
+        city = City.objects.filter(residents__in = user)
+        print(1)
+        return city
+    except:
+        pass
+
 
 def users(request):
     # context-> list of all Account objects
@@ -14,19 +37,53 @@ def users(request):
     pass
 
 def user(request, login):
+    context = dict()
+    account = find_user(login)
+    context['account'] = account
+    context['living_city'] = living_city(account.id)
+    print(context)
     # context -> Account object
     # context -> city preferences
+
     pass
 
 def login(request):
     context = dict()
     if (request.method == 'POST'):
-        login = request.POST['login'] # <input type = "text" name = "login"> 
-    # return html of the login.html
-    pass
+        login = request.POST['login'] # <input type = "text" name = "login">
+        if find_user_by_login(login) != None:
+            context['user'] = find_user_by_login(login)
+            return render(request, 'app/city/city_search.html', context)
+        if find_user_by_login(login) == None:
+            return render(request, 'app/account/login.html', context)
+    else:
+        return render(request, 'app/account/login.html', context)
 
 def register (request):
-    pass
+    context = dict()
+    if request.method == 'POST':
+        try:
+            login_exists = bool(Account.objects.get(login = request.POST['login']))
+        except:
+            login_exists = False
+        try:
+            email_exists = bool(Account.objects.get(email = request.POST['email']))
+        except:
+            email_exists = False
+        if login_exists or email_exists:
+            return render(request, 'general/register.html', context)
+        else:
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            email = request.POST['email']
+            login = request.POST['login']
+            password = request.POST['password']
+            account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login)
+            account.save()
+            request.session['user'] = account.pk
+            return redirect(reverse(views.login))
+    else:
+        return render(request, 'general/register.html', context)
 
 def my_account(request):
     context = dict()

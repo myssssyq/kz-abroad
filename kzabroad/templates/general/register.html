@@ -1,10 +1,29 @@
-{% extends "index.html" %}
+{% extends "general/index.html" %}
 {% load static %}
 {% block content %}
 <form method='post' enctype="multipart/form-data">
     {% csrf_token %}
-    {{ sign_form.as_p }}
-    <input type="submit" value="Submit">
+    <p>
+    <input type="text" name="first_name">
+    </p>
+    <p>
+    <input type="text" name="last_name">
+    </p>
+    <p>
+    <input type="text" name="login">
+    </p>
+    <p>
+    <input type="text" name="email">
+    </p>
+    <p>
+    <input type="password" name="password">
+    </p>
+    <p>
+    <input type="password" name="password_check">
+    </p>
+    <p>
+    <button type = "submit">Submit</button>
+    </p>
 </form>
 {{sign_form.errors}}
 {% endblock %}

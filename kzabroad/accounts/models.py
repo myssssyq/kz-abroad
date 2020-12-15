@@ -34,6 +34,12 @@ class Account(models.Model):
 
     #<----------------------------Friends END---------------------------->
 
+    #<----------------------------City BEGIN---------------------------->
+
+    #city = models.ForeignKey(City, related_name = 'city', on_delete=models.CASCADE)
+
+    #<----------------------------City END---------------------------->
+
 
     def __str__(self):
         return (str(self.name) + ' ' + str(self.surname) + ' (' + str(self.id) + ')')
