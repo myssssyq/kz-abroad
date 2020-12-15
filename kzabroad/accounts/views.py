@@ -20,16 +20,6 @@ def find_user_by_id(login):
      except:
          return None
 
-def living_city(id):
-    try:
-        user = Account.objects.get(pk = id)
-        city = City.objects.filter(residents__in = user)
-        print(1)
-        return city
-    except:
-        pass
-
-
 def users(request):
     # context-> list of all Account objects
     context = dict()
@@ -38,13 +28,11 @@ def users(request):
 
 def user(request, login):
     context = dict()
-    account = find_user(login)
+    account = find_user_by_login(login)
     context['account'] = account
-    context['living_city'] = living_city(account.id)
-    print(context)
     # context -> Account object
     # context -> city preferences
-
+    return render(request, 'app/account/user.html', context)
     pass
 
 def login(request):

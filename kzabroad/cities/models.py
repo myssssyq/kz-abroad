@@ -4,7 +4,7 @@ from accounts.models import *
 class City(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, default = None)
-    residents = models.ManyToManyField(Account)
+    residents = models.ManyToManyField('accounts.Account')
     description = models.TextField()
     picture = models.ImageField(upload_to = "images/", blank=True)
 

@@ -1,5 +1,6 @@
 from django.db import models
 from .models import *
+from cities.models import *
 
 GENDER = (
 
@@ -36,7 +37,7 @@ class Account(models.Model):
 
     #<----------------------------City BEGIN---------------------------->
 
-    #city = models.ForeignKey(City, related_name = 'city', on_delete=models.CASCADE)
+    living_city = models.ForeignKey('cities.City', related_name = 'city', on_delete=models.CASCADE, null = True)
 
     #<----------------------------City END---------------------------->
 

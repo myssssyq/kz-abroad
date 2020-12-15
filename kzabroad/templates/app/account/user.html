@@ -1,4 +1,5 @@
-{% extends "index.html" %}
+{% extends "general/index.html" %}
 {% block content %}
-<p>this is {{account.login}} page</p>
+<p>this is {{account.name}} {{account.surname}} page</p>
+<p>{{account.name}} lives in {{account.living_city}}</p>
 {% endblock %}
