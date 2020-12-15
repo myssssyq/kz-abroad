@@ -24,7 +24,7 @@ def users(request):
     # context-> list of all Account objects
     context = dict()
     context['users'] = Account.objects.all()
-    pass
+    return render(request, 'app/account/users.html', context)
 
 def user(request, login):
     context = dict()
@@ -76,6 +76,7 @@ def register (request):
 def my_account(request):
     context = dict()
     user = Account.object.get(pk = request.session['user'])
+    pass
 
 
 

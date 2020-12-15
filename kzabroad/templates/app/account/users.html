@@ -1,0 +1,19 @@
+{% extends "general/index.html" %}
+{% block content %}
+
+<table>
+
+  <tr>
+    <th> User </th>
+    <th>Living city </th>
+  </tr>
+  {% for user in users %}
+  <tr>
+    <td> {{ user.login }}</td>
+    <td> {{ user.living_city }}</td>
+  </tr>
+  {% endfor %}
+
+</table>
+
+{% endblock %}
