@@ -1,0 +1,17 @@
+{% extends "general/index.html" %}
+{% block content %}
+
+<table>
+
+  <tr>
+    <th> City </th>
+  </tr>
+  {% for city in cities %}
+  <tr>
+    <td> {{ city.name }}</td>
+  </tr>
+  {% endfor %}
+
+</table>
+
+{% endblock %}

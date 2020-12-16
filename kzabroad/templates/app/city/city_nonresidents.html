@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "general/index.html" %}
 <html>
 
 <head>
@@ -13,30 +13,18 @@
 
 <h1>{{ city.name}} </h1>
 
-hi {{account.name}}
+hi {{user.name}}
 
 this is {{city.name}}
 
-<p> welcome back resident </p>
 
-{% for resident in residents %}
-<p>
-  <div class="card w-50">
-  <div class="card-body">
-    <h5 class="card-title">{{resident.login}}</h5>
-    <h5 class="card-title">{{resident.name}} {{resident.surname}}</h5>
-    <p class="card-text">{{resident.description}}</p>
-    <p>
-    <a href="{% url 'account_page' resident.slug %}" class="btn btn-primary">Button</a>
-    <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
-      <input type="hidden" name="request_input" value="{{resident.id}}"/>
-      <button type = "submit">Submit</button>
-    </form>
-  </p>
-  </div>
-</div>
-</p>
-{% endfor %}
+<form method="post" enctype="multipart/form-data" id = "live_button_form">{% csrf_token %}
+  <button  value="Post" id = "live_button" name = "live_button" type = "Submit">Submit</button>
+</form>
+
+
+
+
 
 <script
         src="https://code.jquery.com/jquery-3.5.0.min.js"
@@ -50,14 +38,14 @@ this is {{city.name}}
         crossorigin="anonymous"></script>
 
 <script>
-  const form = document.getElementById('request_form');
+  const form = document.getElementById('live_button_form');
   form.addEventListener("submit", submitHandler);
   function submitHandler(e) {
         e.preventDefault();
         $.ajax({
             type        : 'POST',
             url         : '{% url 'city' city.name %}', // the url where we want to POST
-            data        : $('#request_form').serialize(), // our form data
+            data        : $('#live_button_form').serialize(), // our form data
             dataType    : 'json', // what type of data do we expect back from the server
             success     : successFunction
         });

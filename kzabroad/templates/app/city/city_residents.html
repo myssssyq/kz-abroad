@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "general/index.html" %}
 <html>
 
 <head>
@@ -17,8 +17,6 @@ hi {{account.name}}
 
 this is {{city.name}}
 
-{% if livesin %}
-
 <p> welcome back resident </p>
 
 {% for resident in residents %}
@@ -29,26 +27,16 @@ this is {{city.name}}
     <h5 class="card-title">{{resident.name}} {{resident.surname}}</h5>
     <p class="card-text">{{resident.description}}</p>
     <p>
-    <a href="{% url 'account_page' resident.slug %}" class="btn btn-primary">Button</a>
+    <a href="#" class="btn btn-primary">Button</a>
     <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
-    <!--  <input id = "input_request" name = "name_request" type = "submit" value="Submit"></input> -->
-    <button id = "input_button" name = "request_button" value = {{resident.id}} type = "Submit">Submit</button>
+      <input type="hidden" name="request_input" value="{{resident.id}}"/>
+      <button type = "submit">Submit</button>
     </form>
   </p>
   </div>
 </div>
 </p>
 {% endfor %}
-
-{% else %}
-
-<form method="post" enctype="multipart/form-data" id = "live_button_form">{% csrf_token %}
-  <button  value="Post" id = "live_button" name = "live_button" type = "Submit">Submit</button>
-</form>
-
-{% endif %}
-
-
 
 <script
         src="https://code.jquery.com/jquery-3.5.0.min.js"
@@ -60,28 +48,6 @@ this is {{city.name}}
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-
-<script>
-  const form = document.getElementById('live_button_form');
-  form.addEventListener("submit", submitHandler);
-  function submitHandler(e) {
-        e.preventDefault();
-        $.ajax({
-            type        : 'POST',
-            url         : '{% url 'city' city.name %}', // the url where we want to POST
-            data        : $('#live_button_form').serialize(), // our form data
-            dataType    : 'json', // what type of data do we expect back from the server
-            success     : successFunction
-        });
-    }
-  function successFunction(msg) {
-        if (msg.message === 'success') {
-            alert('Success!');
-            form.reset()
-        }
-    }
-
-</script>
 
 <script>
   const form = document.getElementById('request_form');

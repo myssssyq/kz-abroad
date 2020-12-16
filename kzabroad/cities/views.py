@@ -7,12 +7,27 @@ from django.http import JsonResponse
 
 def city(request, slug):
     # context -> city Object
-    pass
+    context = dict()
+    try:
+         user = Account.objects.get(pk = request.session['user'])
+         context['user'] = user
+    except:
+         pass
+    city = City.objects.get(name = slug)
+    if user.living_city == city:
+        context['city'] = city
+        context['residents'] = city.residents.exclude(login = user.login)
+        return render(request, 'app/city/city_residents.html', context)
+    else:
+        context['city'] = city
+        context['residents'] = city.residents.exclude(login = user.login)
+        return render(request, 'app/city/city_nonresidents.html', context)
 
 
 def cities(request):
-    #all cities
-    pass
+    context = dict()
+    context['cities'] = City.objects.all()
+    return render(request, 'app/city/cities.html', context)
 
 
 
