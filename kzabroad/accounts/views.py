@@ -13,9 +13,9 @@ def find_user_by_login(login):
      except:
          return None
 
-def find_user_by_id(login):
+def find_user_by_id(id):
      try:
-         user = Account.objects.get(id = id)
+         user = Account.objects.get(pk = id)
          return user
      except:
          return None
@@ -28,20 +28,41 @@ def users(request):
 
 def user(request, login):
     context = dict()
+    user = find_user_by_id(request.session['user'])
     account = find_user_by_login(login)
     context['account'] = account
-    # context -> Account object
-    # context -> city preferences
-    return render(request, 'app/account/user.html', context)
-    pass
+    if user != account:
+        return render(request, 'app/account/user.html', context)
+    else:
+        context['user'] = user
+        context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
+        context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
+        if request.method == 'POST' and 'change_form' in request.POST:
+            user.name = request.POST['name']
+            user.surname = request.POST['surname']
+            user.email = request.POST['email']
+            user.password = request.POST['password']
+            user.save()
+        if request.method == 'POST' and 'accept' in request.POST:
+            requesting_user = find_user_by_id(request.POST['request_input'])
+            friend_request = FriendRequest.objects.get(from_user = requesting_user)
+            friend_request.delete()
+            user.friends_list.add(requesting_user)
+        if request.method == 'POST' and 'decline' in request.POST:
+            requesting_user = find_user_by_id(request.POST['request_input'])
+            friend_request = FriendRequest.objects.get(from_user = requesting_user)
+            friend_request.delete()
+        return render(request, 'app/account/my_account.html', context)
 
 def login(request):
     context = dict()
     if (request.method == 'POST'):
         login = request.POST['login'] # <input type = "text" name = "login">
         if find_user_by_login(login) != None:
-            context['user'] = find_user_by_login(login)
-            return render(request, 'app/city/city_search.html', context)
+            user = find_user_by_login(login)
+            context['user'] = user
+            request.session['user'] = user.pk
+            return redirect(reverse(views.user, args = [user.login]))
         if find_user_by_login(login) == None:
             return render(request, 'app/account/login.html', context)
     else:
@@ -72,12 +93,6 @@ def register (request):
             return redirect(reverse(views.login))
     else:
         return render(request, 'general/register.html', context)
-
-def my_account(request):
-    context = dict()
-    user = Account.object.get(pk = request.session['user'])
-    pass
-
 
 
 

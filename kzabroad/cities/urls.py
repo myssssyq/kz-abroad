@@ -6,5 +6,6 @@ from django.conf.urls.static import static
 urlpatterns = [
 
     path('name/<slug:slug>', views.city, name = 'city'),
-    path('cities', views.cities, name = 'cities')
+    path('cities', views.cities, name = 'cities'),
+    path('search', views.city_search, name = 'city_search')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,9 +1,27 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
+from django.urls import reverse
 from .models import City
 from accounts.models import *
 from django.http import JsonResponse
+from cities import views
 
 # Create your views here.
+
+def find_user_by_login(login):
+     try:
+         user = Account.objects.get(login = login)
+         return user
+     except:
+         return None
+
+
+def find_user_by_id(id):
+     try:
+         user = Account.objects.get(pk = id)
+         return user
+     except:
+         return None
 
 def city(request, slug):
     # context -> city Object
@@ -15,6 +33,15 @@ def city(request, slug):
          pass
     city = City.objects.get(name = slug)
     if user.living_city == city:
+        if request.method == 'POST':
+            requested_user = find_user_by_id(request.POST['resident_id'])
+            try:
+                friend_request = FriendRequest.objects.get_or_create(to_user = user, from_user = requested_user)
+            except:
+                friend_request = None
+            if not friend_request:
+                friend_request = FriendRequest.objects.get_or_create(to_user = requested_user, from_user = user)
+                friend_request.save()
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
         return render(request, 'app/city/city_residents.html', context)
@@ -28,6 +55,13 @@ def cities(request):
     context = dict()
     context['cities'] = City.objects.all()
     return render(request, 'app/city/cities.html', context)
+
+def city_search(request):
+    context = dict()
+    if request.method == 'POST':
+        search_city = request.POST['search']
+        return redirect(reverse(views.city,args = [search_city]))
+    return render(request, 'app/city/city_search.html', context)
 
 
 

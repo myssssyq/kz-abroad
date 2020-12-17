@@ -27,10 +27,10 @@ this is {{city.name}}
     <h5 class="card-title">{{resident.name}} {{resident.surname}}</h5>
     <p class="card-text">{{resident.description}}</p>
     <p>
-    <a href="#" class="btn btn-primary">Button</a>
+    <a href="{% url 'user' resident.login %}" class="btn btn-primary">Users page</a>
     <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
-      <input type="hidden" name="request_input" value="{{resident.id}}"/>
-      <button type = "submit">Submit</button>
+      <input type="hidden" name="resident_id" value="{{resident.id}}"/>
+      <button type = "submit">Friend request</button>
     </form>
   </p>
   </div>

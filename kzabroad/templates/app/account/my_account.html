@@ -1,16 +1,20 @@
-{% extends "index.html" %}
+{% extends "general/index.html" %}
 {% block content %}
 <p>
   About you:
 </p>
 
-<p>
-  Your email : {{user.email}}
-</p>
-
-<p>
-  Your name : {{user.name}} {{user.surname}}
-</p>
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+  <label>Your name: </label>
+  <input type="text" name="name" value="{{user.name}}"><br>
+  <label>Your surname: </label>
+  <input type="text" name="surname" value="{{user.surname}}"><br>
+  <label>Your email: </label>
+  <input type="text" name="email" value="{{user.email}}"><br>
+  <label>Your password: </label>
+  <input type="text" name="password" value="{{user.password}}"><br>
+  <button name = "change_form" type = "submit">Submit</button>
+</form>
 
 {% for request in recieved_requests %}
 <p>
@@ -20,10 +24,13 @@
     <h5 class="card-title">{{request.from_user.name}} {{request.from_user.surname}} wants too add you to friends</h5>
     <p class="card-text"></p>
     <p>
-    <a href="{% url 'account_page' request.from_user.slug %}" class="btn btn-primary">Button</a>
+    <a href="{% url 'user' request.from_user.slug %}" class="btn btn-primary">Users page</a>
     <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
-      <input type="hidden" name="request_input" value="{{resident.id}}"/>
-      <button type = "submit">Submit</button>
+      <input type="hidden" name="request_input" value="{{request.from_user.id}}"/>
+      <p>
+      <button name = "accept" type = "submit"> Accept </button>
+      <button name = "decline" type = "submit"> Decline </button>
+      </p>
     </form>
     </p>
   </div>
