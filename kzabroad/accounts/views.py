@@ -56,6 +56,7 @@ def user(request, login):
 
 def login(request):
     context = dict()
+    context['user'] = find_user_by_id(request.session['user'])
     if (request.method == 'POST'):
         login = request.POST['login'] # <input type = "text" name = "login">
         if find_user_by_login(login) != None:
@@ -70,6 +71,7 @@ def login(request):
 
 def register (request):
     context = dict()
+    context['user'] = find_user_by_id(request.session['user'])
     if request.method == 'POST':
         try:
             login_exists = bool(Account.objects.get(login = request.POST['login']))

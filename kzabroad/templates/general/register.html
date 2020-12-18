@@ -3,22 +3,22 @@
 {% block content %}
 <form method='post' enctype="multipart/form-data">
     {% csrf_token %}
-    <p>
+    <p><label> Your name :</label>
     <input type="text" name="first_name">
     </p>
-    <p>
+    <p><label> Your surname :</label>
     <input type="text" name="last_name">
     </p>
-    <p>
+    <p><label> Your login :</label>
     <input type="text" name="login">
     </p>
-    <p>
+    <p><label> Your email :</label>
     <input type="text" name="email">
     </p>
-    <p>
+    <p><label> Your password :</label>
     <input type="password" name="password">
     </p>
-    <p>
+    <p><label> Confirm password :</label>
     <input type="password" name="password_check">
     </p>
     <p>

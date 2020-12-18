@@ -26,11 +26,11 @@
          </li>
          {% if user %}
          <li class="nav-item">
-          <a class="nav-link" href="#" style="margin-top:7px;color:black;font-size:16px;">Аккаунт</a>
+          <a class="nav-link" href="{% url 'user' user.login%}" style="margin-top:7px;color:black;font-size:16px;">Аккаунт</a>
           </li>
           {% endif %}
           <li class="nav-item">
-           <a class="nav-link" href="#" style="margin-top:7px;color:black;font-size:16px;">Регистрация</a>
+           <a class="nav-link" href="{% url 'register'%}" style="margin-top:7px;color:black;font-size:16px;">Регистрация</a>
            </li>
          </ul>
        </div>

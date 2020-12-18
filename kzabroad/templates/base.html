@@ -21,12 +21,17 @@
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color:white">
      <div class="collapse navbar-collapse" id="navbarNav">
        <ul class="navbar-nav">
+         {% if user %}
         <li class="nav-item">
-         <a class="nav-link" href="#" style="margin-top:7px;color:black;font-size:16px;">Главная страница</a>
+         <a class="nav-link" href="{% url 'user' user.login %}" style="margin-top:7px;color:black;font-size:16px;">Главная страница</a>
          </li>
+         {% endif %}
           <li class="nav-item">
-           <a class="nav-link" href="#" style="margin-top:7px;color:black;font-size:16px;">Регистрация</a>
-           </li>
+           <a class="nav-link" href="{% url 'register' %}" style="margin-top:7px;color:black;font-size:16px;">Регистрация</a>
+         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}" style="margin-top:7px;color:black;font-size:16px;">Вход</a>
+          </li>
          </ul>
        </div>
      </nav>

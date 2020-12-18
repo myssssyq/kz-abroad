@@ -33,7 +33,9 @@ def city(request, slug):
          pass
     city = City.objects.get(name = slug)
     if user.living_city == city:
-        if request.method == 'POST':
+        context['city'] = city
+        context['residents'] = city.residents.exclude(login = user.login)
+        if request.method == 'POST' and 'request_button' in request.POST:
             requested_user = find_user_by_id(request.POST['resident_id'])
             try:
                 friend_request = FriendRequest.objects.get_or_create(to_user = user, from_user = requested_user)
@@ -42,10 +44,16 @@ def city(request, slug):
             if not friend_request:
                 friend_request = FriendRequest.objects.get_or_create(to_user = requested_user, from_user = user)
                 friend_request.save()
-        context['city'] = city
-        context['residents'] = city.residents.exclude(login = user.login)
+        if request.method == 'POST' and 'search_button' in request.POST:
+            searching_word = request.POST['search_input']
+            context['residents'] = context['residents'].filter(name = searching_word)
         return render(request, 'app/city/city_residents.html', context)
     else:
+        if request.method == 'POST':
+            city.residents.add(user)
+            user.living_city = city
+            user.save()
+            city.save()
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
         return render(request, 'app/city/city_nonresidents.html', context)
@@ -58,6 +66,7 @@ def cities(request):
 
 def city_search(request):
     context = dict()
+    context['user'] = find_user_by_id(request.session['user'])
     if request.method == 'POST':
         search_city = request.POST['search']
         return redirect(reverse(views.city,args = [search_city]))

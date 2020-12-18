@@ -19,6 +19,16 @@ this is {{city.name}}
 
 <p> welcome back resident </p>
 
+<label> Search by name: </label>
+<p>
+
+  <form enctype="multipart/form-data" method = "post">{% csrf_token %}
+    <input type="text" name="search_input"/>
+    <button name = "search_button" type = "submit">Find!</button>
+  </form>
+
+</p>
+
 {% for resident in residents %}
 <p>
   <div class="card w-50">
@@ -30,7 +40,7 @@ this is {{city.name}}
     <a href="{% url 'user' resident.login %}" class="btn btn-primary">Users page</a>
     <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
       <input type="hidden" name="resident_id" value="{{resident.id}}"/>
-      <button type = "submit">Friend request</button>
+      <button name = "request_button" type = "submit">Friend request</button>
     </form>
   </p>
   </div>
