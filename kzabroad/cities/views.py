@@ -35,6 +35,7 @@ def city(request, slug):
     if user.living_city == city:
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
+        context['prefereneces'] = Prefereneces.objects.all()
         if request.method == 'POST' and 'request_button' in request.POST:
             requested_user = find_user_by_id(request.POST['resident_id'])
             try:
@@ -47,6 +48,12 @@ def city(request, slug):
         if request.method == 'POST' and 'search_button' in request.POST:
             searching_word = request.POST['search_input']
             context['residents'] = context['residents'].filter(name = searching_word)
+        if request.method == 'POST' and 'checkbox_search' in request.POST:
+            for preference in request.POST:
+                if preference != 'csrfmiddlewaretoken' and preference != 'checkbox_search':
+                    filtering_preference = Prefereneces.objects.get(pk = preference)
+                    context['residents'] = context['residents'].filter(prefereneces = filtering_preference)
+            #print(list(dict(request.POST).items()))
         return render(request, 'app/city/city_residents.html', context)
     else:
         if request.method == 'POST':

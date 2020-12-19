@@ -1,6 +1,7 @@
 from django.db import models
 from .models import *
 from cities.models import *
+from django.utils.timezone import now
 
 GENDER = (
 
@@ -24,9 +25,8 @@ class Account(models.Model):
     surname = models.CharField(max_length = 30, blank = True)
     about = models.TextField(blank = True)
     gender = models.CharField(choices = GENDER, max_length = 6, blank = True)
-    is_guide = models.BooleanField(default = False, blank = True)
     age = models.IntegerField(blank = True, null = True)
-    cost_preference = models.CharField(max_length = 10, default = None, blank = True, null = True)
+    created = models.DateTimeField(default=now, editable=True)
     #<----------------------------Personality END---------------------------->
 
     #<----------------------------Friends BEGIN---------------------------->
@@ -38,6 +38,9 @@ class Account(models.Model):
     #<----------------------------City BEGIN---------------------------->
 
     living_city = models.ForeignKey('cities.City', related_name = 'city', on_delete=models.CASCADE, null = True)
+    is_guide = models.BooleanField(default = False, blank = True)
+    cost_preference = models.CharField(max_length = 10, default = None, blank = True, null = True)
+    prefereneces = models.ManyToManyField('Prefereneces', blank = True)
 
     #<----------------------------City END---------------------------->
 
@@ -55,3 +58,9 @@ class FriendRequest(models.Model):
 
     def __str__(self):
 	       return ('From ' + str(self.from_user) + ' to ' + str(self.to_user))
+
+class Prefereneces(models.Model):
+    id = models.AutoField(primary_key=True, editable=True)
+    name = models.CharField(max_length=200, blank = True)
+    def __str__(self):
+        return ('(' + str(self.id) + ') : ' + str(self.name))
