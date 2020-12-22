@@ -32,6 +32,16 @@
           <li class="nav-item">
            <a class="nav-link" href="{% url 'register'%}" style="margin-top:7px;color:black;font-size:16px;">Регистрация</a>
            </li>
+           {% if not user %}
+           <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}" style="margin-top:7px;color:black;font-size:16px;">Вход</a>
+            </li>
+            {% endif %}
+            {% if user %}
+            <li class="nav-item">
+             <a class="nav-link" href="{% url 'index' %}" style="margin-top:7px;color:black;font-size:16px;">Выход</a>
+             </li>
+             {% endif %}
          </ul>
        </div>
      </nav>

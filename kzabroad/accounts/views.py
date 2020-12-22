@@ -24,7 +24,7 @@ def index(request):
     context=dict()
     request.session['user'] = None
     context['user'] = find_user_by_id(request.session['user'])
-    return render(request, 'base.html', context)
+    return render(request, 'general/index.html', context)
 
 def users(request):
     # context-> list of all Account objects
@@ -35,12 +35,12 @@ def users(request):
 def user(request, login):
     context = dict()
     user = find_user_by_id(request.session['user'])
+    context['user'] = user
     account = find_user_by_login(login)
     context['account'] = account
     if user != account:
         return render(request, 'app/account/user.html', context)
     else:
-        context['user'] = user
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
         if request.method == 'POST' and 'change_form' in request.POST:
@@ -48,6 +48,10 @@ def user(request, login):
             user.surname = request.POST['surname']
             user.email = request.POST['email']
             user.password = request.POST['password']
+            if 'no' in request.POST:
+                user.is_guide = False
+            if 'yes' in request.POST:
+                user.is_guide = True
             user.save()
         if request.method == 'POST' and 'accept' in request.POST:
             requesting_user = find_user_by_id(request.POST['request_input'])

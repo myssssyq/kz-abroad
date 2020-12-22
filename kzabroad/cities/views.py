@@ -39,12 +39,13 @@ def city(request, slug):
         if request.method == 'POST' and 'request_button' in request.POST:
             requested_user = find_user_by_id(request.POST['resident_id'])
             try:
-                friend_request = FriendRequest.objects.get_or_create(to_user = user, from_user = requested_user)
+                friend_request = FriendRequest.objects.get(to_user = user, from_user = requested_user)
             except:
                 friend_request = None
             if not friend_request:
-                friend_request = FriendRequest.objects.get_or_create(to_user = requested_user, from_user = user)
+                friend_request, created = FriendRequest.objects.get_or_create(to_user = requested_user, from_user = user)
                 friend_request.save()
+            return render(request, 'app/city/city_residents.html', context)
         if request.method == 'POST' and 'search_button' in request.POST:
             searching_word = request.POST['search_input']
             context['residents'] = context['residents'].filter(name = searching_word)
