@@ -13,6 +13,7 @@
   <input type="text" name="email" value="{{user.email}}"><br>
   <label>Your password: </label>
   <input type="text" name="password" value="{{user.password}}"><br>
+  {% if user.living_city %}
   <label> Do you want to be a guide? </label>
   <p>
   <input type="radio" name="yes">Yes</input>
@@ -20,15 +21,41 @@
   <p>
   <input type="radio" name="no">No</input>
   </p>
+  {% endif %}
   <button name = "change_form" type = "submit">Submit</button>
 </form>
+
+{% if recieved_guide_requests %}
+
+{% for request in recieved_guide_requests%}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h5 class="card-title">{{request.requesting_user.login}}</h5>
+    <h5 class="card-title">{{request.requesting_user.name}} {{request.requesting_user.surname}} wants you to GUIDE him/her in city</h5>
+    <p class="card-text"></p>
+    <p>
+    <a href="{% url 'user' request.requesting_user.slug %}" class="btn btn-primary">Users page</a>
+    <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
+      <input type="hidden" name="request_input" value="{{request.requesting_user.id}}"/>
+      <p>
+      <button name = "guide_accept" type = "submit"> Accept </button>
+      </p>
+    </form>
+    </p>
+  </div>
+</div>
+
+{% endfor %}
+
+{% endif %}
 
 {% for request in recieved_requests %}
 <p>
   <div class="card w-50">
   <div class="card-body">
     <h5 class="card-title">{{request.from_user.login}}</h5>
-    <h5 class="card-title">{{request.from_user.name}} {{request.from_user.surname}} wants too add you to friends</h5>
+    <h5 class="card-title">{{request.from_user.name}} {{request.from_user.surname}} wants too add you to FRIENDS</h5>
     <p class="card-text"></p>
     <p>
     <a href="{% url 'user' request.from_user.slug %}" class="btn btn-primary">Users page</a>

@@ -53,9 +53,6 @@ class FriendRequest(models.Model):
     to_user = models.ForeignKey("Account", related_name='to_user', on_delete=models.CASCADE)
     from_user = models.ForeignKey("Account", related_name='from_user', on_delete=models.CASCADE)
 
-    def inbox(self,user):
-        return self.objects.filter(to_user = user)
-
     def __str__(self):
 	       return ('From ' + str(self.from_user) + ' to ' + str(self.to_user))
 

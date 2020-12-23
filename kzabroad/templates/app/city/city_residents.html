@@ -19,6 +19,11 @@ this is {{city.name}}
 
 <p> welcome back resident </p>
 
+<label> If you need a guide: </label>
+<form enctype="multipart/form-data" method = "post">{% csrf_token %}
+  <button name = "guide_button" type = "submit"> I need a guide</button>
+</form>
+
 <label> Search by name: </label>
 <p>
 

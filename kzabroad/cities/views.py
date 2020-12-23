@@ -54,7 +54,11 @@ def city(request, slug):
                 if preference != 'csrfmiddlewaretoken' and preference != 'checkbox_search':
                     filtering_preference = Prefereneces.objects.get(pk = preference)
                     context['residents'] = context['residents'].filter(prefereneces = filtering_preference)
-            #print(list(dict(request.POST).items()))
+        if request.method == 'POST' and 'guide_button' in request.POST:
+            guide_session = GuideSession(requesting_user = user, status = 'Waiting')
+            guide_session.save()
+            city.guide_session.add(guide_session)
+            return render(request, 'app/city/city_residents.html', context)
         return render(request, 'app/city/city_residents.html', context)
     else:
         if request.method == 'POST':

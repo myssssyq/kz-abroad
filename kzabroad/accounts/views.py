@@ -41,6 +41,10 @@ def user(request, login):
     if user != account:
         return render(request, 'app/account/user.html', context)
     else:
+        if user.is_guide:
+            context['recieved_guide_requests'] = user.living_city.guide_session.filter(guide = None)
+        else:
+            context['recieved_guide_requests'] = None
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
         if request.method == 'POST' and 'change_form' in request.POST:
@@ -50,9 +54,19 @@ def user(request, login):
             user.password = request.POST['password']
             if 'no' in request.POST:
                 user.is_guide = False
+                try:
+                    user.living_city.guides.remove(user)
+                except:
+                    pass
             if 'yes' in request.POST:
                 user.is_guide = True
+                user.living_city.guides.add(user)
             user.save()
+            try:
+                user.living_city.save()
+            except:
+                pass
+            return render(request, 'app/account/my_account.html', context)
         if request.method == 'POST' and 'accept' in request.POST:
             requesting_user = find_user_by_id(request.POST['request_input'])
             friend_request = FriendRequest.objects.get(from_user = requesting_user)
@@ -62,6 +76,12 @@ def user(request, login):
             requesting_user = find_user_by_id(request.POST['request_input'])
             friend_request = FriendRequest.objects.get(from_user = requesting_user)
             friend_request.delete()
+        if request.method == 'POST' and 'guide_accept' in request.POST:
+            requesting_user = find_user_by_id(request.POST['request_input'])
+            guide_session = user.living_city.guide_session.get(requesting_user = requesting_user)
+            guide_session.guide = user
+            guide_session.status = 'In process'
+            guide_session.save()
         return render(request, 'app/account/my_account.html', context)
 
 def login(request):
@@ -102,7 +122,7 @@ def register (request):
             account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login)
             account.save()
             request.session['user'] = account.pk
-            return redirect(reverse(views.login))
+            return redirect(reverse(views.user, args = [account.login]))
     else:
         return render(request, 'general/register.html', context)
 
