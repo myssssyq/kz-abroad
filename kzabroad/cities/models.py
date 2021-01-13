@@ -5,6 +5,7 @@ from django.utils.timezone import now
 STATUS = (
 
     ("Waiting", "Waiting"),
+    ("Needs approve", "Needs approve"),
     ("In process", "In process"),
     ("Finished", "Finished")
 
@@ -23,7 +24,7 @@ class City(models.Model):
         return (str(self.name))
 
 class GuideSession(models.Model):
-    status = models.CharField(choices = STATUS, max_length = 10, blank = True)
+    status = models.CharField(choices = STATUS, max_length = 15, blank = True)
     requesting_user = models.ForeignKey('accounts.Account', related_name='requesting_user', on_delete=models.CASCADE)
     guide = models.ForeignKey('accounts.Account', related_name='guide', on_delete=models.CASCADE, blank = True, null = True)
     created = models.DateTimeField(default=now, editable=True)

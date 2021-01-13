@@ -36,6 +36,12 @@ def city(request, slug):
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
         context['prefereneces'] = Prefereneces.objects.all()
+        context['need_a_guide'] = True
+        try:
+            if city.guide_session.get(requesting_user = user):
+                context['need_a_guide'] = False
+        except:
+            pass
         if request.method == 'POST' and 'request_button' in request.POST:
             requested_user = find_user_by_id(request.POST['resident_id'])
             try:
@@ -66,6 +72,7 @@ def city(request, slug):
             user.living_city = city
             user.save()
             city.save()
+            return render(request, 'app/city/city_residents.html', context)
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
         return render(request, 'app/city/city_nonresidents.html', context)

@@ -44,7 +44,11 @@ def user(request, login):
         if user.is_guide:
             context['recieved_guide_requests'] = user.living_city.guide_session.filter(guide = None)
         else:
-            context['recieved_guide_requests'] = None
+            try:
+                not_approved_request = user.living_city.guide_session.get(status = "Needs approve", requesting_user = user)
+                context['not_approved_request'] = not_approved_request
+            except:
+                context['not_approved_request'] = None
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
         if request.method == 'POST' and 'change_form' in request.POST:
@@ -76,11 +80,18 @@ def user(request, login):
             requesting_user = find_user_by_id(request.POST['request_input'])
             friend_request = FriendRequest.objects.get(from_user = requesting_user)
             friend_request.delete()
+        if request.method == 'POST' and 'approve_accept' in request.POST:
+            not_approved_request.status = 'In procces'
+            not_approved_request.save()
+        if request.method == 'POST' and 'approve_decline' in request.POST:
+            not_approved_request.status = 'Waiting'
+            not_approved_request.guide = None
+            not_approved_request.save()
         if request.method == 'POST' and 'guide_accept' in request.POST:
             requesting_user = find_user_by_id(request.POST['request_input'])
             guide_session = user.living_city.guide_session.get(requesting_user = requesting_user)
             guide_session.guide = user
-            guide_session.status = 'In process'
+            guide_session.status = 'Needs approve'
             guide_session.save()
         return render(request, 'app/account/my_account.html', context)
 
