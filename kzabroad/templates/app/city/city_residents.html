@@ -17,7 +17,13 @@ hi {{account.name}}
 
 this is {{city.name}}
 
-<p> welcome back resident </p>
+<img src="{{city_image}}" alt="city picture" width="500" height="600">
+
+<h1> About {{city.name}} </h1>
+
+{{city_description}}
+
+<h1> welcome back resident </h1>
 
 {% if need_a_guide %}
 <label> If you need a guide: </label>

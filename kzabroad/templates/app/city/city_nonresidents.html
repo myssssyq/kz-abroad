@@ -17,6 +17,10 @@ hi {{user.name}}
 
 this is {{city.name}}
 
+<h1> About {{city.name}} </h1>
+
+{{city_description}}
+
 
 <form method="post" enctype="multipart/form-data" id = "live_button_form">{% csrf_token %}
   <button  value="Post" id = "live_button" name = "live_button" type = "Submit">Submit</button>

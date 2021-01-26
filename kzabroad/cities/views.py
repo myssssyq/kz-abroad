@@ -5,8 +5,26 @@ from .models import City
 from accounts.models import *
 from django.http import JsonResponse
 from cities import views
+import wikipedia
+import json
+import requests
 
 # Create your views here.
+
+WIKI_REQUEST = 'http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles='
+
+def get_wiki_image(search_term):
+    try:
+        result = wikipedia.search(search_term, results = 1)
+        wikipedia.set_lang('en')
+        wkpage = wikipedia.WikipediaPage(title = result[0])
+        title = wkpage.title
+        response  = requests.get(WIKI_REQUEST+title)
+        json_data = json.loads(response.text)
+        img_link = list(json_data['query']['pages'].values())[0]['original']['source']
+        return img_link
+    except:
+        return 0
 
 def find_user_by_login(login):
      try:
@@ -32,6 +50,8 @@ def city(request, slug):
     except:
          pass
     city = City.objects.get(name = slug)
+    context['city_description'] = city.description
+    context['city_image'] = city.picture
     if user.living_city == city:
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
@@ -91,7 +111,31 @@ def city_search(request):
         return redirect(reverse(views.city,args = [search_city]))
     return render(request, 'app/city/city_search.html', context)
 
-
+def add_city(request):
+    context = dict()
+    try:
+         user = Account.objects.get(pk = request.session['user'])
+         context['user'] = user
+    except:
+         pass
+    if request.method == 'POST':
+        city = str(request.POST['add'])
+        try:
+            print(1)
+            city_picture = get_wiki_image(str(city) + ' city')
+            print(2)
+            print(city_picture)
+            description = wikipedia.summary(str(city) + ' city')
+            print(3)
+            print(description)
+        except:
+            pass
+        city = City(name = city, description = description, picture = city_picture, slug = city)
+        city.save()
+        print(4)
+        print(city)
+        return redirect(reverse(views.city,args = [city]))
+    return render(request, 'app/city/add_city.html', context)
 
 
 

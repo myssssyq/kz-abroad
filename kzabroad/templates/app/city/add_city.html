@@ -1,0 +1,10 @@
+{% extends "general/index.html" %}
+{% block content %}
+
+<form method='post' enctype="multipart/form-data">{% csrf_token %}
+    <label>City you want to add :</label>
+    <input type="text" name="add">
+    <button type = "submit">Add</button>
+</form>
+
+{% endblock %}

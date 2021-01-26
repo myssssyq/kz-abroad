@@ -18,7 +18,7 @@ class City(models.Model):
     guides = models.ManyToManyField('accounts.Account', related_name = 'guides')
     description = models.TextField()
     guide_session = models.ManyToManyField('GuideSession', related_name = 'guide_session', blank = True)
-    picture = models.ImageField(upload_to = "images/", blank=True)
+    picture = models.CharField(max_length=200)
 
     def __str__(self):
         return (str(self.name))
