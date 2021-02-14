@@ -1,29 +1,33 @@
 {% extends "general/index.html" %}
 {% load static %}
 {% block content %}
-<form method='post' enctype="multipart/form-data">
+<form method='post' id = 'register_form' enctype="multipart/form-data">
     {% csrf_token %}
     <p><label> Your name :</label>
-    <input type="text" name="first_name">
+    <input type="text" name="first_name" class = 'input_field'>
     </p>
     <p><label> Your surname :</label>
-    <input type="text" name="last_name">
+    <input type="text" name="last_name" class = 'input_field'>
     </p>
     <p><label> Your login :</label>
-    <input type="text" name="login">
+    <input type="text" name="login" class = 'input_field'>
     </p>
     <p><label> Your email :</label>
-    <input type="text" name="email">
+    <input type="text" name="email" class = 'input_field'>
     </p>
     <p><label> Your password :</label>
-    <input type="password" name="password">
+    <input type="password" name="password" class = 'input_field'>
     </p>
     <p><label> Confirm password :</label>
-    <input type="password" name="password_check">
+    <input type="password" name="password_check" class = 'input_field'>
     </p>
     <p>
     <button type = "submit">Submit</button>
     </p>
 </form>
-{{sign_form.errors}}
+
+<label id = 'label' name = 'label'> password strength :</label>
+
+<script type="text/javascript" src={% static "js/sign_in_validation.js" %}></script>
+
 {% endblock %}
