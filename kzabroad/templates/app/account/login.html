@@ -9,4 +9,7 @@
     <input type="password" name="password">
     <button type = "submit">Submit</button>
 </form>
+{% if error %}
+<label> {{error}} </label>
+{% endif %}
 {% endblock %}

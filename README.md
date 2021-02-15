@@ -22,7 +22,7 @@ python manage.py runserver
 ```
 
 ## Authors
-- [Daniyar Aubekerov](github.com/daniyardake/)
+- [Daniyar Aubekerov](https://github.com/daniyardake)
 - [Nabi Kussain](https://github.com/myssssyq)
 
 

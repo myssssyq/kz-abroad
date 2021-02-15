@@ -113,10 +113,15 @@ def login(request):
         login = request.POST['login'] # <input type = "text" name = "login">
         if find_user_by_login(login) != None:
             user = find_user_by_login(login)
-            context['user'] = user
-            request.session['user'] = user.pk
-            return redirect(reverse(views.user, args = [user.login]))
+            if user.password == request.POST['password']:
+                context['user'] = user
+                request.session['user'] = user.pk
+                return redirect(reverse(views.user, args = [user.login]))
+            else:
+                context['error'] = 'Login or password is incorrect'
+                return render(request, 'app/account/login.html', context)
         if find_user_by_login(login) == None:
+            context['error'] = 'Login or password is incorrect'
             return render(request, 'app/account/login.html', context)
     else:
         return render(request, 'app/account/login.html', context)
