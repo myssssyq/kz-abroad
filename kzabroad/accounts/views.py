@@ -47,7 +47,10 @@ def user(request, login):
         return redirect(reverse(views.index))
     else:
         pass
-    account = find_user_by_login(login)
+    try:
+        account = find_user_by_login(login)
+    except:
+        raise Http404("Account does not exist")
     context['account'] = account
     if user != account:
         return render(request, 'app/account/user.html', context)

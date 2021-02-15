@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.http import Http404
 from .models import City
 from accounts.models import *
 from django.http import JsonResponse
 from cities import views
 import accounts.views as accountsviews
+import kzabroad.views as mainviews
 import wikipedia
 import json
 import requests
@@ -52,7 +54,10 @@ def city(request, slug):
         return redirect(reverse(accountsviews.index))
     else:
         pass
-    city = City.objects.get(name = slug)
+    try:
+        city = City.objects.get(name = slug)
+    except:
+        raise Http404("City does not exist")
     context['city_description'] = city.description
     context['city_image'] = city.picture
     if user.living_city == city:
@@ -140,19 +145,12 @@ def add_city(request):
     if request.method == 'POST':
         city = str(request.POST['add'])
         try:
-            print(1)
             city_picture = get_wiki_image(str(city) + ' city')
-            print(2)
-            print(city_picture)
             description = wikipedia.summary(str(city) + ' city')
-            print(3)
-            print(description)
         except:
             pass
         city = City(name = city, description = description, picture = city_picture, slug = city)
         city.save()
-        print(4)
-        print(city)
         return redirect(reverse(views.city,args = [city]))
     return render(request, 'app/city/add_city.html', context)
 
