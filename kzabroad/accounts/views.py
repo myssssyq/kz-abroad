@@ -27,15 +27,26 @@ def index(request):
     return render(request, 'general/index.html', context)
 
 def users(request):
-    # context-> list of all Account objects
     context = dict()
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(views.index))
+    else:
+        pass
     context['users'] = Account.objects.all()
     return render(request, 'app/account/users.html', context)
 
 def user(request, login):
     context = dict()
-    user = find_user_by_id(request.session['user'])
-    context['user'] = user
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(views.index))
+    else:
+        pass
     account = find_user_by_login(login)
     context['account'] = account
     if user != account:

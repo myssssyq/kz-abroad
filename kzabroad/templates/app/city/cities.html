@@ -8,7 +8,7 @@
   </tr>
   {% for city in cities %}
   <tr>
-    <td> {{ city.name }}</td>
+    <td> <a href="{% url 'city' city.slug %}" > {{ city.name }} </a></td>
   </tr>
   {% endfor %}
 

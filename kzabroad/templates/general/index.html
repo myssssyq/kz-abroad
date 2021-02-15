@@ -32,9 +32,21 @@
           <a class="nav-link" href="{% url 'user' user.login%}" style="margin-top:7px;color:black;font-size:16px;">Аккаунт</a>
           </li>
           {% endif %}
+          {% if user %}
+          <li class="nav-item">
+           <a class="nav-link" href="{% url 'users' %}" style="margin-top:7px;color:black;font-size:16px;">Все пользователи</a>
+           </li>
+           {% endif %}
+           {% if user %}
+           <li class="nav-item">
+            <a class="nav-link" href="{% url 'cities' %}" style="margin-top:7px;color:black;font-size:16px;">Все города</a>
+            </li>
+            {% endif %}
+          {% if not user%}
           <li class="nav-item">
            <a class="nav-link" href="{% url 'register'%}" style="margin-top:7px;color:black;font-size:16px;">Регистрация</a>
            </li>
+           {% endif%}
            {% if not user %}
            <li class="nav-item">
             <a class="nav-link" href="{% url 'login' %}" style="margin-top:7px;color:black;font-size:16px;">Вход</a>

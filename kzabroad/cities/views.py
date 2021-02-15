@@ -5,6 +5,7 @@ from .models import City
 from accounts.models import *
 from django.http import JsonResponse
 from cities import views
+import accounts.views as accountsviews
 import wikipedia
 import json
 import requests
@@ -45,10 +46,12 @@ def city(request, slug):
     # context -> city Object
     context = dict()
     try:
-         user = Account.objects.get(pk = request.session['user'])
-         context['user'] = user
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
     except:
-         pass
+        return redirect(reverse(accountsviews.index))
+    else:
+        pass
     city = City.objects.get(name = slug)
     context['city_description'] = city.description
     context['city_image'] = city.picture
@@ -100,11 +103,25 @@ def city(request, slug):
 
 def cities(request):
     context = dict()
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(accountsviews.index))
+    else:
+        pass
     context['cities'] = City.objects.all()
     return render(request, 'app/city/cities.html', context)
 
 def city_search(request):
     context = dict()
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(accountsviews.index))
+    else:
+        pass
     context['user'] = find_user_by_id(request.session['user'])
     if request.method == 'POST':
         search_city = request.POST['search']
@@ -114,10 +131,12 @@ def city_search(request):
 def add_city(request):
     context = dict()
     try:
-         user = Account.objects.get(pk = request.session['user'])
-         context['user'] = user
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
     except:
-         pass
+        return redirect(reverse(accountsviews.index))
+    else:
+        pass
     if request.method == 'POST':
         city = str(request.POST['add'])
         try:

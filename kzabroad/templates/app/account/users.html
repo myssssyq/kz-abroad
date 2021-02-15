@@ -9,7 +9,7 @@
   </tr>
   {% for user in users %}
   <tr>
-    <td> {{ user.login }}</td>
+    <td><a href="{% url 'user' user.login %}" > {{ user.login }} </a></td>
     <td> {{ user.living_city }}</td>
   </tr>
   {% endfor %}

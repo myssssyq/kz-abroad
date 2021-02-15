@@ -23,7 +23,7 @@ python manage.py runserver
 
 ## Authors
 - [Daniyar Aubekerov](github.com/daniyardake/)
-- [Nabi Kussain](github.com/myssssyq/)
+- [Nabi Kussain](https://github.com/myssssyq)
 
 
 ## Contributing
