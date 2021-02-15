@@ -14,7 +14,7 @@ class Account(models.Model):
     #<----------------------------Registration Field Begin---------------------------->
     id = models.AutoField(primary_key=True, editable=True)
     login = models.CharField(max_length = 30, unique = True)
-    email = models.EmailField(max_length = 30, unique = True, blank = True)
+    email = models.EmailField(max_length = 255, unique = True, blank = True)
     password = models.CharField(max_length = 30)
     slug = models.SlugField(max_length=200, default = None)
     #<----------------------------Registration Field END---------------------------->
