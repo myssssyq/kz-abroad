@@ -57,7 +57,9 @@ def city(request, slug):
     try:
         city = City.objects.get(name = slug)
     except:
-        raise Http404("City does not exist")
+        request.session['message'] = "Sorry, this city doesn't exist. Do you want to add city to database?"
+        return redirect(reverse(views.add_city))
+        #raise Http404("City does not exist")
     context['city_description'] = city.description
     context['city_image'] = city.picture
     if user.living_city == city:
@@ -135,6 +137,11 @@ def city_search(request):
 
 def add_city(request):
     context = dict()
+    try:
+        context['message'] = request.session['message']
+        del request.session['message']
+    except:
+        pass
     try:
         user = Account.objects.get(pk = request.session['user'])
         context['user'] = user
