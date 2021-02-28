@@ -53,6 +53,18 @@ def user(request, login):
         raise Http404("Account does not exist")
     context['account'] = account
     if user != account:
+        context['not_friends'] = not user.friends_list.filter(login = account.login).exists()
+        print(context['not_friends'])
+        if request.method == 'POST':
+            requested_user = find_user_by_id(request.POST['resident_id'])
+            try:
+                friend_request = FriendRequest.objects.get(to_user = user, from_user = requested_user)
+            except:
+                friend_request = None
+            if not friend_request:
+                friend_request, created = FriendRequest.objects.get_or_create(to_user = requested_user, from_user = user)
+                friend_request.save()
+            return render(request, 'app/account/user.html', context)
         return render(request, 'app/account/user.html', context)
     else:
         if user.is_guide:

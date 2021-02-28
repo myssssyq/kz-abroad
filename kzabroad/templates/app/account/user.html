@@ -2,4 +2,23 @@
 {% block content %}
 <p>this is {{account.name}} {{account.surname}} page</p>
 <p>{{account.name}} lives in {{account.living_city}}</p>
+{% if not_friends %}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h5 class="card-title">{{account.login}}</h5>
+    <h5 class="card-title">{{account.name}} {{account.surname}}</h5>
+    <p class="card-text">{{account.description}}</p>
+    <p>
+    <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
+      <input type="hidden" name="resident_id" value="{{account.id}}"/>
+      <button name = "request_button" type = "submit">Friend request</button>
+    </form>
+  </p>
+  </div>
+</div>
+</p>
+{% else %}
+<label> Your friend </label>
+{% endif %}
 {% endblock %}
