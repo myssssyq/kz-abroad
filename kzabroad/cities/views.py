@@ -55,7 +55,7 @@ def city(request, slug):
     else:
         pass
     try:
-        city = City.objects.get(name = slug)
+        city = City.objects.get(name__iexact = slug)
     except:
         request.session['message'] = "Sorry, this city doesn't exist. Do you want to add city to database?"
         return redirect(reverse(views.add_city))
@@ -130,6 +130,7 @@ def city_search(request):
     else:
         pass
     context['user'] = find_user_by_id(request.session['user'])
+    context['cities'] = City.objects.all()
     if request.method == 'POST':
         search_city = request.POST['search']
         return redirect(reverse(views.city,args = [search_city]))
@@ -158,7 +159,7 @@ def add_city(request):
             pass
         city = City(name = city, description = description, picture = city_picture, slug = city)
         city.save()
-        return redirect(reverse(views.city,args = [city]))
+        return redirect(reverse(views.city,args = [city.name]))
     return render(request, 'app/city/add_city.html', context)
 
 

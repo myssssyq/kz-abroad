@@ -3,7 +3,20 @@
 {% block content %}
 <form method='post' enctype="multipart/form-data">{% csrf_token %}
     <label>City you want to find :</label>
-    <input type="text" name="search">
+    <!--<input type="text" name="search" /> -->
+    <!--<input list="cities" name="search" />-->
+
+    <template id="resultstemplate">
+      {% for city in cities %}
+        <option>{{ city.name }}</option>
+      {% endfor %}
+    </template>
+
+    <input type="text" name="search" id="search" list="searchresults" autocomplete="off" />
+
+    <datalist id="searchresults"></datalist>
+
     <button type = "submit">Search</button>
 </form>
+<script type="text/javascript" src={% static "js/city_search.js" %}></script>
 {% endblock %}
