@@ -53,17 +53,29 @@ def user(request, login):
         raise Http404("Account does not exist")
     context['account'] = account
     if user != account:
-        context['not_friends'] = not user.friends_list.filter(login = account.login).exists()
-        print(context['not_friends'])
+        are_friends = user.friends_list.filter(login = account.login).exists()
+        context['are_friends'] = are_friends
+        try:
+            sent_request_from_user = FriendRequest.objects.get(to_user = account, from_user = user)
+        except:
+            sent_request_from_user = False
+        try:
+            friend_request = FriendRequest.objects.get(to_user = user, from_user = account)
+        except:
+            friend_request = False
+        if sent_request_from_user or friend_request or are_friends:
+            context['request_exists'] = True
+        else:
+            context['request_exists'] = False
         if request.method == 'POST':
-            requested_user = find_user_by_id(request.POST['resident_id'])
             try:
-                friend_request = FriendRequest.objects.get(to_user = user, from_user = requested_user)
+                friend_request = FriendRequest.objects.get(to_user = user, from_user = account)
             except:
                 friend_request = None
             if not friend_request:
-                friend_request, created = FriendRequest.objects.get_or_create(to_user = requested_user, from_user = user)
+                friend_request, created = FriendRequest.objects.get_or_create(to_user = account, from_user = user)
                 friend_request.save()
+            context['request_exists'] = True
             return render(request, 'app/account/user.html', context)
         return render(request, 'app/account/user.html', context)
     else:

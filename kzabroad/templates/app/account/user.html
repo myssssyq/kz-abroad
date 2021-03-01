@@ -2,7 +2,7 @@
 {% block content %}
 <p>this is {{account.name}} {{account.surname}} page</p>
 <p>{{account.name}} lives in {{account.living_city}}</p>
-{% if not_friends %}
+{% if not request_exists %}
 <p>
   <div class="card w-50">
   <div class="card-body">
@@ -18,7 +18,8 @@
   </div>
 </div>
 </p>
-{% else %}
+{% endif %}
+{% if are_friends %}
 <label> Your friend </label>
 {% endif %}
 {% endblock %}
