@@ -1,6 +1,8 @@
 const form = document.querySelector('#register_form');
 const button = document.querySelector('#button');
 
+button.disabled = true
+
 const pass_reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const letters = /^[a-zA-Z]{1,30}/;
 const email_re = /^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$/;
@@ -32,19 +34,55 @@ email.addEventListener('input', validate);
 password.addEventListener('input', validate);
 password_check.addEventListener('input', validate);
 
-form.addEventListener('submit', function (e){
-if (password_pass +
-password_check_pass +
-login_pass +
-first_name_pass +
-last_name_pass +
-email_pass != 6) {
-  e.preventDefault();
-} else {}
+var search = document.querySelector('#search');
+var results = document.querySelector('#searchresults');
+var templateContent = document.querySelector('#resultstemplate').content;
+search.addEventListener('keyup', function handler(event) {
+    while (results.children.length) results.removeChild(results.firstChild);
+    var inputVal = new RegExp(search.value.trim(), 'i');
+    var set = Array.prototype.reduce.call(templateContent.cloneNode(true).children, function searchFilter(frag, item, i) {
+        if (inputVal.test(item.textContent) && frag.children.length < 6) frag.appendChild(item);
+        return frag;
+    }, document.createDocumentFragment());
+    results.appendChild(set);
+});
+
+form.addEventListener("submit", submitHandler);
+function submitHandler(e) {
+      e.preventDefault();
+      $.ajax({
+        type        : 'POST',
+        //url         : '{% url "register" %}', // the url where we want to POST
+        data        : $('#register_form').serialize(), // our form data
+        dataType    : 'json', // what type of data do we expect back from the server
+        success     : successFunction,
+        error       : errorFunction
+      });
+  }
+function successFunction(msg) {
+      if (msg.message === 'success') {
+          form.submit();
+      }
+  }
+function errorFunction(msg) {
+      alert(msg.status);
+      alert(msg.message);
+  }
+
+//form.addEventListener('submit', function (e){
+
+//if (password_pass +
+//password_check_pass +
+//login_pass +
+//first_name_pass +
+//last_name_pass +
+//email_pass != 6) {
+//  e.preventDefault();
+//} else {}
 //alert(password_pass + password_check_pass);
 
 
-})
+//})
 
 
 

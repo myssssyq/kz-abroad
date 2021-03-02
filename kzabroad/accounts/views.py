@@ -5,6 +5,8 @@ from .forms import *
 from .models import *
 import cities.views as cityviews
 from accounts import views
+from django.http import JsonResponse
+import json
 
 def find_user_by_login(login):
      try:
@@ -156,6 +158,20 @@ def login(request):
 def register (request):
     context = dict()
     context['user'] = find_user_by_id(request.session['user'])
+    context['cities'] = City.objects.all()
+    if request.is_ajax():
+        try:
+            city_exists = bool(City.objects.get(name = request.POST['city_choice']))
+        except:
+            city_exists = False
+        if city_exists:
+            return JsonResponse({
+                'message': 'success'
+                })
+        else:
+            response = JsonResponse({"message": "there was an error"})
+            response.status_code = 403 # To announce that the user isn't allowed to publish
+            return response
     if request.method == 'POST':
         try:
             login_exists = bool(Account.objects.get(login = request.POST['login']))

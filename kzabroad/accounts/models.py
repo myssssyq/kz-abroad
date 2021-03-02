@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from .models import *
 from cities.models import *
 from django.utils.timezone import now
@@ -20,14 +21,23 @@ class Account(models.Model):
     #<----------------------------Registration Field END---------------------------->
 
 
-    #<----------------------------Personality BEGIN---------------------------->
+    #<----------------------------About BEGIN---------------------------->
     name = models.CharField(max_length = 30, blank = True)
     surname = models.CharField(max_length = 30, blank = True)
     about = models.TextField(blank = True)
     gender = models.CharField(choices = GENDER, max_length = 6, blank = True)
     age = models.IntegerField(blank = True, null = True)
     created = models.DateTimeField(default=now, editable=True)
-    #<----------------------------Personality END---------------------------->
+    occupation = models.ForeignKey('Occupation', related_name = 'occupation', on_delete=models.CASCADE, null = True)
+    #<----------------------------About END---------------------------->
+
+    #<----------------------------Links BEGIN---------------------------->
+    instagram_link = models.CharField(max_length = 40, blank = True)
+    tiktok_link = models.CharField(max_length = 40, blank = True)
+    vk_link = models.CharField(max_length = 40, blank = True)
+    facebook_link = models.CharField(max_length = 40, blank = True)
+    twitter_link = models.CharField(max_length = 40, blank = True)
+    #<----------------------------Links END---------------------------->
 
     #<----------------------------Friends BEGIN---------------------------->
 
@@ -61,3 +71,14 @@ class Prefereneces(models.Model):
     name = models.CharField(max_length=200, blank = True)
     def __str__(self):
         return ('(' + str(self.id) + ') : ' + str(self.name))
+
+class Occupation(models.Model):
+    sectors = (
+        ("Highschool", "Highschool"),
+        ("University", "University"),
+        ("Working place", "Working place")
+    )
+    name = models.CharField(max_length = 128, blank = True)
+    sector = models.CharField(choices = sectors, max_length = 64, blank = True)
+    def __str__(self):
+        return (str(self.sector) + ': ' + str(self.name))
