@@ -96,6 +96,11 @@ def user(request, login):
             user.surname = request.POST['surname']
             user.email = request.POST['email']
             user.password = request.POST['password']
+            user.tiktok_link = request.POST['tiktok']
+            user.vk_link = request.POST['vk']
+            user.instagram_link = request.POST['instagram']
+            user.facebook_link = request.POST['facebook']
+            user.twitter_link = request.POST['twitter']
             if 'no' in request.POST:
                 user.is_guide = False
                 try:

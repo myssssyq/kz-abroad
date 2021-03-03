@@ -69,24 +69,6 @@ function errorFunction(msg) {
       alert(msg.message);
   }
 
-//form.addEventListener('submit', function (e){
-
-//if (password_pass +
-//password_check_pass +
-//login_pass +
-//first_name_pass +
-//last_name_pass +
-//email_pass != 6) {
-//  e.preventDefault();
-//} else {}
-//alert(password_pass + password_check_pass);
-
-
-//})
-
-
-
-
 function validate (e) {
 
   if (e.target.name == "password") {
