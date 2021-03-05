@@ -73,12 +73,21 @@ function validate (e) {
 
   if (e.target.name == "password") {
 
-  if (pass_reg.test(e.target.value)) {
+  if (pass_reg.test(e.target.value)){
     password_label.className = 'hidden';
     password_pass = 1;
   } else {
     password_label.className = '';
     password_pass = 0;
+  }
+  if (e.target.value == password_check.value)
+  {
+    password_check_pass = 1;
+    password_check_label.className = 'hidden';
+  } else
+  {
+    password_check_pass = 0;
+    password_check_label.className = '';
   }
 
   }
