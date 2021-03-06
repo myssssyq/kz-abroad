@@ -80,5 +80,7 @@ class Occupation(models.Model):
     )
     name = models.CharField(max_length = 128, blank = True)
     sector = models.CharField(choices = sectors, max_length = 64, blank = True)
+    related_people = models.ManyToManyField('Account', related_name = 'amount_of_people', blank = True)
+    city = models.ForeignKey('cities.City', related_name ='occupation_city', on_delete=models.CASCADE, null = True)
     def __str__(self):
         return (str(self.sector) + ': ' + str(self.name))

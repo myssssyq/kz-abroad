@@ -7,6 +7,7 @@ import cities.views as cityviews
 from accounts import views
 from django.http import JsonResponse
 import json
+from fuzzywuzzy import process
 
 def find_user_by_login(login):
      try:
@@ -89,6 +90,7 @@ def user(request, login):
                 context['not_approved_request'] = not_approved_request
             except:
                 context['not_approved_request'] = None
+        context['occupations'] = Occupation.objects.all()
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
         if request.method == 'POST' and 'change_form' in request.POST:
@@ -101,6 +103,18 @@ def user(request, login):
             user.instagram_link = request.POST['instagram']
             user.facebook_link = request.POST['facebook']
             user.twitter_link = request.POST['twitter']
+            if 'occupation_choice' in request.POST:
+                occupation_list = Occupation.objects.filter(city = user.living_city)
+                occupation_list = occupation_list.values_list('name')
+                occupation_match = (process.extract(request.POST['occupation_choice'], occupation_list, limit = 1))[0]
+                occupation_name = occupation_match[0][0]
+                occupation_match_score = occupation_match[1]
+                if occupation_match_score >= 90:
+                    user.occupation = Occupation.objects.get(name = occupation_name)
+                else:
+                    new_occupation = Occupation(name = request.POST['occupation_choice'], city = user.living_city)
+                    new_occupation.save()
+                    user.occupation = new_occupation
             if 'no' in request.POST:
                 user.is_guide = False
                 try:

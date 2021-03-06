@@ -30,6 +30,19 @@
   <input type="text" name="twitter" value="{{user.twitter_link}}">
   <label id = "twitter_label" class = "hidden" > Twitter link is invalid </label><br>
   {% if user.living_city %}
+  <p>
+  <h5><-------------------OCCUPATION-------------------></h5>
+  <p><label> Your occupation:</label>
+    <template id="resultstemplate">
+      {% for occupation in occupations %}
+        <option>{{ occupation.name }}</option>
+      {% endfor %}
+    </template>
+  <input value="{{user.occupation.name}}" type="text" name="occupation_choice" id="search" class = 'input_field' list="searchresults" autocomplete="off" />
+  <datalist id="searchresults"></datalist>
+  </p>
+  <h5><-------------------OCCUPATION-------------------></h5>
+  </p>
   <label> Do you want to be a guide? </label>
   <p>
   <input type="radio" name="yes">Yes</input>
@@ -120,5 +133,5 @@
 
 {% endfor %}
 {% endif %}
-<script type="text/javascript" src={% static "js/user_account.js" %}></script>
+<script type="text/javascript" src={% static "js/user_account2.js" %}></script>
 {% endblock %}
