@@ -48,7 +48,7 @@ this is {{city.name}}
         e.preventDefault();
         $.ajax({
             type        : 'POST',
-            url         : '{% url 'city' city.name %}', // the url where we want to POST
+            url         : '{% url 'city' city.slug %}', // the url where we want to POST
             data        : $('#live_button_form').serialize(), // our form data
             dataType    : 'json', // what type of data do we expect back from the server
             success     : successFunction

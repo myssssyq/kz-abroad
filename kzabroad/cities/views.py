@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import Http404
+from django.template.defaultfilters import slugify
 from .models import City
 from accounts.models import *
 from django.http import JsonResponse
@@ -55,13 +56,16 @@ def city(request, slug):
     else:
         pass
     try:
-        city = City.objects.get(name__iexact = slug)
+        city = City.objects.get(slug = slug)
     except:
         request.session['message'] = "Sorry, this city doesn't exist. Do you want to add city to database?"
         return redirect(reverse(views.add_city))
         #raise Http404("City does not exist")
-    context['city_description'] = city.description
-    context['city_image'] = city.picture
+    try:
+        context['city_description'] = city.description
+        context['city_image'] = city.picture
+    except:
+        pass
     if user.living_city == city:
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
@@ -132,7 +136,7 @@ def city_search(request):
     context['user'] = find_user_by_id(request.session['user'])
     context['cities'] = City.objects.all()
     if request.method == 'POST':
-        search_city = request.POST['search']
+        search_city = slugify(request.POST['search'])
         return redirect(reverse(views.city,args = [search_city]))
     return render(request, 'app/city/city_search.html', context)
 
@@ -152,13 +156,21 @@ def add_city(request):
         pass
     if request.method == 'POST':
         city = str(request.POST['add'])
+        print(1)
         try:
             city_picture = get_wiki_image(str(city) + ' city')
+            print(2)
             description = wikipedia.summary(str(city) + ' city')
+            print(3)
         except:
+            print(4)
             pass
-        city = City(name = city, description = description, picture = city_picture, slug = city)
+        city_slug = slugify(city)
+        print(5)
+        city = City(name = city, description = description, picture = city_picture, slug = city_slug)
+        print(6)
         city.save()
+        print(7)
         return redirect(reverse(views.city,args = [city.name]))
     return render(request, 'app/city/add_city.html', context)
 
