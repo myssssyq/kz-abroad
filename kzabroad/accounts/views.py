@@ -87,6 +87,7 @@ def user(request, login):
             context['request_exists'] = True
         else:
             context['request_exists'] = False
+        context['is_guide'] = account.is_guide
         if request.method == 'POST':
             try:
                 friend_request = FriendRequest.objects.get(to_user = user, from_user = account)

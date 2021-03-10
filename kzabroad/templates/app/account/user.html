@@ -1,7 +1,15 @@
 {% extends "general/index.html" %}
 {% block content %}
-<p>this is {{account.name}} {{account.surname}} page</p>
-<p>{{account.name}} lives in {{account.living_city}}</p>
+{% load static %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/user.css' %}">
+</head>
+<p>
+  <h4>this is {{account.name}} {{account.surname}} page</h4>
+</p>
+<p>
+  <h4>{{account.name}} lives in {{account.living_city}}</h4>
+</p>
 {% if not request_exists %}
 <p>
   <div class="card w-50">
@@ -20,6 +28,36 @@
 </p>
 {% endif %}
 {% if are_friends %}
-<label> Your friend </label>
+<h4> Your friend </h4>
+{% if is_guide %}
+<h4> {{ account.name }} is a guide, therefore friendly </h4>
+{% endif %}
+<p></p>
+<p>
+<h4> {{ account.name }}'s social media links: </h4>
+<a href="{{ account.facebook_link }}" class="fa fa-facebook"></a>
+<a href="{{ account.twitter_link }}" class="fa fa-twitter"></a>
+<a href="{{ account.vk_link }}" class="fa fa-vk"></a>
+<a href="{{ account.instagram_link }}" class="fa fa-instagram"></a>
+<a href="{{ account.tiktok_link }}" id = 'tiktok'><i class="fab fa-tiktok"></i></a>
+</p>
+<p>
+  <h4> {{ account.name }}'s occupation: {{ account.occupation }} </h4>
+</p>
+<!--<p>
+<a href="#" class="fa fa-facebook"></a>
+</p>
+<p>
+<a href="#" class="fa fa-twitter"></a>
+</p>
+<p>
+<a href="#" class="fa fa-vk"></a>
+</p>
+<p>
+<a href="#" class="fa fa-instagram"></a>
+</p>
+<p>
+<a href="#" id = 'tiktok'><i class="fab fa-tiktok"></i></a>
+</p>-->
 {% endif %}
 {% endblock %}
