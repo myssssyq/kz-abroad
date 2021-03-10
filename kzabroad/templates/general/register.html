@@ -32,8 +32,13 @@
           <option>{{ city.name }}</option>
         {% endfor %}
       </template>
-    <input type="text" name="city_choice" id="search" class = 'input_field' list="searchresults" autocomplete="off" />
-    <datalist id="searchresults"></datalist>
+    <input list = "searchresults"/>
+    <!--<input type="text" name="city_choice" id="search" class = 'input_field' list="searchresults" autocomplete="off" />-->
+    <datalist id="searchresults">
+      {% for city in cities %}
+        <option>{{ city.name }}</option>
+      {% endfor %}
+    </datalist>
     <label id = "city_choice_label" class = "hidden" > This city doesn't exist </label>
     </p>
     <!--<p><label> Your occupation :</label>

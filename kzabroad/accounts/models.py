@@ -83,4 +83,5 @@ class Occupation(models.Model):
     related_people = models.ManyToManyField('Account', related_name = 'amount_of_people', blank = True)
     city = models.ForeignKey('cities.City', related_name ='occupation_city', on_delete=models.CASCADE, null = True)
     def __str__(self):
-        return (str(self.sector) + ': ' + str(self.name))
+        #return (str(self.sector) + ': ' + str(self.name))
+        return(str(self.name))

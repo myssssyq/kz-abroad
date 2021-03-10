@@ -1,16 +1,53 @@
 {% extends "general/index.html" %}
+{% load static %}
 {% block content %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/users.css' %}">
+</head>
 
-<table>
+<table cellspacing="0" style=" border-collapse:separate; border-spacing:80px 0;">
 
   <tr>
+
     <th> User </th>
-    <th>Living city </th>
+    <form enctype="multipart/form-data" method = "post">{% csrf_token %}
+
+    <th>
+      <p>
+        <label>Living city: </label>
+        <select name = 'form_living_city'>
+          <option> None </option>
+          {% for city in cities %}
+          <option> {{ city.name }} </option>
+          {% endfor %}
+        </select>
+      </p>
+    </th>
+
+    <th>
+      <p>
+        <label> Occupation: </label>
+        <select name = 'form_occupation'>
+          <option> None </option>
+          {% for occupation in occupations %}
+          <option> {{ occupation.name }} </option>
+          {% endfor %}
+        </select>
+      </p>
+    </th>
+
+    <th>
+      <button type = "submit"> Use filters </button>
+    </th>
+
+    </form>
+
   </tr>
   {% for user in users %}
   <tr>
     <td><a href="{% url 'user' user.login %}" > {{ user.login }} </a></td>
     <td> {{ user.living_city }}</td>
+    <td> {{ user.occupation }}</td>
   </tr>
   {% endfor %}
 

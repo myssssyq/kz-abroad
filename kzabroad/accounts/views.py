@@ -38,7 +38,26 @@ def users(request):
         return redirect(reverse(views.index))
     else:
         pass
-    context['users'] = Account.objects.all()
+    users = Account.objects.all()
+    context['cities'] = City.objects.all()
+    context['occupations'] = Occupation.objects.all()
+    if request.method == 'POST':
+        try:
+            form_living_city = City.objects.get(name = request.POST['form_living_city'])
+        except:
+            form_living_city = None
+        try:
+            form_occupation = Occupation.objects.get(name = request.POST['form_occupation'])
+        except:
+            form_occupation = None
+        print(form_occupation)
+        if form_living_city != None:
+            users = users.filter(living_city = form_living_city)
+        if form_occupation != None:
+            print(1)
+            users = users.filter(occupation = form_occupation)
+            print(users)
+    context['users'] = users
     return render(request, 'app/account/users.html', context)
 
 def user(request, login):
