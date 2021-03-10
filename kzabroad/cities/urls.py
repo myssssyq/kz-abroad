@@ -8,5 +8,6 @@ urlpatterns = [
     path('name/<slug:slug>/', views.city, name = 'city'),
     path('cities', views.cities, name = 'cities'),
     path('search', views.city_search, name = 'city_search'),
-    path('add_city', views.add_city, name = 'add_city')
+    path('add_city', views.add_city, name = 'add_city'),
+    path('city_requests', views.city_requests, name = 'city_requests')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

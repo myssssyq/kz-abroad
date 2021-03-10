@@ -1,0 +1,36 @@
+{% extends "general/index.html" %}
+{% block content %}
+
+{% for request in requests %}
+
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h4 class="card-title"> {{ request.city_name }}</h4>
+    <p class="card-text"></p>
+    <p>
+    <p>
+      {{ request.description }}
+    </p>
+    <a href= "{% url 'user' request.requesting_user.login %}" class="btn btn-primary">
+      Requesting user
+    </a>
+    <a href="{{ request.wiki_link }}" class="btn btn-primary"> Link to wikipedia </a>
+    <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
+      <input type="hidden" name="request_input" value="{{request.city_name}}"/>
+      <p>
+      <button name = "accept" type = "submit"> Accept </button>
+      <button name = "decline" type = "submit"> Decline </button>
+      </p>
+    </form>
+    <h4> City picture </h4>
+    <img src="{{request.picture}}" alt="city picture" width="125" height="150">
+    </p>
+  </div>
+
+</div>
+</p>
+
+{% endfor %}
+
+{% endblock %}

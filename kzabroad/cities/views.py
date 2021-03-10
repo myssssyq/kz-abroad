@@ -128,7 +128,6 @@ def city_search(request):
         return redirect(reverse(accountsviews.index))
     else:
         pass
-    context['user'] = find_user_by_id(request.session['user'])
     context['cities'] = City.objects.all()
     if request.method == 'POST':
         search_city = slugify(request.POST['search'])
@@ -156,12 +155,56 @@ def add_city(request):
             description = wikipedia.summary(str(city) + ' city')
         except:
             pass
-        city_slug = slugify(city)
-        city = City(name = city, description = description, picture = city_picture, slug = city_slug)
-        city.save()
-        return redirect(reverse(views.city,args = [city.name]))
+        try:
+            city_page = wikipedia.page(str(city) + ' city')
+            url = city_page.url
+        except:
+            pass
+        try:
+            city_request = RequestToCreateCity(city_name = city, wiki_link = url, requesting_user = user, description = description, picture = city_picture)
+            city_request.save()
+            request_failed = False
+        except:
+            try:
+                city_request = RequestToCreateCity(city_name = city, requesting_user = user, description = description, picture = city_picture)
+                city_request.save()
+                request_failed = False
+            except:
+                request_failed = True
+        #city_slug = slugify(city)
+        #city = City(name = city, description = description, picture = city_picture, slug = city_slug)
+        #city.save()
+        if request_failed:
+            request.session['message'] = "Sorry, we couldn't find this city"
+            return redirect(reverse(views.add_city))
+        return render(request, 'app/city/add_city.html', context)
     return render(request, 'app/city/add_city.html', context)
 
+def city_requests(request):
+    context = dict()
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(accountsviews.index))
+    else:
+        pass
+    if not user.is_admin:
+        # TODO:
+        # reques.session['message'], then receive on account page
+        return redirect(reverse(accountsviews.user, args = [user.login]))
+    else:
+        context['requests'] = RequestToCreateCity.objects.all()
+        if request.method == 'POST' and 'accept' in request.POST:
+            requested_city = RequestToCreateCity.objects.get(city_name = request.POST['request_input'])
+            slug = slugify(requested_city.city_name)
+            city = City(name = requested_city.city_name, slug = slug, description = requested_city.description, picture = requested_city.picture)
+            city.save()
+            requested_city.delete()
+        if request.method == 'POST' and 'decline' in request.POST:
+            requested_city = RequestToCreateCity.objects.get(city_name = request.POST['request_input'])
+            requested_city.delete()
+        return render(request, 'app/city/city_creation_requests.html', context)
 
 
 # def city(request, city):

@@ -54,6 +54,12 @@ class Account(models.Model):
 
     #<----------------------------City END---------------------------->
 
+    #<----------------------------Role BEGIN---------------------------->
+
+    is_admin = models.BooleanField(default = False, blank = True)
+
+    #<----------------------------Role END---------------------------->
+
 
     def __str__(self):
         return (str(self.name) + ' ' + str(self.surname) + ' (' + str(self.id) + ')')

@@ -59,6 +59,7 @@ def users(request):
 
 def user(request, login):
     context = dict()
+    print(request.session['user'])
     try:
         user = Account.objects.get(pk = request.session['user'])
         context['user'] = user
@@ -147,13 +148,6 @@ def user(request, login):
             requesting_user = find_user_by_id(request.POST['request_input'])
             friend_request = FriendRequest.objects.get(from_user = requesting_user)
             friend_request.delete()
-        if request.method == 'POST' and 'approve_accept' in request.POST:
-            not_approved_request.status = 'In procces'
-            not_approved_request.save()
-        if request.method == 'POST' and 'approve_decline' in request.POST:
-            not_approved_request.status = 'Waiting'
-            not_approved_request.guide = None
-            not_approved_request.save()
         return render(request, 'app/account/my_account.html', context)
 
 def login(request):
