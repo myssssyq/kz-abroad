@@ -56,56 +56,6 @@
 <h3>Link validation: </h3>
 <label id = "edit_label"></label>
 
-{% if not_approved_request %}
-
-<p>
-  <div class="card w-50">
-  <div class="card-body">
-    <h5 class="card-title">{{not_approved_request.guide.login}}</h5>
-    <h5 class="card-title">{{not_approved_request.guide.name}} {{not_approved_request.guide.surname}} wants to GUIDE you in city</h5>
-    <p class="card-text"></p>
-    <p>
-    <a href="{% url 'user' not_approved_request.guide.slug %}" class="btn btn-primary">Users page</a>
-    <form id = "approve_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
-      <input type="hidden" name="approve_input" value="{{not_approved_request.guide.id}}"/>
-      <p>
-      <button name = "approve_accept" type = "submit"> Accept </button>
-      <button name = "approve_decline" type = "submit"> Decline </button>
-      </p>
-    </form>
-    </p>
-  </div>
-</div>
-
-{% endif %}
-
-{% if recieved_guide_requests %}
-
-<label> Users asking for a guide in a city: </label>
-
-{% for request in recieved_guide_requests%}
-<p>
-  <div class="card w-50">
-  <div class="card-body">
-    <h5 class="card-title">{{request.requesting_user.login}}</h5>
-    <h5 class="card-title">{{request.requesting_user.name}} {{request.requesting_user.surname}} wants you to GUIDE him/her in city</h5>
-    <p class="card-text"></p>
-    <p>
-    <a href="{% url 'user' request.requesting_user.slug %}" class="btn btn-primary">Users page</a>
-    <form id = "request_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
-      <input type="hidden" name="request_input" value="{{request.requesting_user.id}}"/>
-      <p>
-      <button name = "guide_accept" type = "submit"> Accept </button>
-      </p>
-    </form>
-    </p>
-  </div>
-</div>
-
-{% endfor %}
-
-{% endif %}
-
 {% if recieved_requests %}
 
 <label> Users that want to add you to friends: </label>

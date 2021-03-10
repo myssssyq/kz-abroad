@@ -25,13 +25,6 @@ this is {{city.name}}
 
 <h1> welcome back resident </h1>
 
-{% if need_a_guide %}
-<label> If you need a guide: </label>
-<form enctype="multipart/form-data" method = "post">{% csrf_token %}
-  <button name = "guide_button" type = "submit"> I need a guide</button>
-</form>
-{% endif %}
-
 <label> Search by name: </label>
 <p>
 

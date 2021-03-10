@@ -50,13 +50,10 @@ def users(request):
             form_occupation = Occupation.objects.get(name = request.POST['form_occupation'])
         except:
             form_occupation = None
-        print(form_occupation)
         if form_living_city != None:
             users = users.filter(living_city = form_living_city)
         if form_occupation != None:
-            print(1)
             users = users.filter(occupation = form_occupation)
-            print(users)
     context['users'] = users
     return render(request, 'app/account/users.html', context)
 
@@ -101,14 +98,6 @@ def user(request, login):
             return render(request, 'app/account/user.html', context)
         return render(request, 'app/account/user.html', context)
     else:
-        if user.is_guide:
-            context['recieved_guide_requests'] = user.living_city.guide_session.filter(guide = None)
-        else:
-            try:
-                not_approved_request = user.living_city.guide_session.get(status = "Needs approve", requesting_user = user)
-                context['not_approved_request'] = not_approved_request
-            except:
-                context['not_approved_request'] = None
         context['occupations'] = Occupation.objects.all()
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
@@ -165,12 +154,6 @@ def user(request, login):
             not_approved_request.status = 'Waiting'
             not_approved_request.guide = None
             not_approved_request.save()
-        if request.method == 'POST' and 'guide_accept' in request.POST:
-            requesting_user = find_user_by_id(request.POST['request_input'])
-            guide_session = user.living_city.guide_session.get(requesting_user = requesting_user)
-            guide_session.guide = user
-            guide_session.status = 'Needs approve'
-            guide_session.save()
         return render(request, 'app/account/my_account.html', context)
 
 def login(request):

@@ -94,11 +94,6 @@ def city(request, slug):
                 if preference != 'csrfmiddlewaretoken' and preference != 'checkbox_search':
                     filtering_preference = Prefereneces.objects.get(pk = preference)
                     context['residents'] = context['residents'].filter(prefereneces = filtering_preference)
-        if request.method == 'POST' and 'guide_button' in request.POST:
-            guide_session = GuideSession(requesting_user = user, status = 'Waiting')
-            guide_session.save()
-            city.guide_session.add(guide_session)
-            return render(request, 'app/city/city_residents.html', context)
         return render(request, 'app/city/city_residents.html', context)
     else:
         if request.method == 'POST':
@@ -156,21 +151,14 @@ def add_city(request):
         pass
     if request.method == 'POST':
         city = str(request.POST['add'])
-        print(1)
         try:
             city_picture = get_wiki_image(str(city) + ' city')
-            print(2)
             description = wikipedia.summary(str(city) + ' city')
-            print(3)
         except:
-            print(4)
             pass
         city_slug = slugify(city)
-        print(5)
         city = City(name = city, description = description, picture = city_picture, slug = city_slug)
-        print(6)
         city.save()
-        print(7)
         return redirect(reverse(views.city,args = [city.name]))
     return render(request, 'app/city/add_city.html', context)
 
