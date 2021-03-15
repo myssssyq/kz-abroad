@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+from django.contrib.postgres.operations import TrigramExtension
 
 
 class Migration(migrations.Migration):
@@ -23,4 +24,5 @@ class Migration(migrations.Migration):
                 ('requesting_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='requesting_user', to='accounts.Account')),
             ],
         ),
+        TrigramExtension()
     ]

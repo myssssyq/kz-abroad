@@ -28,7 +28,7 @@ class Account(models.Model):
     gender = models.CharField(choices = GENDER, max_length = 6, blank = True)
     age = models.IntegerField(blank = True, null = True)
     created = models.DateTimeField(default=now, editable=True)
-    occupation = models.ForeignKey('Occupation', related_name = 'occupation', on_delete=models.CASCADE, null = True)
+    occupation = models.ForeignKey('Occupation', related_name = 'occupation', on_delete=models.CASCADE, null = True, blank = True)
     #<----------------------------About END---------------------------->
 
     #<----------------------------Links BEGIN---------------------------->
@@ -47,7 +47,7 @@ class Account(models.Model):
 
     #<----------------------------City BEGIN---------------------------->
 
-    living_city = models.ForeignKey('cities.City', related_name = 'city', on_delete=models.CASCADE, null = True)
+    living_city = models.ForeignKey('cities.City', related_name = 'city', on_delete=models.CASCADE, null = True, blank = True)
     is_guide = models.BooleanField(default = False, blank = True)
     cost_preference = models.CharField(max_length = 10, default = None, blank = True, null = True)
     prefereneces = models.ManyToManyField('Prefereneces', blank = True)

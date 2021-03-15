@@ -1,0 +1,40 @@
+{% extends "general/index.html" %}
+{% block content %}
+
+<h1> Match results: </h1>
+
+{% for city in results_similar %}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h4 class="card-title"> {{ city.name }}</h4>
+    <p class="card-text"></p>
+    <p>
+    <a href="{% url 'city' city.slug %}" class="btn btn-primary"> Link to city </a>
+    <h4> City picture </h4>
+    <img src="{{city.picture}}" alt="city picture" width="125" height="150">
+    </p>
+  </div>
+
+</div>
+</p>
+{% endfor %}
+
+{% for city in other_cities %}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h4 class="card-title"> {{ city.name }}</h4>
+    <p class="card-text"></p>
+    <p>
+    <a href="{% url 'city' city.slug %}" class="btn btn-primary"> Link to city </a>
+    <h4> City picture </h4>
+    <img src="{{city.picture}}" alt="city picture" width="125" height="150">
+    </p>
+  </div>
+
+</div>
+</p>
+{% endfor %}
+
+{% endblock %}

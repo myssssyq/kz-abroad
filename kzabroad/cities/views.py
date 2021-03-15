@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import Http404
 from django.template.defaultfilters import slugify
+from django.contrib.postgres.search import TrigramSimilarity
 from .models import City
 from accounts.models import *
 from django.http import JsonResponse
@@ -12,7 +13,9 @@ import kzabroad.views as mainviews
 import wikipedia
 import json
 import requests
-
+from django.db import connection
+with connection.cursor() as cursor:
+    cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')
 # Create your views here.
 
 WIKI_REQUEST = 'http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles='
@@ -131,7 +134,7 @@ def city_search(request):
     context['cities'] = City.objects.all()
     if request.method == 'POST':
         search_city = slugify(request.POST['search'])
-        return redirect(reverse(views.city,args = [search_city]))
+        return redirect(reverse(views.search_results,args = [search_city]))
     return render(request, 'app/city/city_search.html', context)
 
 def add_city(request):
@@ -215,8 +218,14 @@ def search_results(request, slug):
         return redirect(reverse(accountsviews.index))
     else:
         pass
-    pass
-    
+    try:
+        results = City.objects.annotate(similarity=TrigramSimilarity('name', slug),).filter(similarity__gt=0).order_by('-similarity')
+        context['results_similar'] = results
+        matching_cities = results.values('name')
+        other_cities = City.objects.exclude(name__in = matching_cities)
+        context['other_cities'] = other_cities
+    except:
+        pass
     return render(request, 'app/city/search_results.html', context)
 
 
