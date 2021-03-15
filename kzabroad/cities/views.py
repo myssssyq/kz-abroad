@@ -206,6 +206,19 @@ def city_requests(request):
             requested_city.delete()
         return render(request, 'app/city/city_creation_requests.html', context)
 
+def search_results(request, slug):
+    context = dict()
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(accountsviews.index))
+    else:
+        pass
+    pass
+    
+    return render(request, 'app/city/search_results.html', context)
+
 
 # def city(request, city):
 #     context = dict()
