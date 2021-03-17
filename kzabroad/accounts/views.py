@@ -59,7 +59,7 @@ def users(request):
 
 def user(request, login):
     context = dict()
-    print(request.session['user'])
+    notifications_tags = ["Friend request recieved", "Friend request accepted", "Friend request declined"]
     try:
         user = Account.objects.get(pk = request.session['user'])
         context['user'] = user
@@ -96,6 +96,8 @@ def user(request, login):
             if not friend_request:
                 friend_request, created = FriendRequest.objects.get_or_create(to_user = account, from_user = user)
                 friend_request.save()
+                message = str(user.name) + ' ' + str(user.surname + ' sent you friend request.')
+                requesting_user.add_notification(notifications_tags[0],message)
             context['request_exists'] = True
             return render(request, 'app/account/user.html', context)
         return render(request, 'app/account/user.html', context)
@@ -142,13 +144,17 @@ def user(request, login):
             return render(request, 'app/account/my_account.html', context)
         if request.method == 'POST' and 'accept' in request.POST:
             requesting_user = find_user_by_id(request.POST['request_input'])
-            friend_request = FriendRequest.objects.get(from_user = requesting_user)
+            friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
+            message = str(user.name) + ' ' + str(user.surname + ' accepted your friend request.')
+            requesting_user.add_notification(notifications_tags[1],message)
             friend_request.delete()
             user.friends_list.add(requesting_user)
         if request.method == 'POST' and 'decline' in request.POST:
             requesting_user = find_user_by_id(request.POST['request_input'])
-            friend_request = FriendRequest.objects.get(from_user = requesting_user)
+            friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
             friend_request.delete()
+            message = str(user.name) + ' ' + str(user.surname) + ' declined your friend request.'
+            requesting_user.add_notification(notifications_tags[2],message)
         return render(request, 'app/account/my_account.html', context)
 
 def login(request):
@@ -212,8 +218,19 @@ def register (request):
     else:
         return render(request, 'general/register.html', context)
 
-
-
+def notifications(request):
+    context = dict()
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(views.index))
+    else:
+        pass
+    context['notifications'] = user.notifications.all()
+    for notification in context['notifications']:
+        notification.delete()
+    return render(request, 'app/account/notifications.html', context)
 
 
 

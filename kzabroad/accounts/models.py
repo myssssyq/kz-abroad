@@ -11,6 +11,17 @@ GENDER = (
 
 )
 
+TAGS = (
+
+    ("Your city request was accepted", "Accepted_city_request"),
+    ("Your city request was declined", "Declined_city_request"),
+    ("Friend request recieved", "Received_friend_request"),
+    ("Friend request accepted", "Accepted_friend_request"),
+    ("Friend request declined", "Declined_friend_request")
+
+)
+
+
 class Account(models.Model):
     #<----------------------------Registration Field Begin---------------------------->
     id = models.AutoField(primary_key=True, editable=True)
@@ -60,6 +71,16 @@ class Account(models.Model):
 
     #<----------------------------Role END---------------------------->
 
+    #<----------------------------Notification BEGIN---------------------------->
+
+    notifications = models.ManyToManyField('Notification', blank = True)
+
+    #<----------------------------Notification END---------------------------->
+
+    def add_notification(self, tag, message):
+        notification = Notification(tag = tag, message = message, to_user = self)
+        notification.save()
+        self.notifications.add(notification)
 
     def __str__(self):
         return (str(self.name) + ' ' + str(self.surname) + ' (' + str(self.id) + ')')
@@ -91,3 +112,11 @@ class Occupation(models.Model):
     def __str__(self):
         #return (str(self.sector) + ': ' + str(self.name))
         return(str(self.name))
+
+class Notification(models.Model):
+    tag = models.CharField(choices = TAGS, max_length = 50, blank = True)
+    message = models.TextField(blank = True)
+    to_user = models.ForeignKey("Account", related_name='notification_to_user', on_delete=models.CASCADE, null = True)
+
+    def __str__(self):
+        return(str(self.tag) + ': ' + str(self.to_user.login))

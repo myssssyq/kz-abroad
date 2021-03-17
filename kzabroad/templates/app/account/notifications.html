@@ -1,0 +1,21 @@
+{% extends "general/index.html" %}
+{% block content %}
+
+<h1> Your notifications: </h1>
+
+{% for notification in notifications %}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h4 class="card-title"> {{ notification.tag }}</h4>
+    <p class="card-text"></p>
+    <p>
+    {{ notification.message }}
+    </p>
+  </div>
+
+</div>
+</p>
+{% endfor %}
+
+{% endblock %}

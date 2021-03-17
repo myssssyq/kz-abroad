@@ -44,6 +44,11 @@
             <a class="nav-link" href="{% url 'cities' %}" style="margin-top:7px;color:black;font-size:16px;">Все города</a>
             </li>
             {% endif %}
+            {% if user %}
+            <li class="nav-item">
+             <a class="nav-link" href="{% url 'notifications' %}" style="margin-top:7px;color:black;font-size:16px;">Уведомления</a>
+             </li>
+             {% endif %}
           {% if not user%}
           <li class="nav-item">
            <a class="nav-link" href="{% url 'register'%}" style="margin-top:7px;color:black;font-size:16px;">Регистрация</a>
