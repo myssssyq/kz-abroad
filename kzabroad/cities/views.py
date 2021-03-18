@@ -198,14 +198,21 @@ def city_requests(request):
         return redirect(reverse(accountsviews.user, args = [user.login]))
     else:
         context['requests'] = RequestToCreateCity.objects.all()
+        notifications_tags = ["Your city request was accepted", "Your city request was declined"]
         if request.method == 'POST' and 'accept' in request.POST:
             requested_city = RequestToCreateCity.objects.get(city_name = request.POST['request_input'])
             slug = slugify(requested_city.city_name)
             city = City(name = requested_city.city_name, slug = slug, description = requested_city.description, picture = requested_city.picture)
             city.save()
+            requesting_user = requested_city.requesting_user
+            message = 'Your request to add city named ' + str(city.name) + ' was accepted'
+            requesting_user.add_notification(notifications_tags[0],message)
             requested_city.delete()
         if request.method == 'POST' and 'decline' in request.POST:
             requested_city = RequestToCreateCity.objects.get(city_name = request.POST['request_input'])
+            requesting_user = requested_city.requesting_user
+            message = 'Your request to add city named ' + str(city.name) + ' was declined'
+            requesting_user.add_notification(notifications_tags[1],message)
             requested_city.delete()
         return render(request, 'app/city/city_creation_requests.html', context)
 

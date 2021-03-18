@@ -145,7 +145,7 @@ def user(request, login):
         if request.method == 'POST' and 'accept' in request.POST:
             requesting_user = find_user_by_id(request.POST['request_input'])
             friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
-            message = str(user.name) + ' ' + str(user.surname + ' accepted your friend request.')
+            message = str(user.name) + ' ' + str(user.surname) + ' accepted your friend request.'
             requesting_user.add_notification(notifications_tags[1],message)
             friend_request.delete()
             user.friends_list.add(requesting_user)
