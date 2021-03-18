@@ -157,12 +157,10 @@ def add_city(request):
         except:
             city_exists = False
         if not city_exists:
-            ajax_pass = True
             return JsonResponse({
                 'message': 'success'
                 })
         else:
-            ajax_pass = False
             response = JsonResponse({"message": "error"})
             response.status_code = 403 # To announce that the user isn't allowed to publish
             return response
@@ -210,7 +208,7 @@ def city_requests(request):
         pass
     if not user.is_admin:
         # TODO:
-        # reques.session['message'], then receive on account page
+        request.session['message'] = "You do not have permission to visit that page."
         return redirect(reverse(accountsviews.user, args = [user.login]))
     else:
         context['requests'] = RequestToCreateCity.objects.all()

@@ -1,6 +1,9 @@
 {% extends "general/index.html" %}
 {% load static %}
 {% block content %}
+{% if message %}
+<h1> {{message}} </h1>
+{% endif %}
 <p>
   About you:
 </p>
@@ -53,10 +56,42 @@
   {% endif %}
   <button id = "edit_button" name = "change_form" type = "submit">Submit</button>
 </form>
-<h3>Link validation: </h3>
 <label id = "edit_label"></label>
 
+{% if friends %}
+
+<h5><-------------------FRIENDS-------------------></h5>
+
+<label>Your friend list: </label>
+
+{% for friend in friends %}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h5 class="card-title">{{friend.login}}</h5>
+    <h5 class="card-title">{{friend.name}} {{friend.surname}}</h5>
+    <p class="card-text"></p>
+    <p>
+    <a href="{% url 'user' friend.slug %}" class="btn btn-primary">Users page</a>
+    <form id = "delete_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
+      <input type="hidden" name="delete_input" value="{{friend.id}}"/>
+      <p>
+      <button name = "delete_friend" type = "submit"> Delete friend </button>
+      </p>
+    </form>
+    </p>
+  </div>
+</div>
+</p>
+
+{% endfor %}
+<h5><-------------------FRIENDS-------------------></h5>
+
+{% endif %}
+
 {% if recieved_requests %}
+
+<h5><-------------------FRIEND REQUESTS-------------------></h5>
 
 <label> Users that want to add you to friends: </label>
 
@@ -81,7 +116,12 @@
 </div>
 </p>
 
+<h5><-------------------FRIEND REQUESTS-------------------></h5>
+
 {% endfor %}
 {% endif %}
+
+
+
 <script type="text/javascript" src={% static "js/user_account2.js" %}></script>
 {% endblock %}

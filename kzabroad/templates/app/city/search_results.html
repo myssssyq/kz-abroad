@@ -1,6 +1,10 @@
 {% extends "general/index.html" %}
 {% block content %}
 
+<h3>
+<a href="{% url 'add_city' %}" > If you didn't find a city, you can add it</a>
+</h3>
+
 <h1> Match results: </h1>
 
 {% for city in results_similar %}

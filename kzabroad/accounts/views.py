@@ -97,11 +97,17 @@ def user(request, login):
                 friend_request, created = FriendRequest.objects.get_or_create(to_user = account, from_user = user)
                 friend_request.save()
                 message = str(user.name) + ' ' + str(user.surname + ' sent you friend request.')
-                requesting_user.add_notification(notifications_tags[0],message)
+                account.add_notification(notifications_tags[0],message)
             context['request_exists'] = True
             return render(request, 'app/account/user.html', context)
         return render(request, 'app/account/user.html', context)
     else:
+        try:
+            context['message'] = request.session['message']
+            del request.session['message']
+        except:
+            pass
+        context['friends'] = user.friends_list.all()
         context['occupations'] = Occupation.objects.all()
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
@@ -155,6 +161,9 @@ def user(request, login):
             friend_request.delete()
             message = str(user.name) + ' ' + str(user.surname) + ' declined your friend request.'
             requesting_user.add_notification(notifications_tags[2],message)
+        if request.method == 'POST' and 'delete_friend' in request.POST:
+            friend_to_delete = find_user_by_id(request.POST['delete_input'])
+            user.friends_list.remove(friend_to_delete)
         return render(request, 'app/account/my_account.html', context)
 
 def login(request):
@@ -182,20 +191,25 @@ def register (request):
     context['user'] = find_user_by_id(request.session['user'])
     context['cities'] = City.objects.all()
     if request.is_ajax():
-        try:
-            city_exists = bool(City.objects.get(name = request.POST['city_choice']))
-        except:
-            city_exists = False
-        if city_exists:
+        if request.POST['city_choice'] != "":
+            try:
+                city_exists = bool(City.objects.get(name = request.POST['city_choice']))
+            except:
+                city_exists = False
+            if city_exists:
+                return JsonResponse({
+                    'message': 'success'
+                    })
+            else:
+                response = JsonResponse({
+                "message": "there was an error"
+                })
+                response.status_code = 403 # To announce that the user isn't allowed to publish
+                return response
+        else:
             return JsonResponse({
                 'message': 'success'
                 })
-        else:
-            response = JsonResponse({
-            "message": "there was an error"
-            })
-            response.status_code = 403 # To announce that the user isn't allowed to publish
-            return response
     if request.method == 'POST':
         try:
             login_exists = bool(Account.objects.get(login = request.POST['login']))
@@ -213,8 +227,13 @@ def register (request):
             email = request.POST['email']
             login = request.POST['login']
             password = request.POST['password']
-            account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login)
-            account.save()
+            try:
+                city = City.objects.get(name = request.POST['city_choice'])
+                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, living_city = city)
+                account.save()
+            except:
+                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login)
+                account.save()
             request.session['user'] = account.pk
             return redirect(reverse(views.user, args = [account.login]))
     else:

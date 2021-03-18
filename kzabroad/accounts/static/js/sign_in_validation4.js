@@ -34,6 +34,7 @@ email.addEventListener('input', validate);
 password.addEventListener('input', validate);
 password_check.addEventListener('input', validate);
 
+/*
 var search = document.querySelector('#search');
 var results = document.querySelector('#searchresults');
 var templateContent = document.querySelector('#resultstemplate').content;
@@ -45,14 +46,13 @@ search.addEventListener('keyup', function handler(event) {
         return frag;
     }, document.createDocumentFragment());
     results.appendChild(set);
-});
+});*/
 
 form.addEventListener("submit", submitHandler);
 function submitHandler(e) {
       e.preventDefault();
       $.ajax({
         type        : 'POST',
-        //url         : '{% url "register" %}', // the url where we want to POST
         data        : $('#register_form').serialize(), // our form data
         dataType    : 'json', // what type of data do we expect back from the server
         success     : successFunction,
