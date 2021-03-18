@@ -65,8 +65,6 @@ function successFunction(msg) {
       }
   }
 function errorFunction(msg) {
-      alert(msg.status);
-      alert(msg.message);
   }
 
 function validate (e) {

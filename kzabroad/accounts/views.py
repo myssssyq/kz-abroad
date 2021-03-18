@@ -191,7 +191,9 @@ def register (request):
                 'message': 'success'
                 })
         else:
-            response = JsonResponse({"message": "there was an error"})
+            response = JsonResponse({
+            "message": "there was an error"
+            })
             response.status_code = 403 # To announce that the user isn't allowed to publish
             return response
     if request.method == 'POST':

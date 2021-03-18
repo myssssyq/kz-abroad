@@ -151,6 +151,21 @@ def add_city(request):
         return redirect(reverse(accountsviews.index))
     else:
         pass
+    if request.is_ajax():
+        try:
+            city_exists = bool(City.objects.get(name = request.POST['add']))
+        except:
+            city_exists = False
+        if not city_exists:
+            ajax_pass = True
+            return JsonResponse({
+                'message': 'success'
+                })
+        else:
+            ajax_pass = False
+            response = JsonResponse({"message": "error"})
+            response.status_code = 403 # To announce that the user isn't allowed to publish
+            return response
     if request.method == 'POST':
         city = str(request.POST['add'])
         try:
@@ -180,6 +195,7 @@ def add_city(request):
         if request_failed:
             request.session['message'] = "Sorry, we couldn't find this city"
             return redirect(reverse(views.add_city))
+        request.session['message'] = "City was successfuly added."
         return render(request, 'app/city/add_city.html', context)
     return render(request, 'app/city/add_city.html', context)
 
