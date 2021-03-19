@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.contrib.postgres.search import TrigramSimilarity
 from .forms import *
 from .models import *
 import cities.views as cityviews
@@ -8,6 +9,9 @@ from accounts import views
 from django.http import JsonResponse
 import json
 from fuzzywuzzy import process
+from django.db import connection
+with connection.cursor() as cursor:
+    cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')
 
 def find_user_by_login(login):
      try:
@@ -111,6 +115,24 @@ def user(request, login):
         context['occupations'] = Occupation.objects.all()
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
+        if request.is_ajax():
+            occupation_input = request.GET['occupation_value']
+            try:
+                occupation_exists = bool(Occupation.objects.get(name = occupation_input))
+            except:
+                occupation_exists = False
+            if not occupation_exists:
+                results = Occupation.objects.annotate(similarity=TrigramSimilarity('name', occupation_input),).filter(similarity__gt=0.55).order_by('-similarity')
+                context['results_similar'] = results
+                matching_occupations = results.values('name')
+                if results:
+                    return JsonResponse({
+                        'message': str(results[0]),
+                        })
+            #response = JsonResponse({"message": "error"})
+            #response.status_code = 403 # To announce that the user isn't allowed to publish
+            #return response
+            #print(request.GET['occupation_value'])
         if request.method == 'POST' and 'change_form' in request.POST:
             user.name = request.POST['name']
             user.surname = request.POST['surname']

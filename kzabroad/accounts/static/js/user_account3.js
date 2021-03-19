@@ -11,6 +11,9 @@ let facebook_label = document.querySelector('#facebook_label');
 let twitter = form.elements.namedItem('twitter');
 let twitter_label = document.querySelector('#twitter_label');
 
+let occupation = form.elements.namedItem('occupation_choice');
+let occupation_label = document.querySelector('#occupation_label');
+
 const tiktok_reg = /^(https?:\/\/)?((w{3}\.)?)vm.tiktok.com\/.*/i;
 const vk_reg = /^(https?:\/\/)?((w{3}\.)?)vk.com\/.*/i;
 const instagram_reg = /^(https?:\/\/)?((w{3}\.)?)instagram.com\/.*/i;
@@ -29,6 +32,8 @@ instagram.addEventListener('input', validate);
 facebook.addEventListener('input', validate);
 twitter.addEventListener('input', validate);
 
+occupation.addEventListener('input', occupationValidate);
+
 var search = document.querySelector('#search');
 var results = document.querySelector('#searchresults');
 var templateContent = document.querySelector('#resultstemplate').content;
@@ -41,6 +46,29 @@ search.addEventListener('keyup', function handler(event) {
     }, document.createDocumentFragment());
     results.appendChild(set);
 });
+
+function occupationValidate (e)
+{
+  $.ajax({
+    type        : 'GET',
+    data        : {"occupation_value": occupation.value},  //our form data
+    dataType    : 'json', // what type of data do we expect back from the server
+    success     : successFunction,
+    error       : errorFunction
+  });
+}
+function successFunction(msg)
+{
+  if (msg.message != '')
+  {
+    occupation_label.innerHTML = "Did you mean " + msg.message + "?"
+    occupation_label.className = ""
+  }
+}
+function errorFunction(msg)
+{
+  occupation_label.className = "hidden"
+}
 
 function validate (e) {
 
