@@ -31,7 +31,7 @@ def index(request):
     context=dict()
     request.session['user'] = None
     context['user'] = find_user_by_id(request.session['user'])
-    return render(request, 'general/index.html', context)
+    return render(request, 'general/landing_page.html', context)
 
 def users(request):
     context = dict()
@@ -271,7 +271,6 @@ def notifications(request):
     else:
         pass
     context['notifications'] = user.notifications.all()
-    print(context['notifications'])
     if request.method == "POST":
         for notification in context['notifications']:
             notification.delete()

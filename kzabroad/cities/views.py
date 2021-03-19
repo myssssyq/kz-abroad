@@ -40,7 +40,6 @@ def find_user_by_login(login):
      except:
          return None
 
-
 def find_user_by_id(id):
      try:
          user = Account.objects.get(pk = id)
@@ -109,7 +108,6 @@ def city(request, slug):
         context['residents'] = city.residents.exclude(login = user.login)
         return render(request, 'app/city/city_nonresidents.html', context)
 
-
 def cities(request):
     context = dict()
     try:
@@ -134,7 +132,14 @@ def city_search(request):
     context['cities'] = City.objects.all()
     if request.method == 'POST':
         search_city = slugify(request.POST['search'])
-        return redirect(reverse(views.search_results,args = [search_city]))
+        try:
+            city_exists = bool(City.objects.get(slug = search_city))
+        except:
+            city_exists = False
+        if city_exists:
+            return redirect(reverse(views.city,args = [search_city]))
+        else:
+            return redirect(reverse(views.search_results,args = [search_city]))
     return render(request, 'app/city/city_search.html', context)
 
 def add_city(request):

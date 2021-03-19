@@ -55,7 +55,10 @@
   <input type="radio" name="no">No</input>
   </p>
   {% endif %}
-  <button id = "edit_button" name = "change_form" type = "submit">Submit</button>
+  <p>
+  <h4> To edit your data: </h4>
+  <button id = "edit_button" name = "change_form" type = "submit"> Edit</button>
+  </p>
 </form>
 <label id = "edit_label"></label>
 
@@ -69,8 +72,8 @@
 <p>
   <div class="card w-50">
   <div class="card-body">
-    <h5 class="card-title">{{friend.login}}</h5>
-    <h5 class="card-title">{{friend.name}} {{friend.surname}}</h5>
+    <h5 class="card-title">Login: {{friend.login}}</h5>
+    <h5 class="card-title">Name: {{friend.name}} {{friend.surname}}</h5>
     <p class="card-text"></p>
     <p>
     <a href="{% url 'user' friend.slug %}" class="btn btn-primary">Users page</a>

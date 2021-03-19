@@ -8,12 +8,6 @@ def find_user_by_id(id):
      except:
          return None
 
-def index(request):
-    context=dict()
-    request.session['user'] = None
-    context['user'] = find_user_by_id(request.session['user'])
-    return render(request, 'base.html', context)
-
 def about(request):
     context=dict()
     request.session['user'] = None
