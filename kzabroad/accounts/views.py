@@ -271,8 +271,11 @@ def notifications(request):
     else:
         pass
     context['notifications'] = user.notifications.all()
-    for notification in context['notifications']:
-        notification.delete()
+    print(context['notifications'])
+    if request.method == "POST":
+        for notification in context['notifications']:
+            notification.delete()
+            return render(request, 'app/account/notifications.html', context)
     return render(request, 'app/account/notifications.html', context)
 
 

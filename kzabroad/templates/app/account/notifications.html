@@ -3,6 +3,14 @@
 
 <h1> Your notifications: </h1>
 
+<p>
+  <form id = "notification_form" enctype="multipart/form-data" method = "post">{% csrf_token %}
+    <p>
+    <button name = "accept" type = "submit"> Delete all </button>
+    </p>
+  </form>
+</p>
+
 {% for notification in notifications %}
 <p>
   <div class="card w-50">
