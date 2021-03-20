@@ -1,0 +1,59 @@
+{% extends "general/index.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<p>
+<h3>
+Hi, here are some useful links and guide through site
+</h3>
+</p>
+
+<p>
+  <label> If you want to search for city: </label>
+  <a href="{% url 'city_search' %}"> Click </a>
+</p>
+
+<p>
+  <label> If you want to add city to database: </label>
+  <a href="{% url 'add_city' %}"> Click </a>
+</p>
+
+<p>
+  <label> For all information about your account: </label>
+  <a href="{% url 'user' user.login %}"> Click </a>
+</p>
+
+<p>
+  <label> If you want to search for users: </label>
+  <a href="{% url 'users' %}"> Click </a>
+</p>
+
+<h3> First link: </h3>
+<p>
+  The first link leads to page where you can search for cities on our site. There you can choose the city as your living city and acces to other people living there.
+</p>
+
+<h3> Second link: </h3>
+<p>
+  If you did not find the city you are looking for you can use second link and make a request to add city to our database. Moderators will check your request and accept it or decline. You will get notification of it in you Notifications tab.
+</p>
+
+<h3> Third link: </h3>
+<p>
+  Everything about your account can be accesed through 3rd link. On this page you will be able to change personal information and add social media links.
+</p>
+<p>
+  You can also put a check on being guide and show your friendliness to other users
+</p>
+<p>
+  Friends list is presented on this page, you can visit users pages and delete them from friends list if you want. All the friend requests are also going to be on this page.
+</p>
+
+<h3> Fourth link: </h3>
+<p>
+  If you are looking for specific user or want to find users from some city or occupation you can find them using this page.
+</p>
+
+{% endblock %}

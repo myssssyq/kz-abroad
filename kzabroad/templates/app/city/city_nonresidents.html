@@ -23,45 +23,15 @@ this is {{city.name}}
 
 
 <form method="post" enctype="multipart/form-data" id = "live_button_form">{% csrf_token %}
+  <p>
+  <h3> To make this city your living city: </h3>
   <button  value="Post" id = "live_button" name = "live_button" type = "Submit">Submit</button>
+  </p>
 </form>
 
 
 
 
-
-<script
-        src="https://code.jquery.com/jquery-3.5.0.min.js"
-        integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-
-<script>
-  const form = document.getElementById('live_button_form');
-  form.addEventListener("submit", submitHandler);
-  function submitHandler(e) {
-        e.preventDefault();
-        $.ajax({
-            type        : 'POST',
-            url         : '{% url 'city' city.slug %}', // the url where we want to POST
-            data        : $('#live_button_form').serialize(), // our form data
-            dataType    : 'json', // what type of data do we expect back from the server
-            success     : successFunction
-        });
-    }
-  function successFunction(msg) {
-        if (msg.message === 'success') {
-            alert('Success!');
-            form.reset()
-        }
-    }
-
-</script>
 
 </body>
 

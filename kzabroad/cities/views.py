@@ -103,7 +103,7 @@ def city(request, slug):
             user.living_city = city
             user.save()
             city.save()
-            return render(request, 'app/city/city_residents.html', context)
+            return redirect(reverse(views.city, args = [city.slug]))
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)
         return render(request, 'app/city/city_nonresidents.html', context)
@@ -117,7 +117,7 @@ def cities(request):
         return redirect(reverse(accountsviews.index))
     else:
         pass
-    context['cities'] = City.objects.all()
+    context['cities'] = City.objects.all().order_by('name')
     return render(request, 'app/city/cities.html', context)
 
 def city_search(request):

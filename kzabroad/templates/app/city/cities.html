@@ -1,14 +1,20 @@
 {% extends "general/index.html" %}
 {% block content %}
+{% load static %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/users.css' %}">
+</head>
 
-<table>
+<table cellspacing="0" style=" border-collapse:separate; border-spacing:80px 0;">
 
   <tr>
     <th> City </th>
+    <th> Residents count </th>
   </tr>
   {% for city in cities %}
   <tr>
     <td> <a href="{% url 'city' city.slug %}" > {{ city.name }} </a></td>
+    <td> {{ city.residents.count }}</td>
   </tr>
   {% endfor %}
 

@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
     path('city/', include('cities.urls')),
+    path('main_page', views.main_page, name = 'main_page')
 ]
 
 handler404 = views.error404

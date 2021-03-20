@@ -13,11 +13,7 @@
 
 <h1>{{ city.name}} </h1>
 
-hi {{account.name}}
-
-this is {{city.name}}
-
-<img src="{{city_image}}" alt="city picture" width="500" height="600">
+<img src="{{city_image}}" alt="city picture" width="250" height="300">
 
 <h1> About {{city.name}} </h1>
 
@@ -34,14 +30,14 @@ this is {{city.name}}
   </form>
 
 </p>
-
+<!--
 <form enctype="multipart/form-data" method = "post">{% csrf_token %}
   {% for preferenece in prefereneces %}
    <input type="checkbox" name="{{preferenece.id}}" value="True">{{preferenece.name}}<Br>
   {% endfor %}
   <button name = "checkbox_search" type = "submit">Find!</button>
 </form>
-
+-->
 {% for resident in residents %}
 <p>
   <div class="card w-50">
