@@ -14,9 +14,16 @@ import wikipedia
 import json
 import requests
 from django.db import connection
+from geopy.geocoders import Nominatim
+
 with connection.cursor() as cursor:
     cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')
+geolocator = Nominatim(user_agent="cities")
+
 # Create your views here.
+#geolocator = Nominatim(user_agent="cities")
+#location = geolocator.geocode("Paris")
+#print((location.latitude, location.longitude))
 
 WIKI_REQUEST = 'http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles='
 
@@ -98,14 +105,8 @@ def city(request, slug):
                     context['residents'] = context['residents'].filter(prefereneces = filtering_preference)
         return render(request, 'app/city/city_residents.html', context)
     else:
-        if request.method == 'POST':
-            city.residents.add(user)
-            user.living_city = city
-            user.save()
-            city.save()
-            return redirect(reverse(views.city, args = [city.slug]))
         context['city'] = city
-        context['residents'] = city.residents.exclude(login = user.login)
+        context['residents'] = city.residents.exclude(login = user.login)[:5]
         return render(request, 'app/city/city_nonresidents.html', context)
 
 def cities(request):
@@ -118,7 +119,7 @@ def cities(request):
     else:
         pass
     context['cities'] = City.objects.all().order_by('name')
-    return render(request, 'app/city/cities.html', context)
+    return render(request, 'app/city/cities1.html', context)
 
 def city_search(request):
     context = dict()
@@ -182,12 +183,19 @@ def add_city(request):
         except:
             pass
         try:
-            city_request = RequestToCreateCity(city_name = city, wiki_link = url, requesting_user = user, description = description, picture = city_picture)
+            location = geolocator.geocode(str(city))
+            city_latitude = location.latitude
+            city_longtitude = location.longitude
+        except:
+            city_latitude = None
+            city_longtitude = None
+        try:
+            city_request = RequestToCreateCity(city_name = city, wiki_link = url, requesting_user = user, description = description, picture = city_picture, latitude = city_latitude, longitude = city_longtitude)
             city_request.save()
             request_failed = False
         except:
             try:
-                city_request = RequestToCreateCity(city_name = city, requesting_user = user, description = description, picture = city_picture)
+                city_request = RequestToCreateCity(city_name = city, requesting_user = user, description = description, picture = city_picture, latitude = city_latitude, longitude = city_longtitude)
                 city_request.save()
                 request_failed = False
             except:
@@ -199,7 +207,7 @@ def add_city(request):
             request.session['message'] = "Sorry, we couldn't find this city"
             return redirect(reverse(views.add_city))
         request.session['message'] = "City was successfuly added."
-        return render(request, 'app/city/add_city.html', context)
+        return redirect(reverse(views.add_city))
     return render(request, 'app/city/add_city.html', context)
 
 def city_requests(request):
@@ -221,7 +229,7 @@ def city_requests(request):
         if request.method == 'POST' and 'accept' in request.POST:
             requested_city = RequestToCreateCity.objects.get(city_name = request.POST['request_input'])
             slug = slugify(requested_city.city_name)
-            city = City(name = requested_city.city_name, slug = slug, description = requested_city.description, picture = requested_city.picture)
+            city = City(name = requested_city.city_name, slug = slug, description = requested_city.description, picture = requested_city.picture, latitude = requested_city.latitude, longitude = requested_city.longitude)
             city.save()
             requesting_user = requested_city.requesting_user
             message = 'Your request to add city named ' + str(city.name) + ' was accepted'

@@ -18,21 +18,27 @@ hi {{user.name}}
 this is {{city.name}}
 
 <h1> About {{city.name}} </h1>
-
+<p>
 {{city_description}}
 
+<h4> To make {{ city.name }} your living city, visit your account's page! <a href="{% url 'user' user.login %}">Visit!</a> </h4>
 
-<form method="post" enctype="multipart/form-data" id = "live_button_form">{% csrf_token %}
-  <p>
-  <h3> To make this city your living city: </h3>
-  <button  value="Post" id = "live_button" name = "live_button" type = "Submit">Submit</button>
+<h4> Five last added users, to see more, make {{city.name}} your living city </h4>
+{% for resident in residents %}
+<p>
+  <div class="card w-50">
+  <div class="card-body">
+    <h5 class="card-title">{{resident.login}}</h5>
+    <h5 class="card-title">{{resident.name}} {{resident.surname}}</h5>
+    <p class="card-text">{{resident.description}}</p>
+    <p>
+    <a href="{% url 'user' resident.login %}" class="btn btn-primary">Users page</a>
   </p>
-</form>
-
-
-
-
-
+  </div>
+</div>
+</p>
+{% endfor %}
+</p>
 </body>
 
 </html>

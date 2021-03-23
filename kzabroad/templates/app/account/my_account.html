@@ -8,6 +8,8 @@
   About you:
 </p>
 
+<label id = "user_login" class = "hidden">{{user.login}}</label>
+
 <form id = 'data_edit_form' method="post" enctype="multipart/form-data">{% csrf_token %}
   <label>Your name: </label>
   <input type="text" name="name" value="{{user.name}}"><br>
@@ -32,7 +34,27 @@
   <label>Twitter link: </label>
   <input type="text" name="twitter" value="{{user.twitter_link}}">
   <label id = "twitter_label" class = "hidden" > Twitter link is invalid </label><br>
-  {% if user.living_city %}
+  <p>
+    <h5><-------------------ROLES-------------------></h5>
+    <p>
+      <input type="checkbox" name = "is_highschooler" {% if user.is_highschooler%} checked {% endif %}>Highshool Stuent<Br>
+      <input type="checkbox" name = "is_student" {% if user.is_student%} checked {% endif %}>University Student<Br>
+      <input type="checkbox" name = "is_worker" {% if user.is_worker %} checked {% endif %}>Worker<Br>
+    </p>
+    <h5><-------------------ROLES-------------------></h5>
+  <h5><-------------------CITY CHOICE-------------------></h5>
+  <p><label> Your living city:</label>
+    <template id="resultstemplate_city">
+      {% for city in cities %}
+        <option>{{ city.name }}</option>
+      {% endfor %}
+    </template>
+  <input value="{{user.living_city.name}}" type="text" name="city_choice" id="search_city" class = 'input_field_city' list="searchresults_city" autocomplete="off" />
+  <datalist id="searchresults_city"></datalist>
+  <label id = "city_label" class = "hidden"> LOL </label>
+  </p>
+  <h5><-------------------CITY CHOICE-------------------></h5>
+  <p/>
   <p>
   <h5><-------------------OCCUPATION-------------------></h5>
   <p><label> Your occupation:</label>
@@ -43,10 +65,13 @@
     </template>
   <input value="{{user.occupation.name}}" type="text" name="occupation_choice" id="search" class = 'input_field' list="searchresults" autocomplete="off" />
   <datalist id="searchresults"></datalist>
-  <label id = "occupation_label" class = "hidden"> LOL </label>
+  <label id = "occupation_label" class = "hidden">
+    Did you mean <a href="javascript:;" id = "occupation_link"> LOL </a> ?
+  </label>
   </p>
   <h5><-------------------OCCUPATION-------------------></h5>
   </p>
+  {% if user.living_city %}
   <label> Do you want to be a guide? </label>
   <p>
   <input type="radio" name="yes">Yes</input>
@@ -57,7 +82,7 @@
   {% endif %}
   <p>
   <h4> To edit your data: </h4>
-  <button id = "edit_button" name = "change_form" type = "submit"> Edit</button>
+  <input id = "edit_button" name = "change_form" type = "submit"> </input>
   </p>
 </form>
 <label id = "edit_label"></label>
@@ -127,5 +152,5 @@
 
 
 
-<script type="text/javascript" src={% static "js/user_account3.js" %}></script>
+<script type="text/javascript" src={% static "js/user_account1.js" %}></script>
 {% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.postgres.search import TrigramSimilarity
+from django.http import Http404
 from .forms import *
 from .models import *
 import cities.views as cityviews
@@ -71,10 +72,10 @@ def user(request, login):
         return redirect(reverse(views.index))
     else:
         pass
-    try:
-        account = find_user_by_login(login)
-    except:
+    if find_user_by_login(login) == None:
         raise Http404("Account does not exist")
+    else:
+        account = find_user_by_login(login)
     context['account'] = account
     if user != account:
         are_friends = user.friends_list.filter(login = account.login).exists()
@@ -111,11 +112,12 @@ def user(request, login):
             del request.session['message']
         except:
             pass
+        context['cities'] = City.objects.all()
         context['friends'] = user.friends_list.all()
         context['occupations'] = Occupation.objects.all()
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
-        if request.is_ajax():
+        if request.is_ajax() and 'occupation_value' in request.GET:
             occupation_input = request.GET['occupation_value']
             try:
                 occupation_exists = bool(Occupation.objects.get(name = occupation_input))
@@ -129,11 +131,37 @@ def user(request, login):
                     return JsonResponse({
                         'message': str(results[0]),
                         })
-            #response = JsonResponse({"message": "error"})
-            #response.status_code = 403 # To announce that the user isn't allowed to publish
-            #return response
-            #print(request.GET['occupation_value'])
-        if request.method == 'POST' and 'change_form' in request.POST:
+        if request.is_ajax() and 'city_value' in request.GET:
+            city_input = request.GET['city_value']
+            try:
+                city_exists = bool(City.objects.get(name = city_input))
+            except:
+                city_exists = False
+            if not city_exists:
+                results = City.objects.annotate(similarity=TrigramSimilarity('name', city_input),).filter(similarity__gt=0.55).order_by('-similarity')
+                context['results_similar'] = results
+                #matching_cites = results.values('name')
+                if results:
+                    return JsonResponse({
+                        'message': str(results[0]),
+                        })
+        if request.is_ajax() and request.method == 'POST':
+            if 'city_choice' in request.POST:
+                try:
+                    city_exists = bool(City.objects.get(name = request.POST['city_choice']))
+                except:
+                    city_exists = False
+            if city_exists:
+                return JsonResponse({
+                    'message': 'success'
+                    })
+            else:
+                response = JsonResponse({
+                'city_exists': str(city_exists)
+                })
+                response.status_code = 403 # To announce that the user isn't allowed to publish
+                return response
+        if request.method == 'POST'  and 'name' in request.POST:
             user.name = request.POST['name']
             user.surname = request.POST['surname']
             user.email = request.POST['email']
@@ -143,18 +171,42 @@ def user(request, login):
             user.instagram_link = request.POST['instagram']
             user.facebook_link = request.POST['facebook']
             user.twitter_link = request.POST['twitter']
+            if 'is_highschooler' in request.POST:
+                user.is_highschooler = True
+            else:
+                user.is_highschooler = False
+            if 'is_student' in request.POST:
+                user.is_student = True
+            else:
+                user.is_student = False
+            if 'is_worker' in request.POST:
+                user.is_worker = True
+            else:
+                user.is_worker = False
             if 'occupation_choice' in request.POST:
-                occupation_list = Occupation.objects.filter(city = user.living_city)
-                occupation_list = occupation_list.values_list('name')
-                occupation_match = (process.extract(request.POST['occupation_choice'], occupation_list, limit = 1))[0]
-                occupation_name = occupation_match[0][0]
-                occupation_match_score = occupation_match[1]
-                if occupation_match_score >= 90:
-                    user.occupation = Occupation.objects.get(name = occupation_name)
+                if request.POST['occupation_choice'] != '':
+                    occupation_list = Occupation.objects.filter(city = user.living_city)
+                    occupation_list = occupation_list.values_list('name')
+                    occupation_match = (process.extract(request.POST['occupation_choice'], occupation_list, limit = 1))[0]
+                    occupation_name = occupation_match[0][0]
+                    occupation_match_score = occupation_match[1]
+                    if occupation_match_score >= 90:
+                        user.occupation = Occupation.objects.get(name = occupation_name)
+                    else:
+                        new_occupation = Occupation(name = request.POST['occupation_choice'], city = user.living_city)
+                        new_occupation.save()
+                        user.occupation = new_occupation
                 else:
-                    new_occupation = Occupation(name = request.POST['occupation_choice'], city = user.living_city)
-                    new_occupation.save()
-                    user.occupation = new_occupation
+                    user.occupation = None
+            if 'city_choice' in request.POST:
+                city_input = City.objects.get(name = request.POST['city_choice'])
+                if city_input != user.living_city:
+                    if request.POST['city_choice'] != '':
+                        user_living_city = City.objects.get(name = request.POST['city_choice'])
+                        user.living_city = user_living_city
+                    else:
+                        user.living_city = None
+                    user.occupation = None
             if 'no' in request.POST:
                 user.is_guide = False
                 try:
@@ -274,7 +326,7 @@ def notifications(request):
     if request.method == "POST":
         for notification in context['notifications']:
             notification.delete()
-            return render(request, 'app/account/notifications.html', context)
+            return redirect(reverse(views.notifications))
     return render(request, 'app/account/notifications.html', context)
 
 

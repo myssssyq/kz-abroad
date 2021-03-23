@@ -16,6 +16,25 @@
   <h4>{{account.name}} does not live anywhere</h4>
 </p>
 {% endif %}
+<p>
+<h4>
+  <p>
+  {{account.name}} roles:
+
+  {% if account.is_highschooler %}
+  <p><label>Highshool Student</label></p>
+  {% endif %}
+
+  {% if account.is_student %}
+  <p><label>University Student</label></p>
+  {% endif %}
+
+  {% if account.is_worker%}
+  <p><label>Worker</label></p>
+  {% endif %}
+  </p>
+</h4>
+</p>
 {% if not request_exists %}
 <p>
   <div class="card w-50">
@@ -40,30 +59,29 @@
 {% endif %}
 <p></p>
 <p>
+{% if account.facebook_link or account.twitter_link or account.vk_link or account.instagram_link or account.tiktok_link %}
 <h4> {{ account.name }}'s social media links: </h4>
+{% endif %}
+{% if account.facebook_link %}
 <a href="{{ account.facebook_link }}" class="fa fa-facebook"></a>
+{% endif %}
+{% if account.twitter_link %}
 <a href="{{ account.twitter_link }}" class="fa fa-twitter"></a>
+{% endif %}
+{% if account.vk_link %}
 <a href="{{ account.vk_link }}" class="fa fa-vk"></a>
+{% endif %}
+{% if account.instagram_link %}
 <a href="{{ account.instagram_link }}" class="fa fa-instagram"></a>
+{% endif %}
+{% if account.tiktok_link %}
 <a href="{{ account.tiktok_link }}" id = 'tiktok'><i class="fab fa-tiktok"></i></a>
+{% endif %}
 </p>
 <p>
   <h4> {{ account.name }}'s occupation: {{ account.occupation }} </h4>
 </p>
-<!--<p>
-<a href="#" class="fa fa-facebook"></a>
-</p>
-<p>
-<a href="#" class="fa fa-twitter"></a>
-</p>
-<p>
-<a href="#" class="fa fa-vk"></a>
-</p>
-<p>
-<a href="#" class="fa fa-instagram"></a>
-</p>
-<p>
-<a href="#" id = 'tiktok'><i class="fab fa-tiktok"></i></a>
-</p>-->
+{% else %}
+<label> Add {{account.name}} to friends to see more information </label>
 {% endif %}
 {% endblock %}

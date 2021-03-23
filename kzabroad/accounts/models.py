@@ -39,7 +39,7 @@ class Account(models.Model):
     gender = models.CharField(choices = GENDER, max_length = 6, blank = True)
     age = models.IntegerField(blank = True, null = True)
     created = models.DateTimeField(default=now, editable=True)
-    occupation = models.ForeignKey('Occupation', related_name = 'occupation', on_delete=models.CASCADE, null = True, blank = True)
+    occupation = models.ForeignKey('Occupation', related_name = 'occupation', on_delete=models.SET_NULL, null = True, blank = True)
     #<----------------------------About END---------------------------->
 
     #<----------------------------Links BEGIN---------------------------->
@@ -58,7 +58,7 @@ class Account(models.Model):
 
     #<----------------------------City BEGIN---------------------------->
 
-    living_city = models.ForeignKey('cities.City', related_name = 'city', on_delete=models.CASCADE, null = True, blank = True)
+    living_city = models.ForeignKey('cities.City', related_name = 'city', on_delete=models.SET_NULL, null = True, blank = True)
     is_guide = models.BooleanField(default = False, blank = True)
     cost_preference = models.CharField(max_length = 10, default = None, blank = True, null = True)
     prefereneces = models.ManyToManyField('Prefereneces', blank = True)
@@ -68,6 +68,9 @@ class Account(models.Model):
     #<----------------------------Role BEGIN---------------------------->
 
     is_admin = models.BooleanField(default = False, blank = True)
+    is_highschooler = models.BooleanField(default = False, blank = True)
+    is_student = models.BooleanField(default = False, blank = True)
+    is_worker = models.BooleanField(default = False, blank = True)
 
     #<----------------------------Role END---------------------------->
 
@@ -108,7 +111,7 @@ class Occupation(models.Model):
     name = models.CharField(max_length = 128, blank = True)
     sector = models.CharField(choices = sectors, max_length = 64, blank = True)
     related_people = models.ManyToManyField('Account', related_name = 'amount_of_people', blank = True)
-    city = models.ForeignKey('cities.City', related_name ='occupation_city', on_delete=models.CASCADE, null = True)
+    city = models.ForeignKey('cities.City', related_name ='occupation_city', on_delete=models.SET_NULL, null = True)
     def __str__(self):
         #return (str(self.sector) + ': ' + str(self.name))
         return(str(self.name))
