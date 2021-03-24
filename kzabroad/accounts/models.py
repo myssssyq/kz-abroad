@@ -1,5 +1,7 @@
 from django.db import models
 from django import forms
+from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import JSONField
 from .models import *
 from cities.models import *
 from django.utils.timezone import now
@@ -73,6 +75,13 @@ class Account(models.Model):
     is_worker = models.BooleanField(default = False, blank = True)
 
     #<----------------------------Role END---------------------------->
+
+    #<----------------------------Interests BEGIN---------------------------->
+
+    #interest = ArrayField(models.CharField(max_length=50, blank=True), size=8, default = None, blank = True)
+    interest = models.JSONField(default = None, blank = True)
+
+    #<----------------------------Interests END---------------------------->
 
     #<----------------------------Notification BEGIN---------------------------->
 

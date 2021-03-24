@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'kzabroad.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_kzAbroad',
+        'NAME': 'db_kzabroad',
         'USER': 'postgres',
         'PASSWORD': 'sparta',
         'HOST': '127.0.0.1',

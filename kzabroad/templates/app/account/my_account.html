@@ -42,6 +42,13 @@
       <input type="checkbox" name = "is_worker" {% if user.is_worker %} checked {% endif %}>Worker<Br>
     </p>
     <h5><-------------------ROLES-------------------></h5>
+    <h5><-------------------INTERESTS-------------------></h5>
+    <p>
+      {% for interest in user.interest %}
+        <input type="checkbox" name="checks" value="{{interest}}" {% if interest in checked_interests %} checked {% endif %}/> {{ interest }} <Br>
+      {% endfor %}
+    </p>
+    <h5><-------------------INTERESTS-------------------></h5>
   <h5><-------------------CITY CHOICE-------------------></h5>
   <p><label> Your living city:</label>
     <template id="resultstemplate_city">

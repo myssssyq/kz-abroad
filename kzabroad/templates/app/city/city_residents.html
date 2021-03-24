@@ -30,14 +30,13 @@
   </form>
 
 </p>
-<!--
+
 <form enctype="multipart/form-data" method = "post">{% csrf_token %}
-  {% for preferenece in prefereneces %}
-   <input type="checkbox" name="{{preferenece.id}}" value="True">{{preferenece.name}}<Br>
+  {% for interest in user.interest %}
+    <input type="checkbox" name="checks" value="{{interest}}" {% if interest in checked_interests %} checked {% endif %}/> {{ interest }} <Br>
   {% endfor %}
   <button name = "checkbox_search" type = "submit">Find!</button>
 </form>
--->
 {% for resident in residents %}
 <p>
   <div class="card w-50">

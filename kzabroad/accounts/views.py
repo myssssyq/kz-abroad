@@ -117,6 +117,10 @@ def user(request, login):
         context['occupations'] = Occupation.objects.all()
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
+        context['checked_interests'] = []
+        for interest in user.interest:
+            if user.interest[str(interest)]:
+                context['checked_interests'].append(interest)
         if request.is_ajax() and 'occupation_value' in request.GET:
             occupation_input = request.GET['occupation_value']
             try:
@@ -147,20 +151,25 @@ def user(request, login):
                         })
         if request.is_ajax() and request.method == 'POST':
             if 'city_choice' in request.POST:
-                try:
-                    city_exists = bool(City.objects.get(name = request.POST['city_choice']))
-                except:
-                    city_exists = False
-            if city_exists:
-                return JsonResponse({
-                    'message': 'success'
-                    })
-            else:
-                response = JsonResponse({
-                'city_exists': str(city_exists)
-                })
-                response.status_code = 403 # To announce that the user isn't allowed to publish
-                return response
+                if request.POST['city_choice'] != '':
+                    try:
+                        city_exists = bool(City.objects.get(name = request.POST['city_choice']))
+                    except:
+                        city_exists = False
+                    if city_exists:
+                        return JsonResponse({
+                            'message': 'success'
+                            })
+                    else:
+                        response = JsonResponse({
+                        'city_exists': str(city_exists)
+                        })
+                        response.status_code = 403 # To announce that the user isn't allowed to publish
+                        return response
+                else:
+                    return JsonResponse({
+                        'message': 'success'
+                        })
         if request.method == 'POST'  and 'name' in request.POST:
             user.name = request.POST['name']
             user.surname = request.POST['surname']
@@ -199,13 +208,18 @@ def user(request, login):
                 else:
                     user.occupation = None
             if 'city_choice' in request.POST:
-                city_input = City.objects.get(name = request.POST['city_choice'])
-                if city_input != user.living_city:
-                    if request.POST['city_choice'] != '':
-                        user_living_city = City.objects.get(name = request.POST['city_choice'])
-                        user.living_city = user_living_city
-                    else:
-                        user.living_city = None
+                if request.POST['city_choice'] != '':
+                    user_living_city = City.objects.get(name = request.POST['city_choice'])
+                    try:
+                        user.living_city.residents.remove(user)
+                        user.living_city.save()
+                    except:
+                        pass
+                    user.living_city = user_living_city
+                    user_living_city.residents.add(user)
+                    user_living_city.save()
+                else:
+                    user.living_city = None
                     user.occupation = None
             if 'no' in request.POST:
                 user.is_guide = False
@@ -216,12 +230,19 @@ def user(request, login):
             if 'yes' in request.POST:
                 user.is_guide = True
                 user.living_city.guides.add(user)
+            if 'checks' in request.POST:
+                interests_list = request.POST.getlist('checks')
+                for interest in user.interest:
+                    if interest in interests_list:
+                        user.interest[str(interest)] = True
+                    else:
+                        user.interest[str(interest)] = False
             user.save()
             try:
                 user.living_city.save()
             except:
                 pass
-            return render(request, 'app/account/my_account.html', context)
+            return redirect(reverse(views.user, args = [user.login]))
         if request.method == 'POST' and 'accept' in request.POST:
             requesting_user = find_user_by_id(request.POST['request_input'])
             friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
@@ -301,12 +322,17 @@ def register (request):
             email = request.POST['email']
             login = request.POST['login']
             password = request.POST['password']
+            jsonfield = {
+            'Interest one': False,
+            'Interest two': False,
+            'Interest three': False
+            }
             try:
                 city = City.objects.get(name = request.POST['city_choice'])
-                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, living_city = city)
+                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, living_city = city, interest = jsonfield)
                 account.save()
             except:
-                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login)
+                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, interest = jsonfield)
                 account.save()
             request.session['user'] = account.pk
             return redirect(reverse(views.user, args = [account.login]))
@@ -324,7 +350,7 @@ def notifications(request):
         pass
     context['notifications'] = user.notifications.all()
     if request.method == "POST":
-        for notification in context['notifications']:
+        for notification in user.notifications.all():
             notification.delete()
             return redirect(reverse(views.notifications))
     return render(request, 'app/account/notifications.html', context)

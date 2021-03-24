@@ -99,10 +99,9 @@ def city(request, slug):
             searching_word = request.POST['search_input']
             context['residents'] = context['residents'].filter(name = searching_word)
         if request.method == 'POST' and 'checkbox_search' in request.POST:
-            for preference in request.POST:
-                if preference != 'csrfmiddlewaretoken' and preference != 'checkbox_search':
-                    filtering_preference = Prefereneces.objects.get(pk = preference)
-                    context['residents'] = context['residents'].filter(prefereneces = filtering_preference)
+            for interest_iterable in user.interest:
+                if interest_iterable in request.POST.getlist('checks'):
+                    context['residents'] = context['residents'].filter(interest__contains = {interest_iterable: True} )
         return render(request, 'app/city/city_residents.html', context)
     else:
         context['city'] = city
@@ -118,6 +117,10 @@ def cities(request):
         return redirect(reverse(accountsviews.index))
     else:
         pass
+    if request.method == 'POST':
+        searching_city = City.objects.annotate(similarity=TrigramSimilarity('name', request.POST['search']),).filter(similarity__gt=0.6).order_by('-similarity')
+        context['cities'] = searching_city
+        return render(request, 'app/city/cities1.html', context)
     context['cities'] = City.objects.all().order_by('name')
     return render(request, 'app/city/cities1.html', context)
 
@@ -238,7 +241,7 @@ def city_requests(request):
         if request.method == 'POST' and 'decline' in request.POST:
             requested_city = RequestToCreateCity.objects.get(city_name = request.POST['request_input'])
             requesting_user = requested_city.requesting_user
-            message = 'Your request to add city named ' + str(city.name) + ' was declined'
+            message = 'Your request to add city named ' + str(requested_city.city_name) + ' was declined'
             requesting_user.add_notification(notifications_tags[1],message)
             requested_city.delete()
         return render(request, 'app/city/city_creation_requests.html', context)

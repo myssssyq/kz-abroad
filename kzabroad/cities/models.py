@@ -5,7 +5,7 @@ from django.utils.timezone import now
 class City(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, default = None)
-    residents = models.ManyToManyField('accounts.Account', related_name = 'residents')
+    residents = models.ManyToManyField('accounts.Account', related_name = 'residents', blank = True)
     guides = models.ManyToManyField('accounts.Account', related_name = 'guides', blank = True)
     description = models.TextField()
     picture = models.CharField(max_length=200)
