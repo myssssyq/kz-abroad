@@ -32,7 +32,7 @@ def index(request):
     context=dict()
     request.session['user'] = None
     context['user'] = find_user_by_id(request.session['user'])
-    return render(request, 'general/landing_page.html', context)
+    return render(request, 'general/index.html', context)
 
 def users(request):
     context = dict()
@@ -286,26 +286,23 @@ def register (request):
     context['user'] = find_user_by_id(request.session['user'])
     context['cities'] = City.objects.all()
     if request.is_ajax():
-        if request.POST['city_choice'] != "":
-            try:
-                city_exists = bool(City.objects.get(name = request.POST['city_choice']))
-            except:
-                city_exists = False
-            if city_exists:
-                return JsonResponse({
-                    'message': 'success'
-                    })
-            else:
-                response = JsonResponse({
-                "message": "there was an error"
-                })
-                response.status_code = 403 # To announce that the user isn't allowed to publish
-                return response
-        else:
+        city_input = request.GET['city_value']
+        try:
+            city_exists = bool(City.objects.get(name = city_input))
+        except:
+            city_exists = False
+        if city_exists:
             return JsonResponse({
-                'message': 'success'
+                'message': "succes"
                 })
+        else:
+            response = JsonResponse({
+                'message': "error"
+                })
+            response.status_code = 403 # To announce that the user isn't allowed to publish
+            return response
     if request.method == 'POST':
+        print(request.POST)
         try:
             login_exists = bool(Account.objects.get(login = request.POST['login']))
         except:
@@ -330,14 +327,19 @@ def register (request):
             try:
                 city = City.objects.get(name = request.POST['city_choice'])
                 account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, living_city = city, interest = jsonfield)
-                account.save()
             except:
                 account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, interest = jsonfield)
-                account.save()
+            if 'checkbox_highschool_student' in request.POST:
+                account.is_highschooler = True
+            if 'checkbox_university_student' in request.POST:
+                account.is_student = True
+            if 'checkbox_worker' in request.POST:
+                account.is_worker = True
+            account.save()
             request.session['user'] = account.pk
             return redirect(reverse(views.user, args = [account.login]))
     else:
-        return render(request, 'general/register.html', context)
+        return render(request, 'dist/signup.html', context)
 
 def notifications(request):
     context = dict()
