@@ -118,9 +118,6 @@ def user(request, login):
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
         context['checked_interests'] = []
-        for interest in user.interest:
-            if user.interest[str(interest)]:
-                context['checked_interests'].append(interest)
         if request.is_ajax() and 'occupation_value' in request.GET:
             occupation_input = request.GET['occupation_value']
             try:
@@ -135,7 +132,7 @@ def user(request, login):
                     return JsonResponse({
                         'message': str(results[0]),
                         })
-        if request.is_ajax() and 'city_value' in request.GET:
+        elif request.is_ajax() and 'city_value' in request.GET:
             city_input = request.GET['city_value']
             try:
                 city_exists = bool(City.objects.get(name = city_input))
@@ -149,6 +146,16 @@ def user(request, login):
                     return JsonResponse({
                         'message': str(results[0]),
                         })
+        elif request.is_ajax() and request.method == "GET":
+            notification_list = []
+            for i in request.GET:
+                for notification in json.loads(i):
+                    notification_to_delete = user.notifications.get(id = notification['id'])
+                    notification_to_delete.delete()
+                    notification_list.append(int(notification['id']))
+            notification_dict = {i:item for i,item in enumerate(notification_list)}
+            #notification_dict = json.dumps(notification_dict)
+            return JsonResponse(notification_dict)
         if request.is_ajax() and request.method == 'POST':
             if 'city_choice' in request.POST:
                 if request.POST['city_choice'] != '':

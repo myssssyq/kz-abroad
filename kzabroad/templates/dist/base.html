@@ -1,0 +1,740 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title> kzAbroad</title>
+    <link rel="icon" type="image/png" href="{% static 'dist/assets/img/favicon.png' %}" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fontisto@v3.0.4/css/fontisto/fontisto-brands.min.css" rel="stylesheet">
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'dist/assets/css/bulma.css' %}">
+    <link rel="stylesheet" href="{% static 'dist/assets/css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'dist/assets/css/core.css' %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+
+<body>
+
+    <!-- Pageloader -->
+    <div class="pageloader"></div>
+    <div class="infraloader is-active"></div>
+    <div class="app-overlay"></div>
+
+    <div id="main-navbar" class="navbar is-inline-flex is-transparent no-shadow is-hidden-mobile">
+        <div class="container is-fluid">
+            <div class="navbar-brand">
+                <a href="/" class="navbar-item">
+                    <img class="logo light-image" src="{% static 'dist/assets/img/logo/friendkit-bold.svg' %}" width="112" height="28" alt="">
+                    <img class="logo dark-image" src="{% static 'dist/assets/img/logo/friendkit-white.svg' %}" width="112" height="28" alt="">
+                </a>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <!-- Navbar Search -->
+
+                    <div class="navbar-item is-icon drop-trigger">
+                        <a class="icon-link is-friends" href="javascript:void(0);">
+                            <i data-feather="heart"></i>
+                            <span class="indicator"></span>
+                        </a>
+
+                        <div class="nav-drop">
+                            <div class="inner">
+                                <div class="nav-drop-header">
+                                    <span>Friend requests</span>
+                                    <a href="#">
+                                        <i data-feather="search"></i>
+                                    </a>
+                                </div>
+                                <div class="nav-drop-body is-friend-requests">
+                                    <!-- Friend request -->
+                                    <div class="media">
+                                        <figure class="media-left">
+                                            <p class="image">
+                                                <img src="https://via.placeholder.com/300x300" data-demo-src="#" alt="">
+                                            </p>
+                                        </figure>
+                                        <div class="media-content">
+                                            <a href="#">Bobby Brown</a>
+                                            <span>Najeel verwick is a common friend</span>
+                                        </div>
+                                        <div class="media-right">
+                                            <button class="button icon-button is-solid grey-button raised">
+                                                <i data-feather="user-plus"></i>
+                                            </button>
+                                            <button class="button icon-button is-solid grey-button raised">
+                                                <i data-feather="user-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nav-drop-footer">
+                                    <a href="#">View All</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navbar-item is-icon drop-trigger">
+                        <a class="icon-link" href="javascript:void(0);">
+                            <i data-feather="bell"></i>
+                            <span class="indicator"></span>
+                        </a>
+
+                        <div class="nav-drop">
+                            <div class="inner">
+                                <div class="nav-drop-header">
+                                    <span>Notifications</span>
+                                    <a href="javascript:;">
+                                        <i data-feather="bell"></i>
+                                    </a>
+                                </div>
+                                <div class="nav-drop-body is-notifications">
+                                    <!-- Notification -->
+                                    {% for notification in user.notifications.all %}
+                                    <div id = "notificationId{{ notification.id }}" class="media">
+                                        <!-- <figure class="media-left">
+                                            <p class="image">
+                                                <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/david.jpg' %}" alt="">
+                                            </p>-->
+                                        </figure>
+                                        <div class="media-content">
+                                            <span class="time"><label>{{ notification.tag }}</label></span>
+                                            <span>{{ notification.message}}</span>
+                                        </div>
+                                        <div class="media-right">
+                                            <div class="added-icon">
+                                              <div class="round-checkbox is-small">
+                                                  <div>
+                                                      <input class = "messageCheckbox" name = "{{ notification.id }}" type="checkbox" id="{{notification.checkboxed}}">
+                                                      <label for="{{notification.checkboxed}}"></label>
+                                                  </div>
+                                              </div>
+                                              <!--<a class = "button_delete_notification" value_href = "{{ notification.id }}">
+                                                <i name = "{{ notification.id }}" data-feather="trash"></i>
+                                              </a>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="nav-drop-footer">
+                                    <a id = "delete_notifications" href="javascript:;">Delete Selected</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="explorer-trigger" class="navbar-item is-icon">
+                        <a class="icon-link is-primary">
+                            <i class="mdi mdi-apps"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="navbar-end">
+
+                    <div class="navbar-item">
+                        <div id="global-search" class="control">
+                            <input id="tipue_drop_input" class="input is-rounded" type="text" placeholder="Search" required>
+                            <span id="clear-search" class="reset-search">
+                                    <i data-feather="x"></i>
+                                </span>
+                            <span class="search-icon">
+                                    <i data-feather="search"></i>
+                                </span>
+
+                            <div id="tipue_drop_content" class="tipue-drop-content"></div>
+                        </div>
+
+                    </div>
+                    <div id="account-dropdown" class="navbar-item is-account drop-trigger has-caret">
+                        <div class="user-image">
+                            <img src="https://via.placeholder.com/400x400" data-demo-src="{% static 'dist/assets/img/avatars/jenna.png' %}" alt="">
+                            <span class="indicator"></span>
+                        </div>
+
+                        <div class="nav-drop is-account-dropdown">
+                            <div class="inner">
+                                <div class="nav-drop-header">
+                                    <span class="username">Jenna Davis</span>
+                                    <label class="theme-toggle">
+                                        <input id="toggle-theme" type="checkbox">
+                                        <span class="toggler">
+                                                <span class="dark">
+                                                    <i data-feather="moon"></i>
+                                                </span>
+                                        <span class="light">
+                                                    <i data-feather="sun"></i>
+                                                </span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="nav-drop-body account-items">
+                                    <a id="profile-link" href="/profile-main.html" class="account-item">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <div class="image">
+                                                    <img src="https://via.placeholder.com/400x400" data-demo-src="{% static 'dist/assets/img/avatars/jenna.png' %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="media-content">
+                                                <h3>Jenna Davis</h3>
+                                                <small>Main account</small>
+                                            </div>
+                                            <div class="media-right">
+                                                <i data-feather="check"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <hr class="account-divider">
+                                    <a href="/pages-main.html" class="account-item">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <div class="image">
+                                                    <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/hanzo.svg' %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="media-content">
+                                                <h3>Css Ninja</h3>
+                                                <small>Company page</small>
+                                            </div>
+                                            <div class="media-right is-hidden">
+                                                <i data-feather="check"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="/pages-main.html" class="account-item">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <div class="image">
+                                                    <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/icons/logos/fastpizza.svg' %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="media-content">
+                                                <h3>Fast Pizza</h3>
+                                                <small>Company page</small>
+                                            </div>
+                                            <div class="media-right is-hidden">
+                                                <i data-feather="check"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="/pages-main.html" class="account-item">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <div class="image">
+                                                    <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/icons/logos/slicer.svg' %}" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="media-content">
+                                                <h3>Slicer</h3>
+                                                <small>Company page</small>
+                                            </div>
+                                            <div class="media-right is-hidden">
+                                                <i data-feather="check"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <hr class="account-divider">
+                                    <a href="/options-settings.html" class="account-item">
+                                        <div class="media">
+                                            <div class="icon-wrap">
+                                                <i data-feather="settings"></i>
+                                            </div>
+                                            <div class="media-content">
+                                                <h3>Settings</h3>
+                                                <small>Access widget settings.</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a class="account-item">
+                                        <div class="media">
+                                            <div class="icon-wrap">
+                                                <i data-feather="life-buoy"></i>
+                                            </div>
+                                            <div class="media-content">
+                                                <h3>Help</h3>
+                                                <small>Contact our support.</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a class="account-item">
+                                        <div class="media">
+                                            <div class="icon-wrap">
+                                                <i data-feather="power"></i>
+                                            </div>
+                                            <div class="media-content">
+                                                <h3>Log out</h3>
+                                                <small>Log out from your account.</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navbar-item is-plus-menu is-hidden">
+                        <a id="plus-menu" class="button action-button is-solid primary-button raised">
+                            <i data-feather="plus"></i>
+                        </a>
+                        <div class="plus-drop">
+                            <div class="drop-content">
+                                <a>
+                                    <i data-feather="book"></i>
+                                    <div class="meta">
+                                        <span>Guides</span>
+                                        <span>Learn everything fast</span>
+                                    </div>
+                                </a>
+                                <a>
+                                    <i data-feather="help-circle"></i>
+                                    <div class="meta">
+                                        <span>FAQ</span>
+                                        <span>Most asked questions</span>
+                                    </div>
+                                </a>
+                                <a>
+                                    <i data-feather="life-buoy"></i>
+                                    <div class="meta">
+                                        <span>Assistance</span>
+                                        <span>Get in touch with support</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <nav class="navbar mobile-navbar is-hidden-desktop" aria-label="main navigation">
+        <!-- Brand -->
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img class="light-image" src="{% static 'dist/assets/img/logo/friendkit-bold.svg' %}" alt="">
+                <img class="dark-image" src="{% static 'dist/assets/img/logo/friendkit-white.svg' %}" alt="">
+            </a>
+
+            <div class="navbar-item is-icon drop-trigger">
+                <a class="icon-link is-friends" href="javascript:void(0);">
+                    <i data-feather="heart"></i>
+                    <span class="indicator"></span>
+                </a>
+
+                <div class="nav-drop">
+                    <div class="inner">
+                        <div class="nav-drop-header">
+                            <span>Friend requests</span>
+                            <a href="#">
+                                <i data-feather="search"></i>
+                            </a>
+                        </div>
+                        <div class="nav-drop-body is-friend-requests">
+                            <!-- Friend request -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/bobby.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <a href="#">Bobby Brown</a>
+                                    <span>Najeel verwick is a common friend</span>
+                                </div>
+                                <div class="media-right">
+                                    <button class="button icon-button is-solid grey-button raised">
+                                        <i data-feather="user-plus"></i>
+                                    </button>
+                                    <button class="button icon-button is-solid grey-button raised">
+                                        <i data-feather="user-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Friend request -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/dan.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <a href="#">Dan Walker</a>
+                                    <span>You have 4 common friends</span>
+                                </div>
+                                <div class="media-right">
+                                    <button class="button icon-button is-solid grey-button raised">
+                                        <i data-feather="user-plus"></i>
+                                    </button>
+                                    <button class="button icon-button is-solid grey-button raised">
+                                        <i data-feather="user-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Friend request -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/nelly.png' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <span>You are now friends with <a href="#">Nelly Schwartz</a>. Check her <a href="#">profile</a>.</span>
+                                </div>
+                                <div class="media-right">
+                                    <div class="added-icon">
+                                        <i data-feather="tag"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Friend request -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/milly.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <a href="#">Milly Augustine</a>
+                                    <span>You have 8 common friends</span>
+                                </div>
+                                <div class="media-right">
+                                    <button class="button icon-button is-solid grey-button raised">
+                                        <i data-feather="user-plus"></i>
+                                    </button>
+                                    <button class="button icon-button is-solid grey-button raised">
+                                        <i data-feather="user-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Friend request -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/elise.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <span>You are now friends with <a href="#">Elise Walker</a>. Check her <a href="#">profile</a>.</span>
+                                </div>
+                                <div class="media-right">
+                                    <div class="added-icon">
+                                        <i data-feather="tag"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Friend request -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/edward.jpeg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <span>You are now friends with <a href="#">Edward Mayers</a>. Check his <a href="#">profile</a>.</span>
+                                </div>
+                                <div class="media-right">
+                                    <div class="added-icon">
+                                        <i data-feather="tag"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="nav-drop-footer">
+                            <a href="#">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navbar-item is-icon drop-trigger">
+                <a class="icon-link" href="javascript:void(0);">
+                    <i data-feather="bell"></i>
+                    <span class="indicator"></span>
+                </a>
+
+                <div class="nav-drop">
+                    <div class="inner">
+                        <div class="nav-drop-header">
+                            <span>Notifications</span>
+                            <a href="#">
+                                <i data-feather="bell"></i>
+                            </a>
+                        </div>
+                        <div class="nav-drop-body is-notifications">
+                            <!-- Notification -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/david.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <span><a href="#">David Kim</a> commented on <a href="#">your post</a>.</span>
+                                    <span class="time">30 minutes ago</span>
+                                </div>
+                                <div class="media-right">
+                                    <div class="added-icon">
+                                        <i data-feather="message-square"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Notification -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/daniel.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <span><a href="#">Daniel Wellington</a> liked your <a href="#">profile.</a></span>
+                                    <span class="time">43 minutes ago</span>
+                                </div>
+                                <div class="media-right">
+                                    <div class="added-icon">
+                                        <i data-feather="heart"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Notification -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/stella.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <span><a href="#">Stella Bergmann</a> shared a <a href="#">New video</a> on your wall.</span>
+                                    <span class="time">Yesterday</span>
+                                </div>
+                                <div class="media-right">
+                                    <div class="added-icon">
+                                        <i data-feather="youtube"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Notification -->
+                            <div class="media">
+                                <figure class="media-left">
+                                    <p class="image">
+                                        <img src="https://via.placeholder.com/300x300" data-demo-src="{% static 'dist/assets/img/avatars/elise.jpg' %}" alt="">
+                                    </p>
+                                </figure>
+                                <div class="media-content">
+                                    <span><a href="#">Elise Walker</a> shared an <a href="#">Image</a> with you an 2 other people.</span>
+                                    <span class="time">2 days ago</span>
+                                </div>
+                                <div class="media-right">
+                                    <div class="added-icon">
+                                        <i data-feather="image"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="nav-drop-footer">
+                            <a href="#">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-explorer-trigger" class="navbar-item is-icon">
+                <a class="icon-link is-primary">
+                    <i class="mdi mdi-apps"></i>
+                </a>
+            </div>
+
+            <!-- Mobile menu toggler icon -->
+            <div class="navbar-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <!-- Navbar mobile menu -->
+        <div class="navbar-menu">
+            <!-- Account -->
+            <div class="navbar-item has-dropdown is-active">
+                <div class="navbar-link">
+                    <img src="https://via.placeholder.com/150x150" data-demo-src="{% static 'dist/assets/img/avatars/jenna.png' %}" alt="">
+                    <span class="is-heading">Jenna</span>
+                </div>
+
+                <!-- Mobile Dropdown -->
+                <div class="navbar-dropdown">
+                    <a href="#" class="navbar-item is-flex is-mobile-icon">
+                        <span><i data-feather="user"></i>Profile</span>
+                    </a>
+                    <a href="#" class="navbar-item is-flex is-mobile-icon">
+                        <span><i data-feather="shopping-cart"></i>Cart</span>
+                        <span class="menu-badge">3</span>
+                    </a>
+                    <a href="#" class="navbar-item is-flex is-mobile-icon">
+                        <span><i data-feather="activity"></i>Feed</span>
+                        <span class="menu-badge">87</span>
+                    </a>
+                    <a href="#" class="navbar-item is-flex is-mobile-icon">
+                        <span><i data-feather="settings"></i>Settings</span>
+                    </a>
+                    <a href="#" class="navbar-item is-flex is-mobile-icon">
+                        <span><i data-feather="hexagon"></i>Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- More -->
+            <div class="navbar-item has-dropdown">
+                <a class="navbar-link">
+                    <i data-feather="life-buoy"></i>
+                    <span class="is-heading">Assistance</span>
+                </a>
+
+                <!-- Mobile Dropdown -->
+                <div class="navbar-dropdown">
+                    <a href="#" class="navbar-item">Help</a>
+                    <a href="#" class="navbar-item">Support</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="view-wrapper">
+      {% block content %}
+      {% endblock %}
+    </div>
+    <div class="explorer-menu">
+        <div class="explorer-inner">
+            <div class="explorer-container">
+                <!--Header-->
+                <div class="explorer-header">
+                    <h3>Explore</h3>
+                    <div class="control">
+                        <input type="text" class="input is-rounded is-fade" placeholder="Filter">
+                        <div class="form-icon">
+                            <i data-feather="filter"></i>
+                        </div>
+                    </div>
+                </div>
+                <!--List-->
+                <div class="explore-list">
+                    <!--item-->
+                    <a href="/feed.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/clover.svg'%}" alt="">
+                        <h4>Feed</h4>
+                    </a>
+                    <!--item-->
+                    <a href="/profile-friends.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/friends.svg'%}" alt="">
+                        <h4>Friends</h4>
+                    </a>
+                    <!--item-->
+                    <a href="/videos-home.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/videos.svg'%}" alt="">
+                        <h4>Videos</h4>
+                    </a>
+                    <!--item-->
+                    <a href="/pages-main.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/tag-euro.svg'%}" alt="">
+                        <h4>Pages</h4>
+                    </a>
+                    <!--item-->
+                    <a class="explore-item is-coming-soon">
+                        <img src="{% static 'dist/assets/img/icons/explore/cart.svg'%}" alt="">
+                        <span class="coming-soon">Coming Soon</span>
+                    </a>
+                    <!--item-->
+                    <a class="explore-item is-coming-soon">
+                        <img src="{% static 'dist/assets/img/icons/explore/house.svg'%}" alt="">
+                        <span class="coming-soon">Coming Soon</span>
+                    </a>
+                    <!--item-->
+                    <a class="explore-item is-coming-soon">
+                        <img src="{% static 'dist/assets/img/icons/explore/chrono.svg'%}" alt="">
+                        <span class="coming-soon">Coming Soon</span>
+                    </a>
+                    <!--item-->
+                    <a href="/questions-home.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/question.svg'%}" alt="">
+                        <h4>Questions</h4>
+                    </a>
+                    <!--item-->
+                    <a href="news.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/news.svg'%}" alt="">
+                        <h4>News</h4>
+                    </a>
+                    <!--item-->
+                    <a class="explore-item is-coming-soon">
+                        <img src="{% static 'dist/assets/img/icons/explore/cake.svg'%}" alt="">
+                        <span class="coming-soon">Coming Soon</span>
+                    </a>
+                    <!--item-->
+                    <a href="https://envato.com" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/envato.svg'%}" alt="">
+                        <h4>Envato</h4>
+                    </a>
+                    <!--item-->
+                    <a href="/events.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/calendar.svg'%}" alt="">
+                        <h4>Events</h4>
+                    </a>
+                    <!--item-->
+                    <a class="explore-item is-coming-soon">
+                        <img src="{% static 'dist/assets/img/icons/explore/pin.svg'%}" alt="">
+                        <span class="coming-soon">Coming Soon</span>
+                    </a>
+                    <!--item-->
+                    <a href="/elements.html" class="explore-item">
+                        <img src="{% static 'dist/assets/img/icons/explore/idea.svg'%}" alt="">
+                        <h4>Elements</h4>
+                    </a>
+                    <!--item-->
+                    <a class="explore-item is-coming-soon">
+                        <img src="{% static 'dist/assets/img/icons/explore/settings.svg'%}" alt="">
+                        <span class="coming-soon">Coming Soon</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Concatenated js plugins and jQuery -->
+    <script src="{% static 'dist/assets/js/app.js' %}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Core js -->
+    <script src="{% static 'dist/assets/data/tipuedrop_content.js' %}"></script>
+    <script src="{% static 'dist/assets/js/global.js' %}"></script>
+    <script src="{% static 'dist/assets/js/main.js' %}"></script>
+    <script src="{% static 'js/core6.js' %}"></script>
+
+    <!-- Page and UI related js -->
+    <script src="{% static 'dist/assets/js/feed.js' %}"></script>
+    <script src="{% static 'dist/assets/js/stories.js' %}"></script>
+    <script src="{% static 'dist/assets/js/chat.js' %}"></script>
+    <script src="{% static 'dist/assets/js/inbox.js' %}"></script>
+    <script src="{% static 'dist/assets/js/profile.js' %}"></script>
+    <script src="{% static 'dist/assets/js/friends.js' %}"></script>
+    <script src="{% static 'dist/assets/js/events.js' %}"></script>
+    <script src="{% static 'dist/assets/js/explorer.js' %}"></script>
+    <script src="{% static 'dist/assets/js/news.js' %}"></script>
+    <script src="{% static 'dist/assets/js/questions.js' %}"></script>
+    <script src="{% static 'dist/assets/js/videos.js' %}"></script>
+    <script src="{% static 'dist/assets/js/shop.js' %}"></script>
+    <script src="{% static 'dist/assets/js/settings.js' %}"></script>
+
+    <!-- Components js -->
+    <script src="{% static 'dist/assets/js/widgets.js' %}"></script>
+    <script src="{% static 'dist/assets/js/autocompletes.js' %}"></script>
+    <script src="{% static 'dist/assets/js/modal-uploader.js' %}"></script>
+    <script src="{% static 'dist/assets/js/popovers-users.js' %}"></script>
+    <script src="{% static 'dist/assets/js/popovers-pages.js' %}"></script>
+    <script src="{% static 'dist/assets/js/go-live.js' %}"></script>
+    <script src="{% static 'dist/assets/js/lightbox.js' %}"></script>
+    <script src="{% static 'dist/assets/js/touch.js' %}"></script>
+    <script src="{% static 'dist/assets/js/tour.js' %}"></script>
+</body>
+
+</html>

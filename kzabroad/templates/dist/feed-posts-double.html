@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,14 +9,14 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title> Friendkit | Posts Feed 2x</title>
-    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="icon" type="image/png" href="{% static 'dist/assets/img/favicon.png' %}" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700,800,900" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
     <!-- Core CSS -->
-    <link rel="stylesheet" href="assets/css/bulma.css">
-    <link rel="stylesheet" href="assets/css/app.css">
-    <link rel="stylesheet" href="assets/css/core.css">
+    <link rel="stylesheet" href="{% static 'dist/assets/css/bulma.css' %}">
+    <link rel="stylesheet" href="{% static 'dist/' %}assets/css/app.css">
+    <link rel="stylesheet" href="{% static 'dist/' %}assets/css/core.css">
 </head>
 
 <body class="is-white">

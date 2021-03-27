@@ -126,9 +126,13 @@ class Occupation(models.Model):
         return(str(self.name))
 
 class Notification(models.Model):
+    id = models.AutoField(primary_key=True, editable=True)
     tag = models.CharField(choices = TAGS, max_length = 50, blank = True)
     message = models.TextField(blank = True)
     to_user = models.ForeignKey("Account", related_name='notification_to_user', on_delete=models.CASCADE, null = True)
 
+    def checkboxed(self):
+        return("checkbox-" + str(self.id))
+
     def __str__(self):
-        return(str(self.tag) + ': ' + str(self.to_user.login))
+        return('(' + str(self.id) +')' + str(self.tag) + ': ' + str(self.to_user.login))
