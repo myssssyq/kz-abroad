@@ -56,25 +56,30 @@
                                 </div>
                                 <div class="nav-drop-body is-friend-requests">
                                     <!-- Friend request -->
-                                    <div class="media">
+                                    {% for request in recieved_requests%}
+                                    <div id = "divRequest{{request.from_user.id}}" class="media">
                                         <figure class="media-left">
                                             <p class="image">
                                                 <img src="https://via.placeholder.com/300x300" data-demo-src="#" alt="">
                                             </p>
                                         </figure>
                                         <div class="media-content">
-                                            <a href="#">Bobby Brown</a>
-                                            <span>Najeel verwick is a common friend</span>
+                                            <a href="#">{{ request.from_user.name }} {{ request.from_user.surname}}</a>
+                                            <!--<span>Najeel verwick is a common friend</span>-->
                                         </div>
-                                        <div class="media-right">
-                                            <button class="button icon-button is-solid grey-button raised">
-                                                <i data-feather="user-plus"></i>
-                                            </button>
-                                            <button class="button icon-button is-solid grey-button raised">
-                                                <i data-feather="user-minus"></i>
-                                            </button>
-                                        </div>
+                                        <form class = "request_submits" id = "request_form{{request.from_user.id}}" enctype="multipart/form-data" method = "post">{% csrf_token %}
+                                          <input type="hidden" name="request_input" value="{{request.from_user.id}}"/>
+                                          <div class="media-right">
+                                              <button data-id = "{{request.from_user.id}}" value="1" name = "accept" type = "submit" class="button icon-button is-solid grey-button raised">
+                                                  <i data-feather="user-plus"></i>
+                                              </button>
+                                              <button data-id = "{{request.from_user.id}}" value="1"  name = "decline"  type = "submit"  class="button icon-button is-solid grey-button raised">
+                                                  <i data-feather="user-minus"></i>
+                                              </button>
+                                          </div>
+                                        </form>
                                     </div>
+                                    {% endfor %}
                                 </div>
                                 <div class="nav-drop-footer">
                                     <a href="#">View All</a>
@@ -708,7 +713,7 @@
     <script src="{% static 'dist/assets/data/tipuedrop_content.js' %}"></script>
     <script src="{% static 'dist/assets/js/global.js' %}"></script>
     <script src="{% static 'dist/assets/js/main.js' %}"></script>
-    <script src="{% static 'js/core6.js' %}"></script>
+    <script src="{% static 'js/core2.js' %}"></script>
 
     <!-- Page and UI related js -->
     <script src="{% static 'dist/assets/js/feed.js' %}"></script>

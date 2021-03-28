@@ -146,6 +146,20 @@ def user(request, login):
                     return JsonResponse({
                         'message': str(results[0]),
                         })
+        elif request.is_ajax() and 'action' in request.GET:
+            requesting_user = find_user_by_id(request.GET['id'])
+            if request.GET['action'] == "accept":
+                friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
+                message = str(user.name) + ' ' + str(user.surname) + ' accepted your friend request.'
+                requesting_user.add_notification(notifications_tags[1],message)
+                friend_request.delete()
+                user.friends_list.add(requesting_user)
+            else:
+                friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
+                friend_request.delete()
+                message = str(user.name) + ' ' + str(user.surname) + ' declined your friend request.'
+                requesting_user.add_notification(notifications_tags[2],message)
+            return JsonResponse({ "id" : request.GET['id']})
         elif request.is_ajax() and request.method == "GET":
             notification_list = []
             for i in request.GET:
@@ -250,22 +264,6 @@ def user(request, login):
             except:
                 pass
             return redirect(reverse(views.user, args = [user.login]))
-        if request.method == 'POST' and 'accept' in request.POST:
-            requesting_user = find_user_by_id(request.POST['request_input'])
-            friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
-            message = str(user.name) + ' ' + str(user.surname) + ' accepted your friend request.'
-            requesting_user.add_notification(notifications_tags[1],message)
-            friend_request.delete()
-            user.friends_list.add(requesting_user)
-        if request.method == 'POST' and 'decline' in request.POST:
-            requesting_user = find_user_by_id(request.POST['request_input'])
-            friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
-            friend_request.delete()
-            message = str(user.name) + ' ' + str(user.surname) + ' declined your friend request.'
-            requesting_user.add_notification(notifications_tags[2],message)
-        if request.method == 'POST' and 'delete_friend' in request.POST:
-            friend_to_delete = find_user_by_id(request.POST['delete_input'])
-            user.friends_list.remove(friend_to_delete)
         return render(request, 'app/account/my_account.html', context)
 
 def login(request):
