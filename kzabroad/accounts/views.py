@@ -117,6 +117,23 @@ def user(request, login):
         context['occupations'] = Occupation.objects.all()
         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
+        context['occupations_education'] = {
+            "occupation":[
+            ]
+        }
+        context['occupations_work'] = {
+            "occupation":[
+            ]
+        }
+        for occupation in user.occupations['occupation']:
+            if occupation['class'] == "education":
+                context['occupations_education']['occupation'].append(occupation)
+            else:
+                context['occupations_work']['occupation'].append(occupation)
+        context['occupations_work'] = context['occupations_work']['occupation']
+        context['occupations_education'] = context['occupations_education']['occupation']
+        #context['occupations_education'] = json.loads(json.dumps(user.occupations['occupation']))
+        #context['occupations'] = user.occupations['occupation']
         context['checked_interests'] = []
         if request.is_ajax() and 'occupation_value' in request.GET:
             occupation_input = request.GET['occupation_value']
@@ -264,7 +281,7 @@ def user(request, login):
             except:
                 pass
             return redirect(reverse(views.user, args = [user.login]))
-        return render(request, 'app/account/my_account.html', context)
+        return render(request, 'dist/profile-about.html', context)
 
 def login(request):
     context = dict()
@@ -324,6 +341,10 @@ def register (request):
             email = request.POST['email']
             login = request.POST['login']
             password = request.POST['password']
+            occupations = {
+                "occupation":[
+                ]
+            }
             jsonfield = {
             'Interest one': False,
             'Interest two': False,
@@ -331,9 +352,24 @@ def register (request):
             }
             try:
                 city = City.objects.get(name = request.POST['city_choice'])
-                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, living_city = city, interest = jsonfield)
+                account = Account(name = first_name,
+                                  surname = last_name,
+                                  email = email,
+                                  login = login,
+                                  password = password,
+                                  slug = login,
+                                  living_city = city,
+                                  interest = jsonfield,
+                                  occupations = occupations)
             except:
-                account = Account(name = first_name, surname = last_name, email = email, login = login, password = password, slug = login, interest = jsonfield)
+                account = Account(name = first_name,
+                                  surname = last_name,
+                                  email = email,
+                                  login = login,
+                                  password = password,
+                                  slug = login,
+                                  interest = jsonfield,
+                                  occupations = occupations)
             if 'checkbox_highschool_student' in request.POST:
                 account.is_highschooler = True
             if 'checkbox_university_student' in request.POST:

@@ -41,7 +41,8 @@ class Account(models.Model):
     gender = models.CharField(choices = GENDER, max_length = 6, blank = True)
     age = models.IntegerField(blank = True, null = True)
     created = models.DateTimeField(default=now, editable=True)
-    occupation = models.ForeignKey('Occupation', related_name = 'occupation', on_delete=models.SET_NULL, null = True, blank = True)
+    occupations = models.JSONField(default = None, blank = True)
+    #occupation = models.ForeignKey('Occupation', related_name = 'occupation', on_delete=models.SET_NULL, null = True, blank = True)
     #<----------------------------About END---------------------------->
 
     #<----------------------------Links BEGIN---------------------------->
