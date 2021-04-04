@@ -283,6 +283,31 @@ def user(request, login):
             return redirect(reverse(views.user, args = [user.login]))
         return render(request, 'dist/profile-about.html', context)
 
+def user_settings(request, login):
+    context = dict()
+    try:
+        user = Account.objects.get(pk = request.session['user'])
+        context['user'] = user
+    except:
+        return redirect(reverse(views.index))
+    else:
+        pass
+    if find_user_by_login(login) == None:
+        raise Http404("Account does not exist")
+    else:
+        account = find_user_by_login(login)
+    context['account'] = account
+    if request.is_ajax() and 'password' in request.GET:
+        user.password = request.GET['password']
+        user.save()
+        return JsonResponse({
+            'message': "succes"
+            })
+    if user != account:
+        raise Http404("You do not have acces to this page")
+    else:
+        return render(request, 'dist/options-settings.html', context)
+
 def login(request):
     context = dict()
     context['user'] = find_user_by_id(request.session['user'])
