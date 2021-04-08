@@ -21,6 +21,13 @@ def find_user_by_login(login):
      except:
          return None
 
+def find_user_by_email(email):
+     try:
+         user = Account.objects.get(email = email)
+         return user
+     except:
+         return None
+
 def find_user_by_id(id):
      try:
          user = Account.objects.get(pk = id)
@@ -303,6 +310,48 @@ def user_settings(request, login):
         return JsonResponse({
             'message': "succes"
             })
+    if request.is_ajax() and 'city_value' in request.GET:
+        city_input = request.GET['city_value']
+        try:
+            city_exists = bool(City.objects.get(name = city_input))
+        except:
+            city_exists = False
+        if city_exists:
+            return JsonResponse({
+                'message': "succes"
+                })
+        else:
+            response = JsonResponse({
+                'message': "error"
+                })
+            response.status_code = 403 # To announce that the user isn't allowed to publish
+            return response
+    if request.is_ajax() and 'facebook' in request.POST:
+        user.facebook_link = request.POST['facebook']
+        user.instagram_link = request.POST['instagram']
+        user.twitter_link = request.POST['twitter']
+        user.vk_link = request.POST['vk']
+        user.tiktok_link = request.POST['tiktok']
+        user.save()
+    if request.is_ajax() and 'first_name' in request.POST:
+        user.name = request.POST['first_name']
+        user.surname = request.POST['last_name']
+        user.living_city = City.objects.get(name = request.POST['city_input'])
+        user.save()
+        return JsonResponse({
+        "message":"succes"
+        })
+    if request.method == 'POST':
+        new_occupation = {
+        "class": request.POST['class'],
+        "name": request.POST['name'],
+        "position": request.POST['position'],
+        "description": request.POST['description'],
+        "year_from": request.POST['year_from'],
+        "year_to": request.POST['year_to']
+        }
+        user.occupations['occupation'].append(new_occupation)
+        user.save()
     if user != account:
         raise Http404("You do not have acces to this page")
     else:
@@ -312,9 +361,10 @@ def login(request):
     context = dict()
     context['user'] = find_user_by_id(request.session['user'])
     if (request.method == 'POST'):
-        login = request.POST['login'] # <input type = "text" name = "login">
-        if find_user_by_login(login) != None:
-            user = find_user_by_login(login)
+        email = request.POST['email'] # <input type = "text" name = "login">
+        print(find_user_by_email(email))
+        if find_user_by_email(email) != None:
+            user = find_user_by_email(email)
             if user.password == request.POST['password']:
                 context['user'] = user
                 request.session['user'] = user.pk
@@ -322,11 +372,11 @@ def login(request):
             else:
                 context['error'] = 'Login or password is incorrect'
                 return render(request, 'app/account/login.html', context)
-        if find_user_by_login(login) == None:
+        if find_user_by_email(email) == None:
             context['error'] = 'Login or password is incorrect'
-            return render(request, 'app/account/login.html', context)
+            return render(request, 'dist/login.html', context)
     else:
-        return render(request, 'app/account/login.html', context)
+        return render(request, 'dist/login.html', context)
 
 def register (request):
     context = dict()
@@ -349,7 +399,6 @@ def register (request):
             response.status_code = 403 # To announce that the user isn't allowed to publish
             return response
     if request.method == 'POST':
-        print(request.POST)
         try:
             login_exists = bool(Account.objects.get(login = request.POST['login']))
         except:

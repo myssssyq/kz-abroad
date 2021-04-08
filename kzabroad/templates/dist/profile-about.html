@@ -37,7 +37,7 @@
                     <div class="column is-paddingless">
                         <!-- Timeline Header -->
                         <div class="cover-bg">
-                            <img class="cover-image" src="{{user.living_city.picture}}" alt="no image">
+                            <img class="cover-image" src="" alt="no image">
                             <div class="avatar">
                                 <img id="user-avatar" class="avatar-image" src="https://via.placeholder.com/300x300" data-demo-src="assets/img/avatars/jenna.png" alt="">
                                 <div class="avatar-button">
@@ -158,7 +158,7 @@
                                     <div class="column">
                                         <!-- Location block -->
                                         <div class="flex-block">
-                                            <img src="{{ user.living_city.picture }}" alt="" data-page-popover="8">
+                                            <img src="" alt="" data-page-popover="8">
                                             <div class="flex-block-meta">
                                                 <span>Lives in <a>{{ user.living_city }}</a></span>
                                                 <a class="action-link">Edit your location</a>
@@ -258,14 +258,14 @@
 
                                     <div class="timeline-item">
                                         <h3>
-                                          {{ item.name }}
+                                          {{ item.position }}
                                         </h3>
-                                        <p>Brent University</p>
+                                        <p>{{ item.name }}</p>
                                         <div class="more">
-                                            <p>Lorem ipsum sit dolor amet is a dummy text used by typographers.</p>
+                                            <p>{{ item.description }}</p>
                                         </div>
                                         <div class="date">
-                                            {{ item.year_span }}
+                                            {{ item.year_from }}/{{item.year_to}}
                                         </div>
                                     </div>
                                     {% endfor %}

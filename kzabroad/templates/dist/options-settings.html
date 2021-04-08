@@ -14,6 +14,8 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,600,700,800,900" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -56,7 +58,7 @@
                                 <li data-section="personal">
                                     <a>
                                         <i data-feather="user"></i>
-                                        <span>Account</span>
+                                        <span>Personal</span>
                                     </a>
                                 </li>
                                 <li data-section="occupation">
@@ -83,7 +85,7 @@
                         </a>
                         <h2>General Settings</h2>
                     </div>
-
+                  <form id = "general_form"  method='post' enctype="multipart/form-data">{% csrf_token %}
                     <div class="settings-form-wrapper">
                         <div class="settings-form">
                             <div class="columns is-multiline">
@@ -93,22 +95,23 @@
                                     <div class="field field-group">
                                         <label>First Name</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.name}}">
+                                            <input name = "first_name" id = "first_name" type="text" class="input is-fade" value="{{user.name}}">
+                                            <label id = "first_name_label" class="hidden" > First name should only have english letters.</label>
                                             <div class="form-icon">
                                                 <i data-feather="user"></i>
                                             </div>
                                         </div>
                                     </div>
-                                    <!--Field-->
+                                    <!--Field
                                     <div class="field field-group">
                                         <label>Email</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.email}}">
+                                            <input name = "email" id = "email" type="text" class="input is-fade" value="{{user.email}}">
                                             <div class="form-icon">
                                                 <i data-feather="mail"></i>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>-->
                                 </div>
 
                                 <div class="column is-6">
@@ -116,7 +119,8 @@
                                     <div class="field field-group">
                                         <label>Last Name</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.surname}}">
+                                            <input name = "last_name" id = "last_name" type="text" class="input is-fade" value="{{user.surname}}">
+                                            <label id = "last_name_label" class="hidden" > Last name should only have english letters.</label>
                                             <div class="form-icon">
                                                 <i data-feather="user"></i>
                                             </div>
@@ -156,7 +160,8 @@
                                     <div class="field field-group">
                                         <label>City</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{ user.living_city.name }}">
+                                            <input name = "city_input" id ="city_input" type="text" class="input is-fade" value="{{ user.living_city.name }}">
+                                            <label id = "city_label" class="hidden" > This city doesn't exist.</label>
                                             <div class="form-icon">
                                                 <i data-feather="map-pin"></i>
                                             </div>
@@ -177,8 +182,16 @@
                                 </div>-->
 
                                 <div class="column is-12">
+                                  <div id = "general_form_message" class = "hidden">
+                                    <div class="form-text">
+                                        <p>Information was changed succesfully.</p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="column is-12">
                                     <div class="buttons">
-                                        <button class="button is-solid accent-button form-button">Save Changes</button>
+                                        <button id = "general_submit_button" type = "submit" class="button is-solid accent-button form-button">Save Changes</button>
                                         <!--<button class="button is-light form-button">Advanced</button>-->
                                     </div>
                                 </div>
@@ -192,6 +205,7 @@
                             <p>If you'd like to learn more about general settings, you can read about it in the <a>user guide</a>.</p>
                         </div>
                     </div>
+                  </form>
                 </div>
             </div>
             <!-- /partials/settings/sections/security-settings.html -->
@@ -280,102 +294,84 @@
                     </div>
 
                     <div class="settings-form-wrapper">
+                      <form id = "personal_form"  method='post' enctype="multipart/form-data">{% csrf_token %}
                         <div class="settings-form">
                             <div class="columns is-multiline">
 
                                 <div class="column is-6">
                                     <!--Field-->
+
                                     <div class="field field-group">
                                         <label>Facebook Link</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.facebook_link}}">
+                                            <input name = "facebook" id = "facebook_link" type="text" class="input is-fade" value="{{user.facebook_link}}">
                                             <div class="form-icon">
                                                 <i data-feather="facebook"></i>
                                             </div>
                                         </div>
+                                        <label id = "facebook_label" class = "hidden" >Invalid Link</label>
                                     </div>
                                     <!--Field-->
                                     <div class="field field-group">
                                         <label>Instagram Link</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.instagram_link}}">
+                                            <input name = "instagram" id = "instagram_link" type="text" class="input is-fade" value="{{user.instagram_link}}">
                                             <div class="form-icon">
                                                 <i data-feather="instagram"></i>
                                             </div>
                                         </div>
+                                        <label id = "instagram_label" class = "hidden" >Invalid Link</label>
                                     </div>
                                     <!--Field-->
                                     <div class="field field-group">
                                         <label>Twitter Link</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.twitter_link}}">
+                                            <input name = "twitter" id = "twitter_link" type="text" class="input is-fade" value="{{user.twitter_link}}">
                                             <div class="form-icon">
                                                 <i data-feather="twitter"></i>
                                             </div>
                                         </div>
+                                        <label id = "twitter_label" class = "hidden" >Invalid Link</label>
                                     </div>
                                     <!--Field-->
                                     <div class="field field-group">
                                         <label>Tiktok Link</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.tiktok_link}}">
+                                            <input name = "tiktok" id = "tiktok_link" type="text" class="input is-fade" value="{{user.tiktok_link}}">
                                             <div class="form-icon">
                                                 <i data-feather="user"></i>
                                             </div>
                                         </div>
+                                        <label id = "tiktok_label" class = "hidden" >Invalid Link</label>
                                     </div>
                                     <!--Field-->
                                     <div class="field field-group">
                                         <label>VK Link</label>
                                         <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{user.vk_link}}">
+                                            <input name = "vk" id = "vk_link" type="text" class="input is-fade" value="{{user.vk_link}}">
                                             <div class="form-icon">
                                                 <i data-feather="user"></i>
                                             </div>
                                         </div>
+                                        <label id = "vk_label" class = "hidden" >Invalid Link</label>
                                     </div>
                                 </div>
                                 <div class="column is-12">
                                     <!--Field-->
                                     <div class="form-text">
-                                        <p>Be sure to fill out your location settings. This will help us suggest you relevant friends and places you could like.</p>
+                                        <p id = "personal_form_label" >Be sure to fill out your social media links, it will hekp other people to contact you.</p>
                                     </div>
                                 </div>
-
-                                <div class="column is-6">
-                                    <!--Field-->
-                                    <div class="field field-group">
-                                        <label>City</label>
-                                        <div class="control has-icon">
-                                            <input type="text" class="input is-fade" value="{{ user.living_city.name }}">
-                                            <div class="form-icon">
-                                                <i data-feather="map-pin"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--
-                                <div class="column is-6">
-                                    <div class="field field-group is-autocomplete">
-                                        <label>Country</label>
-                                        <div class="control has-icon">
-                                            <input id="country-autocpl" type="text" class="input is-fade" value="Australia">
-                                            <div class="form-icon">
-                                                <i data-feather="globe"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>-->
-
                                 <div class="column is-12">
                                     <div class="buttons">
-                                        <button class="button is-solid accent-button form-button">Save Changes</button>
+                                        <button type="submit" id = "personal_submit_button" class="button is-solid accent-button form-button">Save Changes</button>
                                         <!--<button class="button is-light form-button">Advanced</button>-->
                                     </div>
                                 </div>
-
                             </div>
                         </div>
+                      </form>
+
 
                         <div class="illustration">
                             <img class="light-image" src="{% static 'dist/assets/img/illustrations/settings/1.svg'%}" alt="">
@@ -407,27 +403,54 @@
                                   </div>
                               </div>
                               <div class="column is-6">
+                                  <form id = "add_occupation_form"  method='post' enctype="multipart/form-data">{% csrf_token %}
                                   <!--Field-->
+                                  <div class="field field-group">
+                                      <label>Work/Education:</label>
+                                      <div class="control">
+                                        <select class="selectpicker" name="class">
+                                          <option value="education">Education</option>
+                                          <option value="work">Work</option>
+                                        </select>
+                                      </div>
+                                  </div>
                                   <div class="field field-group">
                                       <label>Name:</label>
-                                      <div class="control has-icon">
-                                          <input type="text" class="input is-fade" value="{{user.facebook_link}}">
+                                      <div class="control">
+                                          <input name = "name" type="text" class="input is-fade">
                                       </div>
                                   </div>
                                   <!--Field-->
                                   <div class="field field-group">
-                                      <label></label>
-                                      <div class="control has-icon">
-                                          <input type="text" class="input is-fade" value="{{user.facebook_link}}">
+                                      <label>Position:</label>
+                                      <div class="control">
+                                          <input name = "position" type="text" class="input is-fade" >
+                                      </div>
+                                  </div>
+                                  <div class="field field-group">
+                                      <label>Description:</label>
+                                      <div class="control">
+                                          <input name = "description" type="text" class="input is-fade" >
                                       </div>
                                   </div>
                                   <!--Field-->
                                   <div class="field field-group">
-                                      <label>Facebook Link</label>
-                                      <div class="control has-icon">
-                                          <input type="text" class="input is-fade" value="{{user.facebook_link}}">
+                                      <label>Year span:</label>
+                                      <div class="control">
+                                          <label>From:</label>
+                                          <input name = "year_from" type="text" class="input is-fade">
                                       </div>
+                                      <div class="control">
+                                        <label>To:</label>
+                                        <input name = "year_to" type="text" class="input is-fade">
+                                      </div>
+                                      <label id = "year_span_label" class = "hidden" > Data is invalid</label>
                                   </div>
+                                  <div class="buttons">
+                                      <button type = "submit" id = "add_occupation_submit_button" class="button is-solid accent-button form-button">Add!</button>
+                                      <!--<button class="button is-light form-button">Advanced</button>-->
+                                  </div>
+                                  </form>
                               </div>
                               <div class="column is-12">
                                   <!--Field-->
@@ -469,7 +492,7 @@
                               </div>
                               <div class="column is-12">
                                   <div class="buttons">
-                                      <button class="button is-solid accent-button form-button">Save Changes</button>
+                                      <button class="button is-solid accent-button form-button">Delete</button>
                                       <!--<button class="button is-light form-button">Advanced</button>-->
                                   </div>
                               </div>
@@ -482,7 +505,13 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'js/user-settings1.js' %}"></script>
+
+    <script src="{% static 'js/user-settings-occupation.js' %}"></script>
+    <script src="{% static 'js/user-settings-general.js' %}"></script>
+    <script src="{% static 'js/user-settings-security.js' %}"></script>
+    <script src="{% static 'js/user-settings-personal.js' %}"></script>
+
+
     {% endblock %}
 
 </body>

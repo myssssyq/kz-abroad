@@ -1,12 +1,13 @@
 let notification_delete = document.querySelector('#delete_notifications');
+
 notification_delete.addEventListener('click', delete_notifications);
 
 var buttons_accept = document.querySelectorAll('button[name="accept"]');
 var buttons_decline = document.querySelectorAll('button[name="decline"]');
 
 var request_submits = document.getElementsByClassName("request_submits");
-alert(8)
-/*for (var i = 0; i < request_submits.length; i++)
+/*
+for (var i = 0; i < request_submits.length; i++)
 {
   var x = buttons_accept[i].getAttribute("data-id");
   request_submits[i].addEventListener('submit', request_submited.bind(event, x))

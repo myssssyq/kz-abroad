@@ -9,7 +9,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title> Friendkit | Login</title>
-    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="icon" type="image/png" href="{% static 'dist/assets/img/favicon.png' %}" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700,800,900" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
@@ -47,7 +47,7 @@
                     <!--Logo-->
                     <div class="logo-wrap">
                         <div class="wrap-inner">
-                            <img src="assets/img/logo/friendkit-white.svg" alt="">
+                            <img src="{% static 'dist/assets/img/logo/friendkit-white.svg' %}" alt="">
                         </div>
                     </div>
                     <!--Login Form-->
@@ -58,13 +58,14 @@
                                 <div class="badge">
                                     <i data-feather="check"></i>
                                 </div>
-                                <img src="https://placehold.it/128x128" data-demo-src="assets/img/avatars/jenna.png" alt="">
+                                <img src="https://placehold.it/128x128" data-demo-src="{% static 'dist/assets/img/avatars/jenna.png' %}" alt="">
                             </div>
                             <!--Form-->
+                          <form method='post' enctype="multipart/form-data">{% csrf_token %}
                             <div class="login-form">
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input email-input" type="text" placeholder="jennadavis@gmail.com">
+                                        <input name = "email" class="input email-input" type="text" placeholder="youremail@gmail.com">
                                         <div class="input-icon">
                                             <i data-feather="user"></i>
                                         </div>
@@ -72,7 +73,7 @@
                                 </div>
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input password-input" type="password" placeholder="●●●●●●●">
+                                        <input name = "password" class="input password-input" type="password" placeholder="●●●●●●●">
                                         <div class="input-icon">
                                             <i data-feather="lock"></i>
                                         </div>
@@ -84,6 +85,7 @@
                                     </div>
                                 </div>
                             </div>
+                          </form>
                             <div class="section forgot-password">
                                 <div class="has-text-centered">
                                     <a href="#">Forgot password?</a>
