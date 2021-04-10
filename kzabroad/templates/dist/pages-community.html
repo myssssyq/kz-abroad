@@ -1,0 +1,255 @@
+{% extends "dist/base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title> Friendkit | Page Profile</title>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fontisto@v3.0.4/css/fontisto/fontisto-brands.min.css" rel="stylesheet">
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="assets/css/bulma.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="assets/css/core.css">
+</head>
+
+<body>
+
+    {% block content %}
+    <div class="view-wrapper">
+
+
+        <!-- Container -->
+        <div class="container is-custom">
+
+            <!-- Profile page main wrapper -->
+            <div id="pages-community" class="view-wrap is-headless">
+                <div class="columns is-multiline no-margin">
+                    <!-- Left side column -->
+                    <div class="column is-paddingless">
+                        <!-- Timeline Header -->
+                        <!-- html/partials/pages/pages/page-profile-header.html -->
+                        <div class="cover-bg">
+                            <img class="cover-image" src="https://via.placeholder.com/1600x460" data-demo-src="assets/img/demo/bg/4.jpg" alt="">
+                            <div class="avatar">
+                                <img id="user-avatar" class="avatar-image" src="https://via.placeholder.com/300x300" data-demo-src="assets/img/icons/logos/fastpizza.svg" alt="">
+                            </div>
+                            <div class="cover-overlay"></div>
+                            <!--/html/partials/pages/pages/dropdowns/page-timeline-mobile-dropdown.html-->
+                            <div class="dropdown is-spaced is-right is-accent dropdown-trigger timeline-mobile-dropdown is-hidden-desktop">
+                                <div>
+                                    <div class="button">
+                                        <i data-feather="more-vertical"></i>
+                                    </div>
+                                </div>
+                                <div class="dropdown-menu" role="menu">
+                                    <div class="dropdown-content">
+                                        <a href="/pages-main.html" class="dropdown-item">
+                                            <div class="media">
+                                                <i data-feather="activity"></i>
+                                                <div class="media-content">
+                                                    <h3>Timeline</h3>
+                                                    <small>Open Timeline.</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="/pages-about.html" class="dropdown-item">
+                                            <div class="media">
+                                                <i data-feather="align-right"></i>
+                                                <div class="media-content">
+                                                    <h3>About</h3>
+                                                    <small>See about info.</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="/pages-community.html" class="dropdown-item">
+                                            <div class="media">
+                                                <i data-feather="globe"></i>
+                                                <div class="media-content">
+                                                    <h3>Community</h3>
+                                                    <small>See community.</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="/pages-photos.html" class="dropdown-item">
+                                            <div class="media">
+                                                <i data-feather="image"></i>
+                                                <div class="media-content">
+                                                    <h3>Photos</h3>
+                                                    <small>See all photos.</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-menu is-hidden-mobile">
+                            <div class="menu-start">
+                                <a href="pages-about.html" class="button has-min-width">About</a>
+                            </div>
+                            <div class="menu-end">
+                                <a href="pages-community.html" class="button has-min-width">Community</a>
+                            </div>
+                        </div>
+
+                        <div class="profile-subheader">
+                            <div class="subheader-start is-hidden-mobile">
+                                <span>{{ city.residents.count }}</span>
+                                <span> Nomads </span>
+                            </div>
+                            <div class="subheader-middle">
+                                <h2> {{ city.name }} </h2>
+                            </div>
+                            <div style = "visibility: hidden;" class="subheader-end is-hidden-mobile">
+                                <a class="button has-icon is-bold">
+                                    <i data-feather="clock"></i>
+                                    History
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="columns has-portrait-padding">
+
+                    <div class="column is-4">
+
+                        <!-- Community widget -->
+                        <!-- html/partials/pages/widgets/page-community-widget.html -->
+                        <div class="box-heading">
+                            <h4>Info</h4>
+                            <div class="dropdown is-neutral is-spaced is-right dropdown-trigger">
+                                <div>
+                                    <div class="button">
+                                        <i data-feather="more-vertical"></i>
+                                    </div>
+                                </div>
+                                <div class="dropdown-menu" role="menu">
+                                    <div class="dropdown-content">
+                                        <a href="profile-about.html" class="dropdown-item">
+                                            <div class="media">
+                                                <i data-feather="eye"></i>
+                                                <div class="media-content">
+                                                    <h3>View</h3>
+                                                    <small>View user details.</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="basic-infos-wrapper">
+                            <div class="card is-community">
+                                <h4>Community</h4>
+                                <!--
+                                <div class="flex-block">
+                                    <i data-feather="users"></i>
+                                    <p><a>Invite your friends</a> to follow this page</p>
+                                </div>
+                                <div class="flex-block">
+                                    <i data-feather="thumbs-up"></i>
+                                    <p>150K people like this page</p>
+                                </div>
+                                <div class="flex-block">
+                                    <i data-feather="cast"></i>
+                                    <p>90K people are following this</p>
+                                </div>-->
+                            </div>
+
+                            <div class="card is-about">
+                                <h4>About</h4>
+                                <div class="flex-block">
+                                    <i data-feather="edit-3"></i>
+                                    <p><a>Suggest Changes</a></p>
+                                </div>
+                                <p>{{ city.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column is-8">
+                        <div class="community-content">
+
+                          <div style = "width: 60%;" class="community-widgets">
+                              <div class="page-invites">
+                                  <div class="header">
+                                      <h3>Residents:</h3>
+                                  </div>
+                                  <div class="suggestions">
+                                    {% for resident in residents %}
+                                      <div class="suggestion">
+                                          <img src="https://via.placeholder.com/300x300" data-demo-src="assets/img/avatars/aline.jpg" data-user-popover="16" alt="">
+                                          <div class="meta">
+                                              <span>{{ resident.name }} {{ resident.surname}}</span>
+                                          </div>
+                                          <div style="left:0%;" class="dropdown is-spaced is-accent is-right dropdown-trigger">
+                                              <div>
+                                                  <div class="button">
+                                                      <i data-feather="more-vertical"></i>
+                                                  </div>
+                                              </div>
+                                              <div class="dropdown-menu" role="menu">
+                                                  <div class="dropdown-content">
+                                                      <a href="{% url 'user' resident.login %}" class="dropdown-item">
+                                                          <div class="media">
+                                                              <i data-feather="user"></i>
+                                                              <div class="media-content">
+                                                                  <h3>View Profile</h3>
+                                                                  <small>Open this user profile.</small>
+                                                              </div>
+                                                          </div>
+                                                      </a>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                    {% endfor %}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="community-widgets">
+                                <div class="page-invites">
+                                    <div class="header">
+                                        <h3> Use filters:</h3>
+                                    </div>
+                                    <div class="suggestions">
+                                      <form enctype="multipart/form-data" method = "post">{% csrf_token %}
+                                        <div class="control">
+                                            <input type="text" name = "search_input" class="input" placeholder="Search your residents...">
+                                        </div>
+                                        {% for interest in user.interest %}
+                                        <div class="basic-checkbox">
+                                            <input class="styled-checkbox"  name="checks" id="styled-checkbox-{{forloop.counter}}"  value="{{interest}}" type="checkbox" {% if interest in checked_interests %}  checked {% endif %}>
+                                            <label for="styled-checkbox-{{forloop.counter}}">{{interest}}</label>
+                                        </div>
+                                        {% endfor %}
+                                        <button class="button is-solid primary-button raised" name = "checkbox_search" type = "submit">Find!</button>
+                                      </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endblock %}
+
+</body>
+
+</html>

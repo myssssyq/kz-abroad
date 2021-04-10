@@ -1,4 +1,4 @@
-{% extends "general/index.html" %}
+{% extends "dist/base.html" %}
 {% block content %}
 {% load static %}
 <!DOCTYPE html>
@@ -10,8 +10,10 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
 <style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 15%; bottom: 0; width: 50%; height: 50%; }
+#map { position: absolute; top: 22%; bottom: 0; width: 50%; height: 50%; left: 25%;}
+#form_field{
+position: absolute; top: 15%; width: 50%; left: 25%;
+}
 </style>
 </head>
 <body>
@@ -21,12 +23,19 @@ max-width: 400px;
 font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 </style>
-<form method='post' enctype="multipart/form-data">{% csrf_token %}
-    <label>City you want to find :</label>
-    <input type="text" name="search" id="search"/>
-    <button type = "submit">Search</button>
-</form>
-<div id="map"></div>
+  <form id = "form_field" method='post' enctype="multipart/form-data">{% csrf_token %}
+    <div  class="field">
+
+        <label>City you want to find:</label>
+        <div class="control">
+            <input  type="text" name="search" id="search" class="input">
+        </div>
+          <button type = "submit">Search</button>
+
+    </div>
+  </form>
+
+<div style= "align" id="map"></div>
 <script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoibXlzeXEiLCJhIjoiY2ttbThvOTFuMWluNjJ2bDhseGpydWtzeSJ9.IIvNiR1_7gRw2EcZ_Gfzdw';
 var map = new mapboxgl.Map({

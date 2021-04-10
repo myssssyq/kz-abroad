@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.http import Http404
 from django.template.defaultfilters import slugify
 from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models.functions import Greatest
 from .models import City
 from accounts.models import *
 from django.http import JsonResponse
@@ -95,14 +96,14 @@ def city(request, slug):
                 friend_request, created = FriendRequest.objects.get_or_create(to_user = requested_user, from_user = user)
                 friend_request.save()
             return render(request, 'app/city/city_residents.html', context)
-        if request.method == 'POST' and 'search_button' in request.POST:
-            searching_word = request.POST['search_input']
-            context['residents'] = context['residents'].filter(name = searching_word)
         if request.method == 'POST' and 'checkbox_search' in request.POST:
             for interest_iterable in user.interest:
                 if interest_iterable in request.POST.getlist('checks'):
                     context['residents'] = context['residents'].filter(interest__contains = {interest_iterable: True} )
-        return render(request, 'app/city/city_residents.html', context)
+            if request.POST['search_input'] != "":
+                searching_word = request.POST['search_input']
+                context['residents'] = context['residents'].annotate(similarity=Greatest(TrigramSimilarity('name', searching_word),TrigramSimilarity('surname', searching_word))).filter(similarity__gt=0.1).order_by('-similarity')
+        return render(request, 'dist/pages-community.html', context)
     else:
         context['city'] = city
         context['residents'] = city.residents.exclude(login = user.login)[:5]

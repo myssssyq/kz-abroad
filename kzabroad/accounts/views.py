@@ -361,8 +361,7 @@ def login(request):
     context = dict()
     context['user'] = find_user_by_id(request.session['user'])
     if (request.method == 'POST'):
-        email = request.POST['email'] # <input type = "text" name = "login">
-        print(find_user_by_email(email))
+        email = request.POST['email']
         if find_user_by_email(email) != None:
             user = find_user_by_email(email)
             if user.password == request.POST['password']:
@@ -371,7 +370,7 @@ def login(request):
                 return redirect(reverse(views.user, args = [user.login]))
             else:
                 context['error'] = 'Login or password is incorrect'
-                return render(request, 'app/account/login.html', context)
+                return render(request, 'dist/login.html', context)
         if find_user_by_email(email) == None:
             context['error'] = 'Login or password is incorrect'
             return render(request, 'dist/login.html', context)
