@@ -40,25 +40,16 @@
                             <img class="cover-image" src="" alt="no image">
                             <div class="avatar">
                                 <img id="user-avatar" class="avatar-image" src="https://via.placeholder.com/300x300" data-demo-src="assets/img/avatars/jenna.png" alt="">
+                                <!--
                                 <div class="avatar-button">
                                     <i data-feather="plus"></i>
-                                </div>
-                                <div class="pop-button is-far-left has-tooltip modal-trigger" data-modal="change-profile-pic-modal" data-placement="right" data-title="Change profile picture">
-                                    <a class="inner">
-                                        <i data-feather="camera"></i>
-                                    </a>
                                 </div>
                                 <div id="invite-pop" class="pop-button pop-shift is-center has-tooltip" data-placement="top" data-title="Relationship">
                                     <a href="#" class="inner">
                                         <i class="inactive-icon" data-feather="plus"></i>
                                         <i class="active-icon" data-feather="minus"></i>
                                     </a>
-                                </div>
-                            </div>
-                            <div class="cover-overlay"></div>
-                            <div class="cover-edit modal-trigger" data-modal="change-cover-modal">
-                                <i class="mdi mdi-camera"></i>
-                                <span>Edit cover image</span>
+                                </div>-->
                             </div>
                             <!--/html/partials/pages/profile/timeline/dropdowns/timeline-mobile-dropdown.html-->
                             <div class="dropdown is-spaced is-right is-accent dropdown-trigger timeline-mobile-dropdown is-hidden-desktop">
@@ -100,19 +91,20 @@
 
                         <div class="profile-subheader">
                             <div class="subheader-start is-hidden-mobile">
-                                <span>{{ user.friends_list.count }}</span>
+                                <span>{{ account.friends_list.count }}</span>
                                 <span>Friends</span>
                             </div>
                             <div class="subheader-middle">
-                                <h2>{{ user.name }} {{ user.surname}}</h2>
+                                <h2>{{ account.name }} {{ account.surname}}</h2>
                                 <span>Media Influencer</span>
                             </div>
                             <div class="subheader-end is-hidden-mobile">
-                              <div class = "hidden">
-                                <a class="button has-icon is-bold">
-                                    <i data-feather="clock"></i>
-                                    History
+                              <div>
+                                {% if not are_friends %}
+                                <a href = "javascript:;" id = "add_friend_button" class="button has-icon is-bold">
+                                    Add friend!
                                 </a>
+                                {% endif %}
                               </div>
                             </div>
                         </div>
@@ -160,8 +152,7 @@
                                         <div class="flex-block">
                                             <img src="" alt="" data-page-popover="8">
                                             <div class="flex-block-meta">
-                                                <span>Lives in <a>{{ user.living_city }}</a></span>
-                                                <a class="action-link">Edit your location</a>
+                                                <span>Lives in <a>{{ account.living_city }}</a></span>
                                             </div>
                                             <div class="go-button">
                                               <a href="{% url 'city' user.living_city.slug%}">
@@ -170,7 +161,7 @@
                                             </div>
                                         </div>
                                         <!-- Family block -->
-                                        {% if user.facebook_link %}
+                                        {% if account.facebook_link %}
                                         <div class="flex-block">
                                           <a href="{{ account.facebook_link }}" class="fa fa-facebook"></a>
                                           <div class="flex-block-meta">
@@ -183,7 +174,7 @@
                                           </div>
                                         </div>
                                         {% endif %}
-                                        {% if user.twitter_link %}
+                                        {% if account.twitter_link %}
                                         <div class="flex-block">
                                           <a href="{{ account.twitter_link }}" class="fa fa-twitter"></a>
                                           <div class="flex-block-meta">
@@ -196,7 +187,7 @@
                                           </div>
                                         </div>
                                         {% endif %}
-                                        {% if user.instagram_link %}
+                                        {% if account.instagram_link %}
                                         <div class="flex-block">
                                           <a href="{{ account.instagram_link }}" class="fa fa-instagram"></a>
                                           <div class="flex-block-meta">
@@ -209,7 +200,7 @@
                                           </div>
                                         </div>
                                         {% endif %}
-                                        {% if user.vk_link %}
+                                        {% if account.vk_link %}
                                         <div class="flex-block">
                                           <a href="{{ account.vk_link }}" class="fa fa-vk"></a>
                                           <div class="flex-block-meta">
@@ -222,7 +213,7 @@
                                           </div>
                                         </div>
                                         {% endif %}
-                                        {% if user.tiktok_link %}
+                                        {% if account.tiktok_link %}
                                         <div class="flex-block">
                                           <a href="{{ account.tiktok_link }}" id = 'tiktok'><i class="fab fa-tiktok"></i></a>
                                           <div class="flex-block-meta">
@@ -345,16 +336,6 @@
                                                                         </div>
                                                                     </div>
                                                                 </a>
-                                                                <hr class="dropdown-divider">
-                                                                <a id = "unfriend-{{friend.id}}" name = "unfriend_button" data = "{{friend.id}}" href="javascript:;" class="dropdown-item">
-                                                                    <div class="media">
-                                                                        <i data-feather="delete"></i>
-                                                                        <div class="media-content">
-                                                                            <h3>Unfriend</h3>
-                                                                            <small>Remove from friend list.</small>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -372,189 +353,8 @@
 
         </div>
 
-        <!-- Change cover image modal -->
-        <!--html/partials/pages/profile/timeline/modals/change-cover-modal.html-->
-        <div id="change-cover-modal" class="modal change-cover-modal is-medium has-light-bg">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-
-                <div class="card">
-                    <div class="card-heading">
-                        <h3>Update Cover</h3>
-                        <!-- Close X button -->
-                        <div class="close-wrap">
-                            <span class="close-modal">
-                                    <i data-feather="x"></i>
-                                </span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <!-- Placeholder -->
-                        <div class="selection-placeholder">
-                            <div class="columns">
-                                <div class="column is-6">
-                                    <!-- Selection box -->
-                                    <div class="selection-box modal-trigger" data-modal="upload-crop-cover-modal">
-                                        <div class="box-content">
-                                            <img src="assets/img/illustrations/profile/upload-cover.svg" alt="">
-                                            <div class="box-text">
-                                                <span>Upload</span>
-                                                <span>From your computer</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="column is-6">
-                                    <!-- Selection box -->
-                                    <div class="selection-box modal-trigger" data-modal="user-photos-modal">
-                                        <div class="box-content">
-                                            <img src="assets/img/illustrations/profile/change-cover.svg" alt="">
-                                            <div class="box-text">
-                                                <span>Choose</span>
-                                                <span>From your photos</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- Change profile pic modal -->
-        <!--html/partials/pages/profile/timeline/modals/change-profile-pic-modal.html-->
-        <div id="change-profile-pic-modal" class="modal change-profile-pic-modal is-medium has-light-bg">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-
-                <div class="card">
-                    <div class="card-heading">
-                        <h3>Update Profile Picture</h3>
-                        <!-- Close X button -->
-                        <div class="close-wrap">
-                            <span class="close-modal">
-                                    <i data-feather="x"></i>
-                                </span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <!-- Placeholder -->
-                        <div class="selection-placeholder">
-                            <div class="columns">
-                                <div class="column is-6">
-                                    <!-- Selection box -->
-                                    <div class="selection-box modal-trigger" data-modal="upload-crop-profile-modal">
-                                        <div class="box-content">
-                                            <img src="assets/img/illustrations/profile/change-profile.svg" alt="">
-                                            <div class="box-text">
-                                                <span>Upload</span>
-                                                <span>From your computer</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="column is-6">
-                                    <!-- Selection box -->
-                                    <div class="selection-box modal-trigger" data-modal="user-photos-modal">
-                                        <div class="box-content">
-                                            <img src="assets/img/illustrations/profile/upload-profile.svg" alt="">
-                                            <div class="box-text">
-                                                <span>Choose</span>
-                                                <span>From your photos</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- User photos and albums -->
-        <!--html/partials/pages/profile/timeline/modals/user-photos-modal.html-->
-        <!-- Profile picture crop modal -->
-        <!--html/partials/pages/profile/timeline/modals/upload-crop-profile-modal.html-->
-        <div id="upload-crop-profile-modal" class="modal upload-crop-profile-modal is-xsmall has-light-bg">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-
-                <div class="card">
-                    <div class="card-heading">
-                        <h3>Upload Picture</h3>
-                        <!-- Close X button -->
-                        <div class="close-wrap">
-                            <span class="close-modal">
-                                    <i data-feather="x"></i>
-                                </span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <label class="profile-uploader-box" for="upload-profile-picture">
-                            <span class="inner-content">
-                                    <img src="assets/img/illustrations/profile/add-profile.svg" alt="">
-                                    <span>Click here to <br>upload a profile picture</span>
-                            </span>
-                            <input type="file" id="upload-profile-picture" accept="image/*">
-                        </label>
-                        <div class="upload-demo-wrap is-hidden">
-                            <div id="upload-profile"></div>
-                            <div class="upload-help">
-                                <a id="profile-upload-reset" class="profile-reset is-hidden">Reset Picture</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button id="submit-profile-picture" class="button is-solid accent-button is-fullwidth raised is-disabled">Use Picture</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- Cover image crop modal -->
-        <!--html/partials/pages/profile/timeline/modals/upload-crop-cover-modal.html-->
-        <div id="upload-crop-cover-modal" class="modal upload-crop-cover-modal is-large has-light-bg">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-
-                <div class="card">
-                    <div class="card-heading">
-                        <h3>Upload Cover</h3>
-                        <!-- Close X button -->
-                        <div class="close-wrap">
-                            <span class="close-modal">
-                                    <i data-feather="x"></i>
-                                </span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <label class="cover-uploader-box" for="upload-cover-picture">
-                            <span class="inner-content">
-                                    <img src="assets/img/illustrations/profile/add-cover.svg" alt="">
-                                    <span>Click here to <br>upload a cover image</span>
-                            </span>
-                            <input type="file" id="upload-cover-picture" accept="image/*">
-                        </label>
-                        <div class="upload-demo-wrap is-hidden">
-                            <div id="upload-cover"></div>
-                            <div class="upload-help">
-                                <a id="cover-upload-reset" class="cover-reset is-hidden">Reset Picture</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button id="submit-cover-picture" class="button is-solid accent-button is-fullwidth raised is-disabled">Use
-                            Picture</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
     </div>
-    <script src="{% static 'js/user-page-unfriend.js' %}"></script>
+    <script src="{% static 'js/account-page-add-friend.js' %}"></script>
     {% endblock %}
 
 

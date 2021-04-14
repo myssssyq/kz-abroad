@@ -100,6 +100,34 @@ def user(request, login):
         else:
             context['request_exists'] = False
         context['is_guide'] = account.is_guide
+        context['occupations_education'] = {
+            "occupation":[
+            ]
+        }
+        context['occupations_work'] = {
+            "occupation":[
+            ]
+        }
+        for occupation in account.occupations['occupation']:
+            if occupation['class'] == "education":
+                context['occupations_education']['occupation'].append(occupation)
+            else:
+                context['occupations_work']['occupation'].append(occupation)
+        context['occupations_work'] = context['occupations_work']['occupation']
+        context['occupations_education'] = context['occupations_education']['occupation']
+        context['friends'] = account.friends_list.all()
+        try:
+            sent_request_from_user = FriendRequest.objects.get(to_user = account, from_user = user)
+        except:
+            sent_request_from_user = False
+        try:
+            friend_request = FriendRequest.objects.get(to_user = user, from_user = account)
+        except:
+            friend_request = False
+        if sent_request_from_user or friend_request or are_friends:
+            context['request_exists'] = True
+        else:
+            context['request_exists'] = False
         if request.method == 'POST':
             try:
                 friend_request = FriendRequest.objects.get(to_user = user, from_user = account)
@@ -111,8 +139,25 @@ def user(request, login):
                 message = str(user.name) + ' ' + str(user.surname + ' sent you friend request.')
                 account.add_notification(notifications_tags[0],message)
             context['request_exists'] = True
-            return render(request, 'app/account/user.html', context)
-        return render(request, 'app/account/user.html', context)
+            return render(request, 'dist/profile-guest.html', context)
+        if request.is_ajax() and 'action' in request.GET:
+            try:
+                friend_request = FriendRequest.objects.get(to_user = user, from_user = account)
+            except:
+                friend_request = None
+            if not friend_request:
+                friend_request, created = FriendRequest.objects.get_or_create(to_user = account, from_user = user)
+                friend_request.save()
+                message = str(user.name) + ' ' + str(user.surname + ' sent you friend request.')
+                account.add_notification(notifications_tags[0],message)
+                return JsonResponse({"message":"succes"})
+            else:
+                response = JsonResponse({
+                'message': "error"
+                })
+                response.status_code = 403 # To announce that the user isn't allowed to publish
+                return response
+        return render(request, 'dist/profile-guest.html', context)
     else:
         try:
             context['message'] = request.session['message']
@@ -184,8 +229,13 @@ def user(request, login):
                 message = str(user.name) + ' ' + str(user.surname) + ' declined your friend request.'
                 requesting_user.add_notification(notifications_tags[2],message)
             return JsonResponse({ "id" : request.GET['id']})
+        elif request.is_ajax() and 'delete_friend' in request.GET:
+            friend_to_delete = find_user_by_id(request.GET['id'])
+            user.friends_list.remove(friend_to_delete)
+            user.save()
         elif request.is_ajax() and request.method == "GET":
-            notification_list = []
+            print(request.GET)
+            '''notification_list = []
             for i in request.GET:
                 for notification in json.loads(i):
                     notification_to_delete = user.notifications.get(id = notification['id'])
@@ -193,7 +243,7 @@ def user(request, login):
                     notification_list.append(int(notification['id']))
             notification_dict = {i:item for i,item in enumerate(notification_list)}
             #notification_dict = json.dumps(notification_dict)
-            return JsonResponse(notification_dict)
+            return JsonResponse(notification_dict)'''
         if request.is_ajax() and request.method == 'POST':
             if 'city_choice' in request.POST:
                 if request.POST['city_choice'] != '':
@@ -341,7 +391,7 @@ def user_settings(request, login):
         return JsonResponse({
         "message":"succes"
         })
-    if request.method == 'POST':
+    if request.method == 'POST' and "add_occupation" in request.POST:
         new_occupation = {
         "class": request.POST['class'],
         "name": request.POST['name'],
@@ -351,6 +401,13 @@ def user_settings(request, login):
         "year_to": request.POST['year_to']
         }
         user.occupations['occupation'].append(new_occupation)
+        user.save()
+    if request.method == 'POST' and 'delete_occupation' in request.POST:
+        for input in request.POST:
+            for iterator in range(len(user.occupations['occupation'])):
+                if user.occupations['occupation'][iterator]['name'] == input:
+                    user.occupations['occupation'].pop(iterator)
+                    break
         user.save()
     if user != account:
         raise Http404("You do not have acces to this page")

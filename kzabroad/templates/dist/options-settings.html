@@ -408,7 +408,7 @@
                                   <div class="field field-group">
                                       <label>Work/Education:</label>
                                       <div class="control">
-                                        <select class="selectpicker" name="class">
+                                        <select name="class">
                                           <option value="education">Education</option>
                                           <option value="work">Work</option>
                                         </select>
@@ -447,7 +447,7 @@
                                       <label id = "year_span_label" class = "hidden" > Data is invalid</label>
                                   </div>
                                   <div class="buttons">
-                                      <button type = "submit" id = "add_occupation_submit_button" class="button is-solid accent-button form-button">Add!</button>
+                                      <button name = "add_occupation" type = "submit" id = "add_occupation_submit_button" class="button is-solid accent-button form-button">Add!</button>
                                       <!--<button class="button is-light form-button">Advanced</button>-->
                                   </div>
                                   </form>
@@ -459,43 +459,22 @@
                                   </div>
                               </div>
                               <div class="column is-6">
+                                  <form id = "delete_occupation_form"  method='post' enctype="multipart/form-data">{% csrf_token %}
                                   <!--Field-->
-                                  <div class="field field-group">
-                                      <label></label>
-                                      <div class="control has-icon">
-                                          <input type="text" class="input is-fade" value="{{user.facebook_link}}">
-                                          <div class="form-icon">
-                                              <i data-feather="facebook"></i>
-                                          </div>
-                                      </div>
+                                  {% for occupation in user.occupations.occupation %}
+                                  <div class="basic-checkbox">
+                                      <input name = "{{occupation.name}}" class="styled-checkbox" id="styled-checkbox-{{forloop.counter}}" value = "{{occupation.name}}" type="checkbox">
+                                      <label for="styled-checkbox-{{forloop.counter}}"> {{occupation.name}}:{{occupation.position}}</label>
                                   </div>
-                                  <!--Field-->
-                                  <div class="field field-group">
-                                      <label>Facebook Link</label>
-                                      <div class="control has-icon">
-                                          <input type="text" class="input is-fade" value="{{user.facebook_link}}">
-                                          <div class="form-icon">
-                                              <i data-feather="facebook"></i>
-                                          </div>
-                                      </div>
-                                  </div>
-                                  <!--Field-->
-                                  <div class="field field-group">
-                                      <label>Facebook Link</label>
-                                      <div class="control has-icon">
-                                          <input type="text" class="input is-fade" value="{{user.facebook_link}}">
-                                          <div class="form-icon">
-                                              <i data-feather="facebook"></i>
-                                          </div>
-                                      </div>
-                                  </div>
+                                  {% endfor %}
                               </div>
                               <div class="column is-12">
                                   <div class="buttons">
-                                      <button class="button is-solid accent-button form-button">Delete</button>
+                                      <button name = "delete_occupation" type = "submit" id = "delete_occupation_submit_button"  class="button is-solid accent-button form-button">Delete</button>
                                       <!--<button class="button is-light form-button">Advanced</button>-->
                                   </div>
                               </div>
+                              </form>
 
                           </div>
                       </div>
