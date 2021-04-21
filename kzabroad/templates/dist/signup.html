@@ -75,46 +75,126 @@
                             <div class="account-type">
                                 <img class="light-image" src="{% static 'dist/assets/img/illustrations/signup/company.svg' %}" alt="">
                                 <img class="dark-image" src="{% static 'dist/assets/img/illustrations/signup/company-dark.svg' %}" alt="">
-                                <h3>Highschool student</h3>
-                                <p>Create a company account to be able to do some awesome things.</p>
-                                <div class="round-checkbox is-small">
-                                    <div>
-                                        <input name = "checkbox_highschool_student" type="checkbox" id="checkbox-1">
-                                        <label for="checkbox-1"></label>
+                                <h3>Highschool(Optional): </h3>
+                                <form id = "add_occupation_form-highschool"  method='post' enctype="multipart/form-data">{% csrf_token %}
+                                <div class="field field-group">
+                                    <label> School Name:</label>
+                                    <div class="control">
+                                        <input name = "highschool-name" type="text" class="input is-fade">
                                     </div>
                                 </div>
+                                <!--Field-->
+                                <div class="field field-group">
+                                    <label>Position:</label>
+                                    <div class="control">
+                                        <input name = "highschool-position" type="text" class="input is-fade" >
+                                    </div>
+                                </div>
+                                <div class="field field-group">
+                                    <label>Description:</label>
+                                    <div class="control">
+                                        <input name = "highschool-description" type="text" class="input is-fade" >
+                                    </div>
+                                </div>
+                                <!--Field-->
+                                <div class="field field-group">
+                                    <label>Year span:</label>
+                                    <div class="control">
+                                        <label>From:</label>
+                                        <input name = "highschool-year_from" type="text" class="input is-fade">
+                                    </div>
+                                    <div class="control">
+                                      <label>To:</label>
+                                      <input name = "highschool-year_to" type="text" class="input is-fade">
+                                    </div>
+                                    <label id = "highschool-year_span_label" class = "hidden" > Data is invalid</label>
+                                </div>
+                                <label id = "highschool-form_label" class = "hidden" > You should fill all inputs </label>
+                                </form>
                             </div>
                         </div>
                         <div class="column is-4">
                             <div class="account-type">
                                 <img class="light-image" src="{% static 'dist/assets/img/illustrations/signup/public.svg' %}" alt="">
                                 <img class="dark-image" src="{% static 'dist/assets/img/illustrations/signup/public-dark.svg' %}" alt="">
-                                <h3>University Student</h3>
-                                <p>Create a company account to be able to do some awesome things.</p>
-                                <div class="round-checkbox is-small">
-                                    <div>
-                                        <input name = "checkbox_university_student" type="checkbox" id="checkbox-2">
-                                        <label for="checkbox-2"></label>
+                                <h3>University(Optional): </h3>
+                                <div class="field field-group">
+                                    <label> University Name:</label>
+                                    <div class="control">
+                                        <input name = "university-name" type="text" class="input is-fade">
                                     </div>
                                 </div>
+                                <!--Field-->
+                                <div class="field field-group">
+                                    <label>Position:</label>
+                                    <div class="control">
+                                        <input name = "university-position" type="text" class="input is-fade" >
+                                    </div>
+                                </div>
+                                <div class="field field-group">
+                                    <label>Description:</label>
+                                    <div class="control">
+                                        <input name = "university-description" type="text" class="input is-fade" >
+                                    </div>
+                                </div>
+                                <!--Field-->
+                                <div class="field field-group">
+                                    <label>Year span:</label>
+                                    <div class="control">
+                                        <label>From:</label>
+                                        <input name = "university-year_from" type="text" class="input is-fade">
+                                    </div>
+                                    <div class="control">
+                                      <label>To:</label>
+                                      <input name = "university-year_to" type="text" class="input is-fade">
+                                    </div>
+                                    <label id = "university-year_span_label" class = "hidden" > Data is invalid</label>
+                                </div>
+                                <label id = "university-form_label" class = "hidden" > You should fill all inputs </label>
                             </div>
                         </div>
                         <div class="column is-4">
                             <div class="account-type">
                                 <img class="light-image" src="{% static 'dist/assets/img/illustrations/signup/personal.svg' %}" alt="">
                                 <img class="dark-image" src="{% static 'dist/assets/img/illustrations/signup/personal-dark.svg' %}" alt="">
-                                <h3>Worker</h3>
-                                <p>Create a company account to be able to do some awesome things.</p>
-                                <div class="round-checkbox is-small">
-                                    <div>
-                                        <input name = "checkbox_worker" type="checkbox" id="checkbox-3">
-                                        <label for="checkbox-3"></label>
+                                <h3>Work(Optional): </h3>
+                                <div class="field field-group">
+                                    <label> Occupation Name:</label>
+                                    <div class="control">
+                                        <input name = "work-name" type="text" class="input is-fade">
                                     </div>
                                 </div>
+                                <!--Field-->
+                                <div class="field field-group">
+                                    <label>Position:</label>
+                                    <div class="control">
+                                        <input name = "work-position" type="text" class="input is-fade" >
+                                    </div>
+                                </div>
+                                <div class="field field-group">
+                                    <label>Description:</label>
+                                    <div class="control">
+                                        <input name = "work-description" type="text" class="input is-fade" >
+                                    </div>
+                                </div>
+                                <!--Field-->
+                                <div class="field field-group">
+                                    <label>Year span:</label>
+                                    <div class="control">
+                                        <label>From:</label>
+                                        <input name = "work-year_from" type="text" class="input is-fade">
+                                    </div>
+                                    <div class="control">
+                                      <label>To:</label>
+                                      <input name = "work-year_to" type="text" class="input is-fade">
+                                    </div>
+                                    <label id = "work-year_span_label" class = "hidden" > Data is invalid</label>
+                                </div>
+                                <label id = "work-form_label" class = "hidden" > You should fill all inputs </label>
                             </div>
                         </div>
                     </div>
-                    <a class="button is-fullwidth is-rounded process-button" data-step="step-dot-2">
+                    <a id = "next_step_button" class="button is-fullwidth is-rounded process-button" data-step="step-dot-2">
                         Continue
                     </a>
                 </div>
@@ -222,7 +302,7 @@
                             <h3>Congratz, you successfully created your account.</h3>
                             <p> We just sent you a confirmation email. PLease confirm your account within 24 hours.</p>
                             <p>
-                            <button id = 'button' type = "submit"> Submit </button>
+                            <button id = 'button_finish_form' class = "button is-solid accent-button form-button" type = "submit"> Submit </button>
                             </p>
                             <!--<a id="signup-finish" class="button is-fullwidth is-rounded">Let me in</a>-->
                         </div>
@@ -267,7 +347,8 @@
     <script src="{% static 'dist/assets/js/signup.js' %}"></script>
 
     <!-- Inputs validation -->
-    <script src="{% static 'js/sign_in_validation.js' %}"></script>
+    <script src="{% static 'js/sign_in_validation1.js' %}"></script>
+    <script src="{% static 'js/sign_in_validation-occupation1.js' %}"></script>
 </body>
 
 </html>

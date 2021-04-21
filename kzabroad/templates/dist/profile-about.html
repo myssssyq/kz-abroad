@@ -157,6 +157,7 @@
                                 <div class="columns">
                                     <div class="column">
                                         <!-- Location block -->
+                                        {% if user.living_city %}
                                         <div class="flex-block">
                                             <img src="" alt="" data-page-popover="8">
                                             <div class="flex-block-meta">
@@ -169,6 +170,7 @@
                                               </a>
                                             </div>
                                         </div>
+                                        {% endif %}
                                         <!-- Family block -->
                                         {% if user.facebook_link %}
                                         <div class="flex-block">

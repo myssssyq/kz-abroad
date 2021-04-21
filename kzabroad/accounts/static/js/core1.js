@@ -5,29 +5,9 @@ notification_delete.addEventListener('click', delete_notifications);
 var buttons_accept = document.querySelectorAll('button[name="accept"]');
 var buttons_decline = document.querySelectorAll('button[name="decline"]');
 
-var request_submits = document.getElementsByClassName("request_submits");
-/*
-for (var i = 0; i < request_submits.length; i++)
-{
-  var x = buttons_accept[i].getAttribute("data-id");
-  request_submits[i].addEventListener('submit', request_submited.bind(event, x))
-}
+//var request_submits = document.getElementsByClassName("request_submits");
 
-function request_submited(e, x)
-{
-  x.preventDefault()
-  var button = $(x.target)
-  alert(button.attr('name'))
-  $.ajax({
-    type        : 'POST',
-    data        : $('#request_form' + e).serialize(), // our form data
-    dataType    : 'json', // what type of data do we expect back from the server
-    success     : successFunction,
-    error       : errorFunction
-  });
-}*/
-
-for (var i =0; i < (buttons_decline.length -1); i++)
+for (var i =0; i < (buttons_decline.length); i++)
 {
   var x = buttons_accept[i].getAttribute("data-id");
   buttons_accept[i].addEventListener('click', accept_request.bind(event, x));
@@ -43,7 +23,9 @@ function accept_request(e, x)
     data        : data, // our form data
     dataType    : 'json', // what type of data do we expect back from the server
     success     : successRequestFunction,
-    error       : errorFunction
+    error       : function (data) {
+
+                },
   });
 }
 
@@ -56,7 +38,9 @@ function decline_request(e, x)
     data        : data, // our form data
     dataType    : 'json', // what type of data do we expect back from the server
     success     : successRequestFunction,
-    error       : errorFunction
+    error       : function (data) {
+
+                },
   });
 }
 
@@ -79,7 +63,9 @@ function delete_notifications(e)
     data        : checkedValue, // our form data
     dataType    : 'json', // what type of data do we expect back from the server
     success     : successFunction,
-    error       : errorFunction
+    error       : function (data) {
+
+                },
   });
 }
 

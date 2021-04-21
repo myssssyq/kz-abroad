@@ -142,10 +142,10 @@ def user(request, login):
             return render(request, 'dist/profile-guest.html', context)
         if request.is_ajax() and 'action' in request.GET:
             try:
-                friend_request = FriendRequest.objects.get(to_user = user, from_user = account)
+                friend_request = FriendRequest.objects.get(to_user = account, from_user = user)
             except:
-                friend_request = None
-            if not friend_request:
+                friend_request = ''
+            if friend_request == '':
                 friend_request, created = FriendRequest.objects.get_or_create(to_user = account, from_user = user)
                 friend_request.save()
                 message = str(user.name) + ' ' + str(user.surname + ' sent you friend request.')
@@ -216,6 +216,7 @@ def user(request, login):
                         'message': str(results[0]),
                         })
         elif request.is_ajax() and 'action' in request.GET:
+            print(1)
             requesting_user = find_user_by_id(request.GET['id'])
             if request.GET['action'] == "accept":
                 friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
@@ -235,7 +236,7 @@ def user(request, login):
             user.save()
         elif request.is_ajax() and request.method == "GET":
             print(request.GET)
-            '''notification_list = []
+            notification_list = []
             for i in request.GET:
                 for notification in json.loads(i):
                     notification_to_delete = user.notifications.get(id = notification['id'])
@@ -243,7 +244,7 @@ def user(request, login):
                     notification_list.append(int(notification['id']))
             notification_dict = {i:item for i,item in enumerate(notification_list)}
             #notification_dict = json.dumps(notification_dict)
-            return JsonResponse(notification_dict)'''
+            return JsonResponse(notification_dict)
         if request.is_ajax() and request.method == 'POST':
             if 'city_choice' in request.POST:
                 if request.POST['city_choice'] != '':
@@ -387,6 +388,7 @@ def user_settings(request, login):
         user.name = request.POST['first_name']
         user.surname = request.POST['last_name']
         user.living_city = City.objects.get(name = request.POST['city_input'])
+        user.living_city.residents.add(user)
         user.save()
         return JsonResponse({
         "message":"succes"
@@ -475,6 +477,36 @@ def register (request):
                 "occupation":[
                 ]
             }
+            if request.POST['highschool-name'] != "":
+                new_occupation = {
+                "class": "education",
+                "name": request.POST['highschool-name'],
+                "position": request.POST['highschool-position'],
+                "description": request.POST['highschool-description'],
+                "year_from": request.POST['highschool-year_from'],
+                "year_to": request.POST['highschool-year_to']
+                }
+                occupations['occupation'].append(new_occupation)
+            if request.POST['university-name'] != "":
+                new_occupation = {
+                "class": "education",
+                "name": request.POST['university-name'],
+                "position": request.POST['university-position'],
+                "description": request.POST['university-description'],
+                "year_from": request.POST['university-year_from'],
+                "year_to": request.POST['university-year_to']
+                }
+                occupations['occupation'].append(new_occupation)
+            if request.POST['work-name'] != "":
+                new_occupation = {
+                "class": "work",
+                "name": request.POST['work-name'],
+                "position": request.POST['work-position'],
+                "description": request.POST['work-description'],
+                "year_from": request.POST['work-year_from'],
+                "year_to": request.POST['work-year_to']
+                }
+                occupations['occupation'].append(new_occupation)
             jsonfield = {
             'Interest one': False,
             'Interest two': False,
@@ -491,6 +523,9 @@ def register (request):
                                   living_city = city,
                                   interest = jsonfield,
                                   occupations = occupations)
+                account.save()
+                city.residents.add(account)
+                city.save()
             except:
                 account = Account(name = first_name,
                                   surname = last_name,

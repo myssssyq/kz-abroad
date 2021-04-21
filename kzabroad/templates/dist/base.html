@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/v4-shims.css">
     <!-- Bootstrap -->
-  
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
@@ -168,7 +168,10 @@
                                     <i data-feather="search"></i>
                                 </span>
 
-                            <div id="tipue_drop_content" class="tipue-drop-content"></div>
+
+                            <div id="tipue_drop_content" class="tipue-drop-content">
+                              
+                            </div>
                         </div>
 
                     </div>
@@ -601,10 +604,12 @@
                         <img src="{% static 'dist/assets/img/icons/explore/tag-euro.svg'%}" alt="">
                         <h4>Add city</h4>
                     </a>
+                    {% if user.living_city %}
                     <a href = "{% url 'city' user.living_city.slug %}" class="explore-item is-coming-soon">
                         <img src="{% static 'dist/assets/img/icons/explore/house.svg'%}" alt="">
                         <h4> Living city </h4>
                     </a>
+                    {% endif %}
                     <a href="javascript:;" class="explore-item">
                         <img src="{% static 'dist/assets/img/icons/explore/question.svg'%}" alt="">
                         <h4>Main page</h4>
@@ -649,7 +654,7 @@
     <script src="{% static 'dist/assets/data/tipuedrop_content.js' %}"></script>
     <script src="{% static 'dist/assets/js/global.js' %}"></script>
     <script src="{% static 'dist/assets/js/main.js' %}"></script>
-    <script src="{% static 'js/core.js' %}"></script>
+    <script src="{% static 'js/core1.js' %}"></script>
 
     <!-- Page and UI related js -->
     <script src="{% static 'dist/assets/js/feed.js' %}"></script>

@@ -1,5 +1,5 @@
 const form = document.querySelector('#register_form');
-const button = document.querySelector('#button');
+const button = document.querySelector('#button_finish_form');
 
 const pass_reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const letters = /^[a-zA-Z]{1,30}/;
@@ -52,6 +52,7 @@ city_input.addEventListener('input', city_validate);
 
 function city_validate (e)
 {
+  if (city_input.value != ""){
   $.ajax({
     type        : 'GET',
     data        : {"city_value": city_input.value}, // our form data
@@ -65,6 +66,10 @@ function city_validate (e)
         }
     //error       : errorFunction
   });
+  }
+  else{
+    city_check_button.setAttribute('data-step', "step-dot-4");
+  }
 }
 /*function successFunction(msg) {
   alert(msg.message)
