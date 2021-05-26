@@ -5,7 +5,7 @@ Main js file
 ========================================================================== */
 "use strict"; //Set environment variable (Used for development)
 
-/* 
+/*
     Possible values:
     1. development
     2. customization

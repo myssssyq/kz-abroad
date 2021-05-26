@@ -14,6 +14,12 @@ for (var i =0; i < (buttons_decline.length); i++)
   buttons_decline[i].addEventListener('click', decline_request.bind(event, x));
 }
 
+/*const hello_data = JSON.parse(document.getElementById('hello-data').textContent);
+for (var i =0; i < (hello_data.length); i++)
+{
+  alert(hello_data[i].name)
+}*/
+
 function accept_request(e, x)
 {
   x.preventDefault()

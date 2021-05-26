@@ -1,7 +1,7 @@
 var tipuedrop = {
     "pages": [
         {
-            "title": "Jenna Davis",
+            "title": "Penis Davis",
             "thumb": "https://via.placeholder.com/150x150",
             "text": "<small>Influencer, PARIS</small>",
             "url": "/profile-main.html"

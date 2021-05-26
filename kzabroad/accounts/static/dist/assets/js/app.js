@@ -50795,7 +50795,7 @@ http://www.tipue.com/drop
             'speed': 300,
             'newWindow': false,
             'mode': 'static',
-            'contentLocation': 'assets/js/data/tipuedrop_content.json'
+            'contentLocation': document.getElementById('hello-data').textContent
             //'contentLocation'        : 'tipuedrop/tipuedrop_content.json'
 
         }, options);
@@ -50829,15 +50829,15 @@ http://www.tipue.com/drop
                     var c = 0;
                     for (var i = 0; i < tipuedrop_in.pages.length; i++) {
                         var pat = new RegExp($obj.val(), 'i');
-                        if ((tipuedrop_in.pages[i].title.search(pat) != -1 || tipuedrop_in.pages[i].text.search(pat) != -1) && c < set.show) {
+                        if ((tipuedrop_in.pages[i].name.search(pat) != -1 || tipuedrop_in.pages[i].slug.search(pat) != -1) && c < set.show) {
                             if (c == 0) {
                                 var out = '<div class="tipue_drop_box"><div id="tipue_drop_wrapper">';
                             }
-                            out += '<a href="' + tipuedrop_in.pages[i].url + '"';
+                            out += '<a href="' + tipuedrop_in.pages[i].slug + '"';
                             if (set.newWindow) {
                                 out += ' target="_blank"';
                             }
-                            out += '><div class="tipue_drop_item"><div class="tipue_drop_left"><img src="' + tipuedrop_in.pages[i].thumb + '" class="tipue_drop_image"></div><div class="tipue_drop_right">' + tipuedrop_in.pages[i].title + '<div>' + tipuedrop_in.pages[i].text + '</div></div></div></a>';
+                            out += '><div class="tipue_drop_item"><div class="tipue_drop_left"><img src="' + tipuedrop_in.pages[i].slug + '" class="tipue_drop_image"></div><div class="tipue_drop_right">' + tipuedrop_in.pages[i].title + '<div>' + tipuedrop_in.pages[i].text + '</div></div></div></a>';
                             c++;
                         }
                     }
@@ -50860,6 +50860,8 @@ http://www.tipue.com/drop
 
 })(jQuery);
 
+let fuzzyInput = document.querySelector('#tipue_drop_input');
+
 (function($) {
     $.fn.tipuedrop = function(options) {
         var set = $.extend({
@@ -50867,7 +50869,7 @@ http://www.tipue.com/drop
             'speed': 300,
             'newWindow': false,
             'mode': 'static',
-            'contentLocation': 'tipuedrop/tipuedrop_content.json'
+            'contentLocation': JSON.parse(document.getElementById('hello-data').textContent)
         }, options);
         return this.each(function() {
             var tipuedrop_in = {
@@ -50882,37 +50884,58 @@ http://www.tipue.com/drop
                 });
             }
             if (set.mode == 'static') {
-                tipuedrop_in = $.extend({}, tipuedrop);
+              $.getJSON(set.contentLocation).done(function(json) {
+                  tipuedrop_in = JSON.parse(document.getElementById('hello-data').textContent);
+              });
             }
             $(this).keyup(function(event) {
                 getTipuedrop($(this));
             });
-
             function getTipuedrop($obj) {
-                if ($obj.val()) {
                     var c = 0;
+                    const options = {
+                      // Search in `author` and in `tags` array
+                      keys: ['name', 'surname']
+                    }
+
+                    const fuse = new Fuse(JSON.parse(document.getElementById('hello-data').textContent), options)
+
+                    const result = fuse.search(fuzzyInput.value)
+                    for (var i = 0; i < result.length; i++)
+                    {
+                      if (c < set.show)
+                      {
+                        if (c == 0) {
+                            var out = '<div class="tipue_drop_box"><div id="tipue_drop_wrapper">';
+                        }
+                        out += '<a href="' + result[i].item.slug + '"';
+                        if (set.newWindow) {
+                            out += ' target="_blank"';
+                        }
+                        out += '><div class="tipue_drop_item"><div class="tipue_drop_left"><img src="' + result[i].item.slug + '" class="tipue_drop_image"></div><div class="tipue_drop_right">' + result[i].item.name + ' ' + result[i].item.surname + '</div></div></a>';
+                        c++;
+                      }
+                    }
+                    /*
                     for (var i = 0; i < tipuedrop_in.pages.length; i++) {
-                        var pat = new RegExp($obj.val(), 'i');
-                        if ((tipuedrop_in.pages[i].title.search(pat) != -1 || tipuedrop_in.pages[i].text.search(pat) != -1) && c < set.show) {
+                        if ((tipuedrop_in.pages[i].name.search(pat) != -1 || tipuedrop_in.pages[i].slug.search(pat) != -1) && c < set.show) {
                             if (c == 0) {
                                 var out = '<div class="tipue_drop_box"><div id="tipue_drop_wrapper">';
                             }
+                            alert(set.contentLocation)
                             out += '<a href="' + tipuedrop_in.pages[i].url + '"';
                             if (set.newWindow) {
                                 out += ' target="_blank"';
                             }
-                            out += '><div class="tipue_drop_item"><div class="tipue_drop_left"><img src="' + tipuedrop_in.pages[i].thumb + '" class="tipue_drop_image"></div><div class="tipue_drop_right">' + tipuedrop_in.pages[i].title + '</div></div></a>';
+                            out += '><div class="tipue_drop_item"><div class="tipue_drop_left"><img src="' + tipuedrop_in.pages[i].thumb + '" class="tipue_drop_image"></div><div class="tipue_drop_right">' + tipuedrop_in.pages[i].name + '</div></div></a>';
                             c++;
                         }
-                    }
+                    }*/
                     if (c != 0) {
                         out += '</div></div>';
                         $('#tipue_drop_content').html(out);
                         $('#tipue_drop_content').fadeIn(set.speed);
                     }
-                } else {
-                    $('#tipue_drop_content').fadeOut(set.speed);
-                }
             }
             $('html').click(function() {
                 $('#tipue_drop_content').fadeOut(set.speed);

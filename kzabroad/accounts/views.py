@@ -84,6 +84,7 @@ def user(request, login):
     else:
         account = find_user_by_login(login)
     context['account'] = account
+    context['accounts'] = list(Account.objects.values('name', 'slug', 'surname'))
     if user != account:
         are_friends = user.friends_list.filter(login = account.login).exists()
         context['are_friends'] = are_friends
