@@ -26,6 +26,7 @@ function accept_request(e, x)
   data = {"action": "accept", "id" : e}
   $.ajax({
     type        : 'GET',
+    url         : '/api/friend_request',
     data        : data, // our form data
     dataType    : 'json', // what type of data do we expect back from the server
     success     : successRequestFunction,
@@ -41,6 +42,7 @@ function decline_request(e, x)
   data = {"action": "decline", "id" : e}
   $.ajax({
     type        : 'GET',
+    url         : '/api/friend_request',
     data        : data, // our form data
     dataType    : 'json', // what type of data do we expect back from the server
     success     : successRequestFunction,
@@ -66,6 +68,7 @@ function delete_notifications(e)
   checkedValue = JSON.stringify(checkedValue)
   $.ajax({
     type        : 'GET',
+    url         : '/api/delete_notification',
     data        : checkedValue, // our form data
     dataType    : 'json', // what type of data do we expect back from the server
     success     : successFunction,

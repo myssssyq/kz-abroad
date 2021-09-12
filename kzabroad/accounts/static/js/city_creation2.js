@@ -8,6 +8,7 @@ function submitHandler(e) {
       e.preventDefault();
       $.ajax({
         type        : 'POST',
+        url         : '/city/api/validate_city',
         data        : $('#add_city_form').serialize(), // our form data
         dataType    : 'json', // what type of data do we expect back from the server
         success     : successFunction,

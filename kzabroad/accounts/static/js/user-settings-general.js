@@ -38,6 +38,7 @@ function cityInputValidate(e)
 {
   $.ajax({
     type        : 'GET',
+    url         : '/api/validate_city',
     data        : {"city_value": city_input.value},
     dataType    : 'json',
     success: function (data) {

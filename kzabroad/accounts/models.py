@@ -95,6 +95,12 @@ class Account(models.Model):
         notification.save()
         self.notifications.add(notification)
 
+    def recieved_friend_requests(self):
+        return FriendRequest.objects.filter(to_user = self)
+
+    def sent_friend_requests(self):
+        return FriendRequest.objects.filter(from_user = self)
+
     def __str__(self):
         return (str(self.name) + ' ' + str(self.surname) + ' (' + str(self.id) + ')')
 

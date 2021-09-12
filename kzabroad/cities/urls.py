@@ -10,5 +10,6 @@ urlpatterns = [
     path('search', views.city_search, name = 'city_search'),
     path('add_city', views.add_city, name = 'add_city'),
     path('city_requests', views.city_requests, name = 'city_requests'),
-    path('search_results/<slug:slug>/', views.search_results, name = 'search_results')
+    path('search_results/<slug:slug>/', views.search_results, name = 'search_results'),
+    path('api/validate_city', views.validate_city, name = 'validate_city'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

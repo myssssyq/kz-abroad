@@ -55,16 +55,35 @@ def find_user_by_id(id):
      except:
          return None
 
+def validate_city(request):
+    try:
+        city_exists = bool(City.objects.get(name = request.POST['add']))
+    except:
+        city_exists = False
+    if not city_exists:
+        return JsonResponse({
+            'message': 'success'
+            })
+    else:
+        response = JsonResponse({"message": "error"})
+        response.status_code = 403 # To announce that the user isn't allowed to publish
+        return response
+
+def user_validation(func):
+    def validation(request, *args, **kwargs):
+        try:
+            user = Account.objects.get(pk = request.session['user'])
+            return func(request, *args, **kwargs)
+        except Exception as e:
+            context = {'error': e}
+            return render(request, '404.html', context = context)
+    return validation
+
+@user_validation
 def city(request, slug):
     # context -> city Object
     context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(accountsviews.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     try:
         city = City.objects.get(slug = slug)
     except:
@@ -109,15 +128,10 @@ def city(request, slug):
         context['residents'] = city.residents.exclude(login = user.login)[:5]
         return render(request, 'app/city/city_nonresidents.html', context)
 
+@user_validation
 def cities(request):
     context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(accountsviews.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     if request.method == 'POST':
         searching_city = City.objects.annotate(similarity=TrigramSimilarity('name', request.POST['search']),).filter(similarity__gt=0.6).order_by('-similarity')
         context['cities'] = searching_city
@@ -125,15 +139,10 @@ def cities(request):
     context['cities'] = City.objects.all().order_by('name')
     return render(request, 'app/city/cities1.html', context)
 
+@user_validation
 def city_search(request):
     context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(accountsviews.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     context['cities'] = City.objects.all()
     if request.method == 'POST':
         search_city = slugify(request.POST['search'])
@@ -147,6 +156,7 @@ def city_search(request):
             return redirect(reverse(views.search_results,args = [search_city]))
     return render(request, 'app/city/city_search.html', context)
 
+@user_validation
 def add_city(request):
     context = dict()
     try:
@@ -154,26 +164,7 @@ def add_city(request):
         del request.session['message']
     except:
         pass
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(accountsviews.index))
-    else:
-        pass
-    if request.is_ajax():
-        try:
-            city_exists = bool(City.objects.get(name = request.POST['add']))
-        except:
-            city_exists = False
-        if not city_exists:
-            return JsonResponse({
-                'message': 'success'
-                })
-        else:
-            response = JsonResponse({"message": "error"})
-            response.status_code = 403 # To announce that the user isn't allowed to publish
-            return response
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     if request.method == 'POST':
         city = str(request.POST['add'])
         try:
@@ -214,15 +205,10 @@ def add_city(request):
         return redirect(reverse(views.add_city))
     return render(request, 'app/city/add_city.html', context)
 
+@user_validation
 def city_requests(request):
     context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(accountsviews.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     if not user.is_admin:
         # TODO:
         request.session['message'] = "You do not have permission to visit that page."
@@ -247,15 +233,10 @@ def city_requests(request):
             requested_city.delete()
         return render(request, 'app/city/city_creation_requests.html', context)
 
+@user_validation
 def search_results(request, slug):
     context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(accountsviews.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     try:
         results = City.objects.annotate(similarity=TrigramSimilarity('name', slug),).filter(similarity__gt=0).order_by('-similarity')
         context['results_similar'] = results
@@ -265,44 +246,3 @@ def search_results(request, slug):
     except:
         pass
     return render(request, 'app/city/search_results.html', context)
-
-
-# def city(request, city):
-#     context = dict()
-#     try:
-#         user = Account.objects.get(pk = request.session['user'])
-#         context['user'] = user
-#     except:
-#         pass
-#     city = City.objects.get(name = city)
-#     if not city.livesin(user):
-#         if request.is_ajax():
-#             city.residents.add(user)
-#             return JsonResponse({
-#                 'message': 'success'
-#                 })
-#         residents = city.residents.exclude(login = user.login)
-#         context['residents'] = residents
-#         context['city'] = city
-#         return render(request, 'city1.html', context)
-#     else:
-#         if request.is_ajax():
-#             try:
-#                 request_user = Account.objects.get(id = request.POST['request_input'])
-#             except:
-#                 pass
-#             try:
-#                 friend_request = FriendRequest(to_user = request_user, from_user = user)
-#                 friend_request.save()
-#             except:
-#                 pass
-#             residents = city.residents.exclude(login = user.login)
-#             context['residents'] = residents
-#             context['city'] = city
-#             return JsonResponse({
-#                 'message': 'success'
-#                 })
-#         residents = city.residents.exclude(login = user.login)
-#         context['residents'] = residents
-#         context['city'] = city
-#         return render(request, 'city2.html', context)

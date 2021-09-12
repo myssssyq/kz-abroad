@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="nav-drop-body is-friend-requests">
                                     <!-- Friend request -->
-                                    {% for request in recieved_requests%}
+                                    {% for request in user.recieved_friend_requests%}
                                     <div id = "divRequest{{request.from_user.id}}" class="media">
                                         <figure class="media-left">
                                             <p class="image">

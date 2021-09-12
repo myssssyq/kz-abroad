@@ -14,6 +14,7 @@ function delete_friend(e, x)
   data = {"delete_friend": "", "id" : e}
   $.ajax({
     type        : 'GET',
+    url         : '/api/delete_friend',
     data        : data, // our form data
     dataType    : 'json', // what type of data do we expect back from the server
     success     : function (data) {

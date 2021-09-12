@@ -14,6 +14,17 @@ from django.db import connection
 with connection.cursor() as cursor:
     cursor.execute('CREATE EXTENSION IF NOT EXISTS pg_trgm')
 
+def user_validation(func):
+    def validation(request, *args, **kwargs):
+        try:
+            user = Account.objects.get(pk = request.session['user'])
+            return func(request, *args, **kwargs)
+        except Exception as e:
+            context = {'error': e}
+            return render(request, '404.html', context = context)
+    return validation
+
+
 def find_user_by_login(login):
      try:
          user = Account.objects.get(login = login)
@@ -35,21 +46,66 @@ def find_user_by_id(id):
      except:
          return None
 
+def delete_notification(request):
+    notification_list = []
+    print('works')
+    user = find_user_by_id(request.session['user'])
+    for i in request.GET:
+        for notification in json.loads(i):
+            notification_to_delete = user.notifications.get(id = notification['id'])
+            notification_to_delete.delete()
+            notification_list.append(int(notification['id']))
+    notification_dict = {i:item for i,item in enumerate(notification_list)}
+    return JsonResponse(notification_dict)
+
+def delete_friend(request):
+    user = Account.objects.get(pk = request.session['user'])
+    friend_to_delete = find_user_by_id(request.GET['id'])
+    user.friends_list.remove(friend_to_delete)
+    user.save()
+
+def friend_request(request):
+    notifications_tags = ["Friend request recieved", "Friend request accepted", "Friend request declined"]
+    requesting_user = find_user_by_id(request.GET['id'])
+    user = Account.objects.get(pk = request.session['user'])
+    if request.GET['action'] == "accept":
+        friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
+        message = str(user.name) + ' ' + str(user.surname) + ' accepted your friend request.'
+        requesting_user.add_notification(notifications_tags[1],message)
+        friend_request.delete()
+        user.friends_list.add(requesting_user)
+    else:
+        friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
+        friend_request.delete()
+        message = str(user.name) + ' ' + str(user.surname) + ' declined your friend request.'
+        requesting_user.add_notification(notifications_tags[2],message)
+    return JsonResponse({ "id" : request.GET['id']})
+
+def validate_city(request):
+    city_input = request.GET['city_value']
+    try:
+        city_exists = bool(City.objects.get(name = city_input))
+    except:
+        city_exists = False
+    if not city_exists:
+        results = City.objects.annotate(similarity=TrigramSimilarity('name', city_input),).filter(similarity__gt=0.55).order_by('-similarity')
+        context['results_similar'] = results
+        #matching_cites = results.values('name')
+        if results:
+            return JsonResponse({
+                'message': str(results[0]),
+                })
+
 def index(request):
     context=dict()
     request.session['user'] = None
     context['user'] = find_user_by_id(request.session['user'])
     return render(request, 'general/index.html', context)
 
+@user_validation
 def users(request):
     context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(views.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     users = Account.objects.all()
     context['cities'] = City.objects.all()
     context['occupations'] = Occupation.objects.all()
@@ -69,16 +125,11 @@ def users(request):
     context['users'] = users
     return render(request, 'app/account/users.html', context)
 
+@user_validation
 def user(request, login):
     context = dict()
     notifications_tags = ["Friend request recieved", "Friend request accepted", "Friend request declined"]
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(views.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     if find_user_by_login(login) == None:
         raise Http404("Account does not exist")
     else:
@@ -168,7 +219,6 @@ def user(request, login):
         context['cities'] = City.objects.all()
         context['friends'] = user.friends_list.all()
         context['occupations'] = Occupation.objects.all()
-        context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
         context['occupations_education'] = {
             "occupation":[
@@ -185,88 +235,7 @@ def user(request, login):
                 context['occupations_work']['occupation'].append(occupation)
         context['occupations_work'] = context['occupations_work']['occupation']
         context['occupations_education'] = context['occupations_education']['occupation']
-        #context['occupations_education'] = json.loads(json.dumps(user.occupations['occupation']))
-        #context['occupations'] = user.occupations['occupation']
         context['checked_interests'] = []
-        if request.is_ajax() and 'occupation_value' in request.GET:
-            occupation_input = request.GET['occupation_value']
-            try:
-                occupation_exists = bool(Occupation.objects.get(name = occupation_input))
-            except:
-                occupation_exists = False
-            if not occupation_exists:
-                results = Occupation.objects.annotate(similarity=TrigramSimilarity('name', occupation_input),).filter(similarity__gt=0.55).order_by('-similarity')
-                context['results_similar'] = results
-                matching_occupations = results.values('name')
-                if results:
-                    return JsonResponse({
-                        'message': str(results[0]),
-                        })
-        elif request.is_ajax() and 'city_value' in request.GET:
-            city_input = request.GET['city_value']
-            try:
-                city_exists = bool(City.objects.get(name = city_input))
-            except:
-                city_exists = False
-            if not city_exists:
-                results = City.objects.annotate(similarity=TrigramSimilarity('name', city_input),).filter(similarity__gt=0.55).order_by('-similarity')
-                context['results_similar'] = results
-                #matching_cites = results.values('name')
-                if results:
-                    return JsonResponse({
-                        'message': str(results[0]),
-                        })
-        elif request.is_ajax() and 'action' in request.GET:
-            print(1)
-            requesting_user = find_user_by_id(request.GET['id'])
-            if request.GET['action'] == "accept":
-                friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
-                message = str(user.name) + ' ' + str(user.surname) + ' accepted your friend request.'
-                requesting_user.add_notification(notifications_tags[1],message)
-                friend_request.delete()
-                user.friends_list.add(requesting_user)
-            else:
-                friend_request = FriendRequest.objects.get(from_user = requesting_user, to_user = user)
-                friend_request.delete()
-                message = str(user.name) + ' ' + str(user.surname) + ' declined your friend request.'
-                requesting_user.add_notification(notifications_tags[2],message)
-            return JsonResponse({ "id" : request.GET['id']})
-        elif request.is_ajax() and 'delete_friend' in request.GET:
-            friend_to_delete = find_user_by_id(request.GET['id'])
-            user.friends_list.remove(friend_to_delete)
-            user.save()
-        elif request.is_ajax() and request.method == "GET":
-            print(request.GET)
-            notification_list = []
-            for i in request.GET:
-                for notification in json.loads(i):
-                    notification_to_delete = user.notifications.get(id = notification['id'])
-                    notification_to_delete.delete()
-                    notification_list.append(int(notification['id']))
-            notification_dict = {i:item for i,item in enumerate(notification_list)}
-            #notification_dict = json.dumps(notification_dict)
-            return JsonResponse(notification_dict)
-        if request.is_ajax() and request.method == 'POST':
-            if 'city_choice' in request.POST:
-                if request.POST['city_choice'] != '':
-                    try:
-                        city_exists = bool(City.objects.get(name = request.POST['city_choice']))
-                    except:
-                        city_exists = False
-                    if city_exists:
-                        return JsonResponse({
-                            'message': 'success'
-                            })
-                    else:
-                        response = JsonResponse({
-                        'city_exists': str(city_exists)
-                        })
-                        response.status_code = 403 # To announce that the user isn't allowed to publish
-                        return response
-                else:
-                    return JsonResponse({
-                        'message': 'success'
-                        })
         if request.method == 'POST'  and 'name' in request.POST:
             user.name = request.POST['name']
             user.surname = request.POST['surname']
@@ -342,15 +311,10 @@ def user(request, login):
             return redirect(reverse(views.user, args = [user.login]))
         return render(request, 'dist/profile-about.html', context)
 
+@user_validation
 def user_settings(request, login):
     context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(views.index))
-    else:
-        pass
+    context['user'] = user = Account.objects.get(pk = request.session['user'])
     if find_user_by_login(login) == None:
         raise Http404("Account does not exist")
     else:
@@ -547,97 +511,3 @@ def register (request):
             return redirect(reverse(views.user, args = [account.login]))
     else:
         return render(request, 'dist/signup.html', context)
-
-def notifications(request):
-    context = dict()
-    try:
-        user = Account.objects.get(pk = request.session['user'])
-        context['user'] = user
-    except:
-        return redirect(reverse(views.index))
-    else:
-        pass
-    context['notifications'] = user.notifications.all()
-    if request.method == "POST":
-        for notification in user.notifications.all():
-            notification.delete()
-            return redirect(reverse(views.notifications))
-    return render(request, 'app/account/notifications.html', context)
-
-
-
-# def mainpage(request):
-#     context = dict()
-#     try:
-#         user = Account.objects.get(pk = request.session['user'])
-#         context['user'] = user
-#     except:
-#         context['user'] = None
-#         if request.method == 'POST':
-#             login_form = LoginForm(request.POST)
-#             if login_form.is_valid():
-#                 account = Account.objects.get(login = login_form.cleaned_data['username'])
-#                 context['pk'] = account.id
-#                 request.session['user'] = account.pk
-#                 context['user'] = Account.objects.get(pk = request.session['user'])
-#                 search_form = SearchForm(request.POST)
-#                 context['search_form'] = search_form
-#                 return render(request, 'search.html', context)
-#         else:
-#             login_form = LoginForm(request.POST)
-#         context['login_form'] = login_form
-#         context['method'] = request.method
-#         return render(request, 'login.html', context)
-#     if request.method == 'POST':
-#         search_form = SearchForm(request.POST)
-#         if search_form.is_valid():
-#             city = search_form.cleaned_data['city']
-#             return redirect(reverse(cityviews.city,args = [city]))
-#     else:
-#         search_form = SearchForm(request.POST)
-#     context['search_form'] = search_form
-#     return render(request, 'search.html', context)
-
-# def sign_in(request):
-#     context = dict()
-#     try:
-#         user = Account.objects.get(pk = request.session['user'])
-#         context['user'] = user
-#     except:
-#         context['user'] = None
-#     sign_form = SignForm(request.POST)
-#     if request.method == 'POST':
-#         if sign_form.is_valid():
-#             first_name = sign_form.cleaned_data['first_name']
-#             last_name = sign_form.cleaned_data['last_name']
-#             email = sign_form.cleaned_data['email']
-#             username = sign_form.cleaned_data['username']
-#             password = sign_form.cleaned_data['password']
-#             account = Account(name = first_name, surname = last_name, email = email, login = username, password = password, slug = username)
-#             account.save()
-#             context['account'] = account
-#             request.session['user'] = account.pk
-#             return redirect(reverse(views.mainpage))
-#     context['sign_form'] = sign_form
-#     return render(request, 'sign.html', context)
-
-# def account_page(request, account):
-#     context = dict()
-#     try:
-#         user = Account.objects.get(pk = request.session['user'])
-#         context['user'] = user
-#     except:
-#         pass
-#     try:
-#         account = Account.objects.get(login = account)
-#         context['account'] = account
-#     except:
-#         pass
-#     user_guest = bool(user != account)
-#     if user_guest:
-#         return render(request, 'account_page.html', context)
-#     else:
-#         context['recieved_requests'] = FriendRequest.objects.filter(to_user = user)
-#         context['sent_requests'] = FriendRequest.objects.filter(from_user = user)
-#         context['user'] = user
-#         return render(request, 'self_page.html', context)
